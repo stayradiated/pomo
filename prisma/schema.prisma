@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator kysely {
+  provider = "prisma-kysely"
+
+  // Optionally provide a destination directory for the generated file
+  // and a filename of your choice
+  output   = "../src/db"
+  fileName = "types.ts"
+
+  // Optionally generate runtime enums to a separate file
+  enumFileName = "enums.ts"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Stream {
+  id        Int           @id @default(autoincrement())
+  name      String        @unique
+  createdAt DateTime      @default(now())
+  updatedAt DateTime?     @updatedAt
+  active    Boolean       @default(true)
+  values    StreamValue[]
+}
+
+model StreamValue {
+  id        Int       @id @default(autoincrement())
+  stream    Stream    @relation(fields: [streamId], references: [id])
+  streamId  Int
+  value     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  active    Boolean   @default(true)
+
+  startedAt DateTime
+  stoppedAt DateTime?
+}

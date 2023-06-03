@@ -1,0 +1,54 @@
+{
+  "name": "@stayradiated/pomo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --watch=false",
+    "tidy": "xo --fix",
+    "build": "rm -rf ./dist && tsc"
+  },
+  "keywords": [],
+  "author": {
+    "name": "George Czabania"
+  },
+  "license": "ISC",
+  "type": "module",
+  "bin": {
+    "pomo": "./bin/pomo"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "7.6.4",
+    "prisma": "4.15.0",
+    "prisma-kysely": "1.4.2",
+    "typescript": "5.1.3",
+    "vitest": "0.31.4",
+    "xo": "0.54.2"
+  },
+  "__comment": "The following configs are managed by `@stayradiated/jsconfig`",
+  "xo": {
+    "space": true,
+    "semicolon": false,
+    "prettier": true
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "useTabs": false
+  },
+  "dependencies": {
+    "better-sqlite3": "8.4.0",
+    "external-editor": "3.1.0",
+    "kysely": "0.25.0",
+    "mdast-util-to-markdown": "1.5.0",
+    "mdast-util-to-string": "3.2.0",
+    "meow": "12.0.1",
+    "remark-parse": "10.0.2",
+    "unified": "10.1.2",
+    "unist-util-visit": "4.1.2"
+  }
+}

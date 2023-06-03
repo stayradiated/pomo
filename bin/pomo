@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Get the directory path of the script
+script_dir=$(dirname "$0")
+
+# Define the relative path to the file you want to execute
+relative_file_path="../dist/index.js"
+
+# Construct the absolute path to the file
+absolute_file_path="$script_dir/$relative_file_path"
+
+# Execute the file
+exec node "$absolute_file_path" "$@"
