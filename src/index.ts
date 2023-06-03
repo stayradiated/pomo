@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+import * as process from 'node:process'
+import z from 'zod'
 import meow from 'meow'
 import {
   ExternalEditor,
@@ -32,7 +36,13 @@ $ pomo
 //
 // Each stream is defined by a header, which is a markdown header (e.g. `#` or `##`).
 
-const db = createKyselyDb('./prisma/dev.db')
+const env = z
+  .object({
+    POMO_DATABASE_URL: z.string(),
+  })
+  .parse(process.env)
+
+const db = createKyselyDb(env.POMO_DATABASE_URL)
 
 const getCurrentText = async (): Promise<string> => {
   let output = ``

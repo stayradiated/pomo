@@ -6,7 +6,7 @@
   "scripts": {
     "test": "vitest --watch=false",
     "tidy": "xo --fix",
-    "build": "rm -rf ./dist && tsc"
+    "build": "rm -rf ./dist && tsc && chmod +x ./dist/index.js"
   },
   "keywords": [],
   "author": {
@@ -14,9 +14,6 @@
   },
   "license": "ISC",
   "type": "module",
-  "bin": {
-    "pomo": "./bin/pomo"
-  },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.4",
     "prisma": "4.15.0",
@@ -49,6 +46,7 @@
     "meow": "12.0.1",
     "remark-parse": "10.0.2",
     "unified": "10.1.2",
-    "unist-util-visit": "4.1.2"
+    "unist-util-visit": "4.1.2",
+    "zod": "3.21.4"
   }
 }
