@@ -6,15 +6,23 @@ import z from 'zod'
 import { createKyselyDb } from './db.js'
 import { edit } from './edit.js'
 import { logCmd } from './log.js'
+import * as chrono from 'chrono-node'
 
 const cli = meow(
   `
 Usage
 $ pomo <command>
+
+Options
+--at  Set the current time. Defaults to the current time.
 `,
   {
     importMeta: import.meta,
-    flags: {},
+    flags: {
+      at: {
+        type: 'string',
+      }
+    },
   },
 )
 
@@ -28,10 +36,14 @@ const env = z
 
 const db = createKyselyDb(env.POMO_DATABASE_URL)
 
+const currentTime = cli.flags.at
+  ? chrono.parseDate(cli.flags.at)
+  : new Date()
+
 const main = async () => {
   switch (command) {
     case 'edit': {
-      return edit(db)
+      return edit({ db, currentTime })
     }
     case 'log': {
       return logCmd(db)

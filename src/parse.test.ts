@@ -2,7 +2,6 @@ import { test, expect } from 'vitest'
 import { parse } from './parse.js'
 
 test('hello world', () => {
-
   const result = parse(`
 # animals
 
@@ -12,7 +11,6 @@ test('hello world', () => {
 
   expect(result).toStrictEqual({
     animals: `- [x] anteater
-- [ ] badger`
+- [ ] badger`,
   })
-
 })

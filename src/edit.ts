@@ -20,7 +20,14 @@ import type { KyselyDb } from './db.js'
 //
 // Each stream is defined by a header, which is a markdown header (e.g. `#` or `##`).
 
-const edit = async (db: KyselyDb) => {
+type EditOptions = {
+  db: KyselyDb
+  currentTime: Date
+}
+
+const edit = async (options: EditOptions) => {
+  const { db, currentTime } = options
+
   const getCurrentText = async (): Promise<string> => {
     let output = ``
 
@@ -97,19 +104,23 @@ const edit = async (db: KyselyDb) => {
       .executeTakeFirst()
 
     if (currentStreamValue?.value !== value) {
-      const now = new Date().toISOString()
+      const updatedAt = new Date().toISOString()
 
       if (currentStreamValue) {
         await db
           .updateTable('StreamValue')
-          .set({ stoppedAt: now, updatedAt: now })
+          .set({ stoppedAt: currentTime.toISOString(), updatedAt })
           .where('id', '=', currentStreamValue.id)
           .execute()
       }
 
       await db
         .insertInto('StreamValue')
-        .values({ streamId: stream.id, value, startedAt: now })
+        .values({
+          streamId: stream.id,
+          value,
+          startedAt: currentTime.toISOString(),
+        })
         .execute()
     }
   }

@@ -12,7 +12,7 @@ const parse = (input: string): Output => {
     .use(remarkParse)
     .use(function () {
       const compiler: CompilerFunction = (tree) => {
-        let currentHeading: string = '' 
+        let currentHeading = ''
         const record: Record<string, string> = {}
 
         visit(tree, (node) => {
@@ -23,7 +23,7 @@ const parse = (input: string): Output => {
           if (node.type === 'heading') {
             currentHeading = toString(node)
             return SKIP
-          } 
+          }
 
           const content = source(node, input)
           record[currentHeading] ??= ''
