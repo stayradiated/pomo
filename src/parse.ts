@@ -1,7 +1,8 @@
-import { unified, type CompilerFunction } from 'unified'
+import { unified } from 'unified'
+import type { CompilerFunction } from 'unified'
 import remarkParse from 'remark-parse'
-import { visit } from 'unist-util-visit'
-import { toMarkdown } from 'mdast-util-to-markdown'
+import { visit, SKIP, CONTINUE } from 'unist-util-visit'
+import { source } from 'unist-util-source'
 import { toString } from 'mdast-util-to-string'
 
 type Output = Record<string, string>
@@ -11,17 +12,23 @@ const parse = (input: string): Output => {
     .use(remarkParse)
     .use(function () {
       const compiler: CompilerFunction = (tree) => {
-        let currentHeading = ''
+        let currentHeading: string = '' 
         const record: Record<string, string> = {}
 
         visit(tree, (node) => {
+          if (node.type === 'root') {
+            return CONTINUE
+          }
+
           if (node.type === 'heading') {
             currentHeading = toString(node)
-          } else if (node.type === 'paragraph') {
-            const content = toMarkdown(node as any)
-            record[currentHeading] ??= ''
-            record[currentHeading] += content
-          }
+            return SKIP
+          } 
+
+          const content = source(node, input)
+          record[currentHeading] ??= ''
+          record[currentHeading] += content
+          return SKIP
         })
 
         // Trim each value
