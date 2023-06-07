@@ -1,4 +1,4 @@
-import { startOfToday, formatISO, format } from 'date-fns'
+import { startOfToday, formatISO } from 'date-fns'
 import type { KyselyDb } from './db.js'
 import { getNextValue, getTimings } from './stream.js'
 
@@ -14,7 +14,7 @@ const stripComments = (input: string): string => {
   )
 }
 
-const logCmd = async (db: KyselyDb): Promise<void | Error> => {
+const statsCmd = async (db: KyselyDb): Promise<void | Error> => {
   const since = formatISO(startOfToday())
 
   const streamValueList = await db
@@ -23,13 +23,15 @@ const logCmd = async (db: KyselyDb): Promise<void | Error> => {
     .select([
       'Stream.name',
       'StreamValue.id',
-      'StreamValue.startedAt',
       'StreamValue.streamId',
       'StreamValue.value',
+      'StreamValue.startedAt',
     ])
     .where('startedAt', '>=', since)
     .orderBy('startedAt', 'asc')
     .execute()
+
+  const totalDuration: Record<string, Record<string, number>> = {}
 
   for (const streamValue of streamValueList) {
     const nextStreamValue = getNextValue(streamValueList, streamValue)
@@ -40,22 +42,23 @@ const logCmd = async (db: KyselyDb): Promise<void | Error> => {
     const { name, value: rawValue } = streamValue
     const value = stripComments(rawValue)
 
-    const { startedAt, stoppedAt, durationMs } = getTimings(
-      streamValue,
-      nextStreamValue,
-    )
+    const { durationMs } = getTimings(streamValue, nextStreamValue)
 
-    const minutes = Math.round(durationMs / 1000 / 60)
+    totalDuration[name] ??= {}
+    totalDuration[name]![value] ??= 0
+    totalDuration[name]![value] += durationMs
+  }
 
-    const startedAtHHmm = format(startedAt, 'HH:mm')
-    const stoppedAtHHmm = stoppedAt ? format(stoppedAt, 'HH:mm') : '--:--'
-
-    console.log(
-      `${startedAtHHmm}, ${stoppedAtHHmm}, ${minutes}m, ${name}, ${value}`,
-    )
+  for (const [name, values] of Object.entries(totalDuration)) {
+    console.log(`# ${name}`)
+    for (const [value, duration] of Object.entries(values)) {
+      const hours = Math.round(duration / 1000 / 60 / 60)
+      const minutes = Math.round(duration / 1000 / 60) % 60
+      console.log(`- ${value} (${hours}h${minutes}m)`)
+    }
   }
 
   return undefined
 }
 
-export { logCmd }
+export { statsCmd }

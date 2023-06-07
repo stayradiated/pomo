@@ -18,3 +18,4 @@ const createKyselyDb = (databaseUrl: string): KyselyDb => {
 
 export { createKyselyDb }
 export type { KyselyDb }
+export * from './db/types.js'

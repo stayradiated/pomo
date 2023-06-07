@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest --watch=false",
     "tidy": "xo --fix",
-    "build": "rm -rf ./dist && tsc && chmod +x ./dist/index.js"
+    "build": "rm -rf ./dist && tsc && chmod +x ./dist/index.js",
+    "prisma": "DATABASE_URL=file:$POMO_DATABASE_URL prisma"
   },
   "keywords": [],
   "author": {
@@ -16,6 +17,7 @@
   "type": "module",
   "devDependencies": {
     "@types/better-sqlite3": "7.6.4",
+    "@types/react": "18.2.8",
     "@types/unist": "2.0.6",
     "prisma": "4.15.0",
     "prisma-kysely": "1.4.2",
@@ -43,9 +45,12 @@
     "chrono-node": "2.6.3",
     "date-fns": "2.30.0",
     "external-editor": "3.1.0",
+    "ink": "4.2.0",
+    "ink-select-input": "5.0.0",
     "kysely": "0.25.0",
     "mdast-util-to-string": "3.2.0",
     "meow": "12.0.1",
+    "react": "18.2.0",
     "remark-parse": "10.0.2",
     "unified": "10.1.2",
     "unist-util-source": "4.0.2",

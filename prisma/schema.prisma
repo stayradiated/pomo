@@ -15,7 +15,7 @@ generator kysely {
 
 datasource db {
   provider = "sqlite"
-  url      = env("POMO_DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Stream {
@@ -23,7 +23,6 @@ model Stream {
   name      String        @unique
   createdAt DateTime      @default(now())
   updatedAt DateTime?     @updatedAt
-  active    Boolean       @default(true)
   values    StreamValue[]
 }
 
@@ -32,10 +31,9 @@ model StreamValue {
   stream    Stream    @relation(fields: [streamId], references: [id])
   streamId  Int
   value     String
+  startedAt DateTime
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
-  active    Boolean   @default(true)
 
-  startedAt DateTime
-  stoppedAt DateTime?
+  @@index([streamId, startedAt], name: "streamId_startedAt")
 }

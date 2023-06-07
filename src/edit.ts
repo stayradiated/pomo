@@ -5,6 +5,7 @@ import {
   RemoveFileError,
   LaunchEditorError,
 } from 'external-editor'
+import { format } from 'date-fns'
 import { parse } from './parse.js'
 import type { KyselyDb } from './db.js'
 
@@ -29,7 +30,7 @@ const edit = async (options: EditOptions) => {
   const { db, currentTime } = options
 
   const getCurrentText = async (): Promise<string> => {
-    let output = ``
+    let output = `${currentTime.toISOString()}\n\n`
 
     const streamList = await db
       .selectFrom('Stream')
@@ -41,15 +42,13 @@ const edit = async (options: EditOptions) => {
 
       const currentStreamValue = await db
         .selectFrom('StreamValue')
-        .select(['value', 'stoppedAt'])
+        .select(['value'])
         .where('streamId', '=', stream.id)
+        .where('startedAt', '<=', currentTime.toISOString())
         .orderBy('startedAt', 'desc')
         .executeTakeFirst()
 
-      output +=
-        !currentStreamValue || currentStreamValue.stoppedAt
-          ? '\n\n'
-          : currentStreamValue.value + '\n\n'
+      output += currentStreamValue ? currentStreamValue.value + '\n\n' : '\n\n'
     }
 
     return output
@@ -98,30 +97,33 @@ const edit = async (options: EditOptions) => {
 
     const currentStreamValue = await db
       .selectFrom('StreamValue')
-      .select(['id', 'value'])
+      .select(['id', 'value', 'startedAt'])
       .where('streamId', '=', stream.id)
+      .where('startedAt', '<=', currentTime.toISOString())
       .orderBy('startedAt', 'desc')
       .executeTakeFirst()
 
     if (currentStreamValue?.value !== value) {
       const updatedAt = new Date().toISOString()
 
-      if (currentStreamValue) {
+      console.log(`[${format(currentTime, 'HH:mm')}] ${streamName} → ${value}`)
+
+      if (currentStreamValue?.startedAt === currentTime.toISOString()) {
         await db
           .updateTable('StreamValue')
-          .set({ stoppedAt: currentTime.toISOString(), updatedAt })
+          .set({ value, updatedAt })
           .where('id', '=', currentStreamValue.id)
           .execute()
+      } else {
+        await db
+          .insertInto('StreamValue')
+          .values({
+            streamId: stream.id,
+            value,
+            startedAt: currentTime.toISOString(),
+          })
+          .execute()
       }
-
-      await db
-        .insertInto('StreamValue')
-        .values({
-          streamId: stream.id,
-          value,
-          startedAt: currentTime.toISOString(),
-        })
-        .execute()
     }
   }
 

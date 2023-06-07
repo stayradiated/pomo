@@ -3,10 +3,12 @@
 import * as process from 'node:process'
 import meow from 'meow'
 import z from 'zod'
+import * as chrono from 'chrono-node'
 import { createKyselyDb } from './db.js'
 import { edit } from './edit.js'
 import { logCmd } from './log.js'
-import * as chrono from 'chrono-node'
+import { fixCmd } from './fix.js'
+import { statsCmd } from './stats.js'
 
 const cli = meow(
   `
@@ -21,7 +23,7 @@ Options
     flags: {
       at: {
         type: 'string',
-      }
+      },
     },
   },
 )
@@ -36,19 +38,29 @@ const env = z
 
 const db = createKyselyDb(env.POMO_DATABASE_URL)
 
-const currentTime = cli.flags.at
-  ? chrono.parseDate(cli.flags.at)
-  : new Date()
+const currentTime = cli.flags.at ? chrono.parseDate(cli.flags.at) : new Date()
 
-const main = async () => {
+const main = async (): Promise<void | Error> => {
   switch (command) {
+    case 'fix': {
+      return fixCmd({ db })
+    }
+
     case 'edit': {
       return edit({ db, currentTime })
     }
+
     case 'log': {
       return logCmd(db)
+    }
+
+    case 'stats': {
+      return statsCmd(db)
     }
   }
 }
 
-await main()
+const error = await main()
+if (error instanceof Error) {
+  throw error
+}

@@ -10,17 +10,14 @@ export type Stream = {
   name: string
   createdAt: Generated<string>
   updatedAt: string | undefined
-  active: Generated<number>
 }
 export type StreamValue = {
   id: Generated<number>
   streamId: number
   value: string
+  startedAt: string
   createdAt: Generated<string>
   updatedAt: string | undefined
-  active: Generated<number>
-  startedAt: string
-  stoppedAt: string | undefined
 }
 export type DB = {
   Stream: Stream
