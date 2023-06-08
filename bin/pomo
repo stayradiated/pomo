@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+# get absolute path to script, resolve symlinks
+DIR=$(cd "$(dirname "$0:A")"; pwd -P)
+
+# exec bun run --silent -- $DIR/../dist/index.js $@
+exec node $DIR/../dist/index.js $@

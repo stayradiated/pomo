@@ -1,14 +1,12 @@
-#!/usr/bin/env node
-
 import * as process from 'node:process'
 import meow from 'meow'
 import z from 'zod'
 import * as chrono from 'chrono-node'
-import { createKyselyDb } from './db.js'
-import { edit } from './edit.js'
-import { logCmd } from './log.js'
-import { fixCmd } from './fix.js'
-import { statsCmd } from './stats.js'
+import { createKyselyDb } from '#src/core/db.js'
+import { edit } from '#src/command/edit.js'
+import { logCmd } from '#src/command/log.js'
+import { fixCmd } from '#src/command/fix.js'
+import { statsCmd } from '#src/command/stats.js'
 
 const cli = meow(
   `
@@ -62,7 +60,11 @@ const main = async (): Promise<void | Error> => {
     }
 
     case 'stats': {
-      return statsCmd(db)
+      return statsCmd({
+        db,
+        filter: { streamName: cli.flags.stream },
+        currentTime,
+      })
     }
   }
 }

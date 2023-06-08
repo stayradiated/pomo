@@ -1,10 +1,8 @@
 import createSqliteDb from 'better-sqlite3'
 import { Kysely, SqliteDialect } from 'kysely'
-import type { DB } from './db/types.js'
+import type { DB } from '#src/db.generated.js'
 
-type KyselyDb = Kysely<DB>
-
-const createKyselyDb = (databaseUrl: string): KyselyDb => {
+const createKyselyDb = (databaseUrl: string) => {
   const sqliteDb = createSqliteDb(databaseUrl)
 
   const db = new Kysely<DB>({
@@ -17,5 +15,3 @@ const createKyselyDb = (databaseUrl: string): KyselyDb => {
 }
 
 export { createKyselyDb }
-export type { KyselyDb }
-export * from './db/types.js'

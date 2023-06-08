@@ -6,9 +6,9 @@ import {
   LaunchEditorError,
 } from 'external-editor'
 import { format } from 'date-fns'
-import { parse } from './parse.js'
-import type { KyselyDb } from './db.js'
-import { stripComments } from './text.js'
+import { parse } from '#src/core/parse.js'
+import type { KyselyDb } from '#src/core/db.js'
+import { stripComments } from '#src/core/text.js'
 
 // # edit current streams
 //
@@ -41,15 +41,15 @@ const edit = async (options: EditOptions) => {
     for (const stream of streamList) {
       output += `# ${stream.name}\n\n`
 
-      const currentStreamValue = await db
-        .selectFrom('StreamValue')
+      const currentPoint = await db
+        .selectFrom('Point')
         .select(['value'])
         .where('streamId', '=', stream.id)
         .where('startedAt', '<=', currentTime.toISOString())
         .orderBy('startedAt', 'desc')
         .executeTakeFirst()
 
-      output += currentStreamValue ? currentStreamValue.value + '\n\n' : '\n\n'
+      output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
     }
 
     return output
@@ -96,15 +96,15 @@ const edit = async (options: EditOptions) => {
       .where('name', '=', streamName)
       .executeTakeFirstOrThrow()
 
-    const currentStreamValue = await db
-      .selectFrom('StreamValue')
+    const currentPoint = await db
+      .selectFrom('Point')
       .select(['id', 'value', 'startedAt'])
       .where('streamId', '=', stream.id)
       .where('startedAt', '<=', currentTime.toISOString())
       .orderBy('startedAt', 'desc')
       .executeTakeFirst()
 
-    if (currentStreamValue?.value !== value) {
+    if (currentPoint?.value !== value) {
       const updatedAt = new Date().toISOString()
 
       console.log(
@@ -113,15 +113,15 @@ const edit = async (options: EditOptions) => {
         )}`,
       )
 
-      if (currentStreamValue?.startedAt === currentTime.toISOString()) {
+      if (currentPoint?.startedAt === currentTime.toISOString()) {
         await db
-          .updateTable('StreamValue')
+          .updateTable('Point')
           .set({ value, updatedAt })
-          .where('id', '=', currentStreamValue.id)
+          .where('id', '=', currentPoint.id)
           .execute()
       } else {
         await db
-          .insertInto('StreamValue')
+          .insertInto('Point')
           .values({
             streamId: stream.id,
             value,

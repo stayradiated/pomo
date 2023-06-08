@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'ink'
 import { parseISO, format } from 'date-fns'
 import SelectInput from 'ink-select-input'
-import type { KyselyDb } from './db.js'
+import type { KyselyDb } from '#src/core/db.js'
 
 type FixProps = {
   list: Date[]
@@ -36,7 +36,7 @@ const fixCmd = async (props: FixCmdProps) => {
   const { db } = props
 
   const rows = await db
-    .selectFrom('StreamValue')
+    .selectFrom('Point')
     .select(['startedAt'])
     .distinct()
     .orderBy('startedAt', 'desc')

@@ -1,4 +1,7 @@
+import type { Selectable } from 'kysely'
 import { parseISO } from 'date-fns'
+import { errorListBoundarySync } from '@stayradiated/error-boundary'
+import type { Point } from '#src/core/db.js'
 
 type GetNextValueOptions = {
   id: number
@@ -47,4 +50,42 @@ const getTimings = <T extends GetTimingsOptions>(
   return { startedAt, stoppedAt, durationMs }
 }
 
-export { getNextValue, getTimings }
+type Line = {
+  id: number
+  streamId: number
+  value: string
+  startedAt: Date
+  stoppedAt: Date | undefined
+  durationMs: number
+}
+
+type PointOptions = Pick<
+  Selectable<Point>,
+  'id' | 'streamId' | 'value' | 'startedAt'
+>
+
+const mapPointListToLineList = (pointList: PointOptions[]): Line[] | Error => {
+  return errorListBoundarySync(() =>
+    pointList.map((point) => {
+      const nextPoint = getNextValue(pointList, point)
+      if (nextPoint instanceof Error) {
+        return nextPoint
+      }
+
+      const { startedAt, stoppedAt, durationMs } = getTimings(point, nextPoint)
+
+      const line: Line = {
+        id: point.id,
+        streamId: point.streamId,
+        value: point.value,
+        startedAt,
+        stoppedAt,
+        durationMs,
+      }
+
+      return line
+    }),
+  )
+}
+
+export { getNextValue, getTimings, mapPointListToLineList }

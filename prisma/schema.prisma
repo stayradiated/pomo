@@ -6,11 +6,9 @@ generator kysely {
 
   // Optionally provide a destination directory for the generated file
   // and a filename of your choice
-  output   = "../src/db"
-  fileName = "types.ts"
-
-  // Optionally generate runtime enums to a separate file
-  enumFileName = "enums.ts"
+  output   = "../src"
+  fileName = "db.generated.ts"
+  readOnlyIds = true
 }
 
 datasource db {
@@ -19,21 +17,41 @@ datasource db {
 }
 
 model Stream {
-  id        Int           @id @default(autoincrement())
-  name      String        @unique
-  createdAt DateTime      @default(now())
-  updatedAt DateTime?     @updatedAt
-  values    StreamValue[]
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  pointList Point[]
 }
 
-model StreamValue {
-  id        Int       @id @default(autoincrement())
-  stream    Stream    @relation(fields: [streamId], references: [id])
-  streamId  Int
-  value     String
-  startedAt DateTime
+model Point {
+  id         Int          @id @default(autoincrement())
+  stream     Stream       @relation(fields: [streamId], references: [id])
+  streamId   Int
+  value      String
+  startedAt  DateTime
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+  PointLabel PointLabel[]
+
+  @@index([streamId, startedAt], name: "streamId_startedAt")
+}
+
+model Label {
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+  PointLabel PointLabel[]
+}
+
+model PointLabel {
+  point     Point     @relation(fields: [pointId], references: [id])
+  pointId   Int
+  label     Label     @relation(fields: [labelId], references: [id])
+  labelId   Int
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
-  @@index([streamId, startedAt], name: "streamId_startedAt")
+  @@id([pointId, labelId])
 }
