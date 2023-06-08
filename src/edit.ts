@@ -8,6 +8,7 @@ import {
 import { format } from 'date-fns'
 import { parse } from './parse.js'
 import type { KyselyDb } from './db.js'
+import { stripComments } from './text.js'
 
 // # edit current streams
 //
@@ -106,7 +107,11 @@ const edit = async (options: EditOptions) => {
     if (currentStreamValue?.value !== value) {
       const updatedAt = new Date().toISOString()
 
-      console.log(`[${format(currentTime, 'HH:mm')}] ${streamName} → ${value}`)
+      console.log(
+        `[${format(currentTime, 'HH:mm')}] ${streamName} → ${stripComments(
+          value,
+        )}`,
+      )
 
       if (currentStreamValue?.startedAt === currentTime.toISOString()) {
         await db

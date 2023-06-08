@@ -41,6 +41,7 @@
     "useTabs": false
   },
   "dependencies": {
+    "@fast-csv/format": "4.3.5",
     "better-sqlite3": "8.4.0",
     "chrono-node": "2.6.3",
     "date-fns": "2.30.0",

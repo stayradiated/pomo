@@ -1,18 +1,7 @@
 import { startOfToday, formatISO } from 'date-fns'
 import type { KyselyDb } from './db.js'
 import { getNextValue, getTimings } from './stream.js'
-
-const stripComments = (input: string): string => {
-  return (
-    input
-      // Strip html comments from string javas
-      .replace(/<!--[\s\S]*?-->/g, '')
-      // Strip c-style comments from string
-      .replace(/\/\/.*/g, '')
-      .trim()
-      .split('\n')[0]!
-  )
-}
+import { stripComments } from './text.js'
 
 const statsCmd = async (db: KyselyDb): Promise<void | Error> => {
   const since = formatISO(startOfToday())

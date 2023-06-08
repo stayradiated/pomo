@@ -24,6 +24,9 @@ Options
       at: {
         type: 'string',
       },
+      stream: {
+        type: 'string',
+      },
     },
   },
 )
@@ -51,7 +54,11 @@ const main = async (): Promise<void | Error> => {
     }
 
     case 'log': {
-      return logCmd(db)
+      return logCmd({
+        db,
+        filter: { streamName: cli.flags.stream },
+        currentTime,
+      })
     }
 
     case 'stats': {
