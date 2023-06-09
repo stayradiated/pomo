@@ -3,10 +3,10 @@ import { format, startOfDay } from 'date-fns'
 import * as fastCSV from '@fast-csv/format'
 import type { KyselyDb } from '#src/core/db.js'
 import { mapPointListToLineList } from '#src/core/line.js'
+import { mapLineListToSliceList } from '#src/core/slice.js'
 import { stripComments } from '#src/core/text.js'
 import { retrievePointList } from '#src/core/retrieve-point-list.js'
 import { getStreamIdByName } from '#src/core/get-stream-id-by-name.js'
-import { getStreamNameById } from '#src/core/get-stream-name-by-id.js'
 
 type LogCmdOptions = {
   db: KyselyDb
@@ -34,30 +34,57 @@ const logCmd = async (options: LogCmdOptions): Promise<void | Error> => {
       streamId: filterStreamId,
     },
   })
-
-  const stream = fastCSV.format({ delimiter: ',' })
-  stream.pipe(process.stdout)
+  if (pointList instanceof Error) {
+    return pointList
+  }
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
     return lineList
   }
 
-  for (const line of lineList) {
-    const { value: rawValue, startedAt, stoppedAt, durationMs } = line
-    const value = stripComments(rawValue)
+  const sliceList = mapLineListToSliceList(lineList)
+  if (sliceList instanceof Error) {
+    return sliceList
+  }
 
-    const minutes = Math.round(durationMs / 1000 / 60)
+  const streamList = await Promise.all(
+    ['country', 'location', 'project', 'task'].map(async (name) => {
+      const id = await getStreamIdByName({ db, name })
+      if (id instanceof Error) {
+        throw id
+      }
 
+      return {
+        id,
+        name,
+      }
+    }),
+  )
+
+  const output = fastCSV.format({
+    delimiter: ',',
+    headers: ['time', ...streamList.map((stream) => stream.name)],
+  })
+  output.pipe(process.stdout)
+
+  for (const slice of sliceList) {
+    const { startedAt, lineList } = slice
     const startedAtHHmm = format(startedAt, 'HH:mm')
-    const stoppedAtHHmm = stoppedAt ? format(stoppedAt, 'HH:mm') : '--:--'
 
-    const name = await getStreamNameById({ db, id: line.streamId })
-    if (name instanceof Error) {
-      return name
+    const row: string[] = Array.from({ length: streamList.length + 1 })
+    row[0] = startedAtHHmm
+
+    for (const [index, stream] of streamList.entries()) {
+      const line = lineList.find((line) => line.streamId === stream.id)
+      if (!line) {
+        continue
+      }
+
+      row[index + 1] = stripComments(line.value)
     }
 
-    stream.write([startedAtHHmm, stoppedAtHHmm, `${minutes}m`, name, value])
+    output.write(row)
   }
 
   return undefined

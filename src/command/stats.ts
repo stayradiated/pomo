@@ -32,6 +32,9 @@ const statsCmd = async (options: StatsCmdOptions): Promise<void | Error> => {
       streamId: filterStreamId,
     },
   })
+  if (pointList instanceof Error) {
+    return pointList
+  }
 
   const totalDuration: Record<string, Record<string, number>> = {}
 

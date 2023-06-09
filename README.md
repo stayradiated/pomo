@@ -86,3 +86,55 @@ This could tie into the Nested Streams idea above.
 
 Perhaps I could start by using #hashtags in my notes
 
+
+## Points / Lines / Slices
+
+### point
+
+```
+[12:09] Something happened
+```
+
+- a moment in time in a single stream
+- only `startedAt` field
+
+### line
+
+```
+[12:09] Something happened
+        |
+        |
+        |
+[12:22] Something stopped happening
+```
+
+- a connection between two points in a single stream
+- has `startedAt` and `stoppedAt` fields
+
+### slice
+
+```
+| Time  | Location | Project | Task     |
+|-------|----------|---------|----------|
+| 12:09 | Outside  | Runn    | Planning |
+```
+
+- a group of points in multiple streams that occur at the same time
+
+
+### block
+
+- a contiguous list of slices
+- has startAt/endAt fields
+
+|-------|--------------|----------|---------|----------|
+| time  | country      | location | project | task     |
+|-------|--------------|----------|---------|----------|
+| ...   | Bordeaux, FR |          |         |          |
+| ...   |              | Home     |         |          |
+| ...   |              |          | Life    | Rest     |
+| 08:15 |              | City     |         | Walking  |
+| 08:30 |              | Café     | Runn    | Planning |
+| 08:55 |              |          |         | Meeting  |
+| 09:20 |              | City     | Life    | Walking  |
+|-------|--------------|----------|---------|----------|

@@ -1,5 +1,6 @@
 import { sql } from 'kysely'
 import type { Selectable } from 'kysely'
+import { errorBoundary } from '@stayradiated/error-boundary'
 import type { KyselyDb, Point } from '#src/core/db.js'
 
 type RetrieveOptions = {
@@ -17,39 +18,39 @@ type RetrievePointResult = Pick<
 
 const retrievePointList = async (
   options: RetrieveOptions,
-): Promise<RetrievePointResult[]> => {
+): Promise<RetrievePointResult[] | Error> => {
   const { db, since, filter } = options
 
   const sinceISO = since.toISOString()
 
-  const streamValueList = await db
-    .selectFrom('Point')
-    .leftJoin(
-      db
-        .selectFrom('Point')
-        .select(['streamId', sql`MAX(startedAt)`.as('maxStartedAt')])
-        .where('startedAt', '<', sinceISO)
-        .groupBy('streamId')
-        .as('sv2'),
-      (join) =>
-        join
-          .onRef('Point.streamId', '=', 'sv2.streamId')
-          .onRef('Point.startedAt', '=', 'sv2.maxStartedAt'),
-    )
-    .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value'])
-    .where(({ or, cmpr }) =>
-      or([
-        cmpr('Point.startedAt', '>', sinceISO),
-        cmpr('sv2.streamId', 'is not', null),
-      ]),
-    )
-    .$if(typeof filter.streamId === 'number', (qb) =>
-      qb.where('Point.streamId', '=', filter.streamId!),
-    )
-    .orderBy('Point.startedAt', 'asc')
-    .execute()
-
-  return streamValueList
+  return errorBoundary(async () =>
+    db
+      .selectFrom('Point')
+      .leftJoin(
+        db
+          .selectFrom('Point')
+          .select(['streamId', sql`MAX(startedAt)`.as('maxStartedAt')])
+          .where('startedAt', '<', sinceISO)
+          .groupBy('streamId')
+          .as('sv2'),
+        (join) =>
+          join
+            .onRef('Point.streamId', '=', 'sv2.streamId')
+            .onRef('Point.startedAt', '=', 'sv2.maxStartedAt'),
+      )
+      .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value'])
+      .where(({ or, cmpr }) =>
+        or([
+          cmpr('Point.startedAt', '>', sinceISO),
+          cmpr('sv2.streamId', 'is not', null),
+        ]),
+      )
+      .$if(typeof filter.streamId === 'number', (qb) =>
+        qb.where('Point.streamId', '=', filter.streamId!),
+      )
+      .orderBy('Point.startedAt', 'asc')
+      .execute(),
+  )
 }
 
 export { retrievePointList }

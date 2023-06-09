@@ -64,6 +64,7 @@ type PointOptions = Pick<
   'id' | 'streamId' | 'value' | 'startedAt'
 >
 
+// List must be pre-sorted by startedAt, but list may contain different streams
 const mapPointListToLineList = (pointList: PointOptions[]): Line[] | Error => {
   return errorListBoundarySync(() =>
     pointList.map((point) => {
@@ -89,3 +90,4 @@ const mapPointListToLineList = (pointList: PointOptions[]): Line[] | Error => {
 }
 
 export { getNextValue, getTimings, mapPointListToLineList }
+export type { Line }
