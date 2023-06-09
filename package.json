@@ -8,6 +8,7 @@
     "tidy": "xo --fix",
     "build": "rm -r dist && tsc",
     "build:bun": "./scripts/build.sh",
+    "build:watch": "live-tsc --watch --src ./src/ --dest ./dist",
     "check": "tsc --noEmit",
     "prisma": "DATABASE_URL=file:$POMO_DATABASE_URL prisma"
   },

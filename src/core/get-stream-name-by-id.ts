@@ -4,7 +4,7 @@ import type { KyselyDb } from '#src/core/db.js'
 
 type GetStreamNameByIdOptions = {
   db: KyselyDb
-  id: number
+  id: string
 }
 
 const getStreamNameById = mem(

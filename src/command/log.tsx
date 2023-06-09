@@ -1,12 +1,11 @@
-import { Text, Box } from 'ink'
+import { Text, Box, render } from 'ink'
 import React from 'react'
 import type { Selectable } from 'kysely'
-import type { KyselyDb, Stream, Point } from '#src/core/db.js'
 import { format, startOfDay } from 'date-fns'
+import type { KyselyDb, Stream, Point } from '#src/core/db.js'
 import { getStreamIdByName } from '#src/core/get-stream-id-by-name.js'
 import { mapLineListToSliceList } from '#src/core/slice.js'
-import { mapPointListToLineList } from '#src/core/line.js'
-import { render } from 'ink'
+import { mapPointListToLineList } from '#src/core/map-point-list-to-line-list.js'
 import { retrievePointList } from '#src/core/retrieve-point-list.js'
 import { stripComments } from '#src/core/text.js'
 import type { Slice } from '#src/core/slice.js'
@@ -14,7 +13,7 @@ import type { Slice } from '#src/core/slice.js'
 type PartialPoint = Pick<Selectable<Point>, 'id' | 'streamId' | 'value'>
 
 type SliceListProps = {
-  streamList: Pick<Selectable<Stream>, 'id' | 'name'>[],
+  streamList: Array<Pick<Selectable<Stream>, 'id' | 'name'>>
   sliceList: Slice[]
   pointList: PartialPoint[]
 }
@@ -22,16 +21,21 @@ type SliceListProps = {
 const SliceList = (props: SliceListProps) => {
   const { streamList, sliceList, pointList } = props
 
-  const pointsByStreamId = pointList.reduce<Map<number, PartialPoint[]>>((acc, point) => {
-    const { streamId } = point
-    const list: PartialPoint[] = acc.get(streamId) ?? []
-    list.push(point)
-    acc.set(streamId, list)
-    return acc
-  }, new Map())
+  const pointsByStreamId = pointList.reduce<Map<string, PartialPoint[]>>(
+    (acc, point) => {
+      const { streamId } = point
+      const list: PartialPoint[] = acc.get(streamId) ?? []
+      list.push(point)
+      acc.set(streamId, list)
+      return acc
+    },
+    new Map(),
+  )
 
-  // calculate max length of value for each stream
-  const maxLengthByStreamId = [...pointsByStreamId.entries()].reduce<Map<number, number>>((acc, [streamId, list]) => {
+  // Calculate max length of value for each stream
+  const maxLengthByStreamId = [...pointsByStreamId.entries()].reduce<
+    Map<string, number>
+  >((acc, [streamId, list]) => {
     const stream = streamList.find((stream) => stream.id === streamId)
     if (!stream) {
       throw new Error(`stream not found for id ${streamId}`)
@@ -48,24 +52,32 @@ const SliceList = (props: SliceListProps) => {
   return (
     <>
       <Box columnGap={1}>
+        <Box flexBasis={7} flexShrink={0}>
+          <Text color="magentaBright">id</Text>
+        </Box>
         <Box flexBasis={5} flexShrink={0}>
-          <Text color='magenta'>time</Text>
+          <Text color="magentaBright">time</Text>
         </Box>
         {streamList.map((stream, index) => {
           const basis = maxLengthByStreamId.get(stream.id) ?? 0
           return (
             <Box key={index} flexBasis={basis}>
-              <Text color='magenta'>{stream.name}</Text>
+              <Text color="magentaBright">{stream.name}</Text>
             </Box>
           )
-      })}
+        })}
       </Box>
       {sliceList.map((slice, index) => {
         const { lineList, startedAt } = slice
+
         return (
           <Box key={index} columnGap={1}>
+            <Box flexBasis={7} flexShrink={0}>
+              <Text color="white">{lineList[0]?.id.slice(0, 7)}</Text>
+            </Box>
+
             <Box flexBasis={5} flexShrink={0}>
-              <Text color='green'>{format(startedAt, 'HH:mm')}</Text>
+              <Text color="green">{format(startedAt, 'HH:mm')}</Text>
             </Box>
 
             {streamList.map((stream, index) => {
@@ -92,21 +104,24 @@ const SliceList = (props: SliceListProps) => {
 const MultiDaySliceList = (props: SliceListProps) => {
   const { sliceList, streamList, pointList } = props
 
-  const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>((acc, slice) => {
-    // format as Friday 02 June 2023 
-    const day = format(slice.startedAt, 'EEEE dd MMMM yyyy')
-    const list: Slice[] = acc.get(day) ?? []
-    list.push(slice)
-    acc.set(day, list)
-    return acc
-  }, new Map())
+  const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
+    (acc, slice) => {
+      // Format as Friday 02 June 2023
+      const day = format(slice.startedAt, 'EEEE dd MMMM yyyy')
+      const list: Slice[] = acc.get(day) ?? []
+      list.push(slice)
+      acc.set(day, list)
+      return acc
+    },
+    new Map(),
+  )
 
   return (
     <>
       {Array.from(sliceListByDay.entries()).map(([day, sliceList], index) => {
         return (
-          <Box key={index} flexDirection='column' marginBottom={1}>
-            <Text color='#888'>{day}</Text>
+          <Box key={index} flexDirection="column" marginBottom={1}>
+            <Text color="#888">{day}</Text>
             <SliceList
               streamList={streamList}
               sliceList={sliceList}
@@ -119,18 +134,21 @@ const MultiDaySliceList = (props: SliceListProps) => {
   )
 }
 
-type FixCmdOptions = {
+type LogCmdOptions = {
   db: KyselyDb
   currentTime: Date
+  filter: {
+    streamId: string | undefined
+  }
 }
 
-const fixCmd = async (options: FixCmdOptions) => {
-  const { db, currentTime } = options
+const logCmd = async (options: LogCmdOptions) => {
+  const { db, currentTime, filter } = options
 
   const pointList = await retrievePointList({
     db,
     since: startOfDay(currentTime),
-    filter: {},
+    filter,
   })
   if (pointList instanceof Error) {
     return pointList
@@ -160,15 +178,17 @@ const fixCmd = async (options: FixCmdOptions) => {
     }),
   )
 
-  render(<Box flexDirection='column' margin={1}>
-    <MultiDaySliceList 
-      streamList={streamList}
-      pointList={pointList}
-      sliceList={sliceList}
-    />
-  </Box>)
+  render(
+    <Box flexDirection="column" margin={1}>
+      <MultiDaySliceList
+        streamList={streamList}
+        pointList={pointList}
+        sliceList={sliceList}
+      />
+    </Box>,
+  )
 
   return undefined
 }
 
-export { fixCmd }
+export { logCmd }

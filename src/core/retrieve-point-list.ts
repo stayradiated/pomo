@@ -7,7 +7,8 @@ type RetrieveOptions = {
   db: KyselyDb
   since: Date
   filter: {
-    streamId?: number
+    streamId?: string
+    value?: string
   }
 }
 
@@ -45,8 +46,11 @@ const retrievePointList = async (
           cmpr('sv2.streamId', 'is not', null),
         ]),
       )
-      .$if(typeof filter.streamId === 'number', (qb) =>
+      .$if(typeof filter.streamId === 'string', (qb) =>
         qb.where('Point.streamId', '=', filter.streamId!),
+      )
+      .$if(typeof filter.value === 'string', (qb) =>
+        qb.where('Point.value', 'like', filter.value! + '%'),
       )
       .orderBy('Point.startedAt', 'asc')
       .execute(),

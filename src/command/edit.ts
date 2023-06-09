@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import {
   ExternalEditor,
   CreateFileError,
@@ -84,7 +85,7 @@ const edit = async (options: EditOptions) => {
   for (const streamName of streamNameList) {
     await db
       .insertInto('Stream')
-      .values({ name: streamName })
+      .values({ id: randomUUID(), name: streamName })
       .onConflict((oc) => oc.column('name').doNothing())
       .execute()
   }
@@ -123,6 +124,7 @@ const edit = async (options: EditOptions) => {
         await db
           .insertInto('Point')
           .values({
+            id: randomUUID(),
             streamId: stream.id,
             value,
             startedAt: currentTime.toISOString(),

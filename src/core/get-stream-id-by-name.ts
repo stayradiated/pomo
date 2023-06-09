@@ -8,7 +8,7 @@ type GetStreamIdByNameOptions = {
 }
 
 const getStreamIdByName = mem(
-  async (options: GetStreamIdByNameOptions): Promise<number | Error> => {
+  async (options: GetStreamIdByNameOptions): Promise<string | Error> => {
     const { db, name } = options
     return errorBoundary(async () => {
       const row = await db

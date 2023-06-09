@@ -5,8 +5,11 @@ import * as chrono from 'chrono-node'
 import { createKyselyDb } from '#src/core/db.js'
 import { edit } from '#src/command/edit.js'
 import { logCmd } from '#src/command/log.js'
-import { fixCmd } from '#src/command/fix.js'
-import { statsCmd } from '#src/command/stats.js'
+import { summaryCmd } from '#src/command/summary.js'
+import { statusCmd } from '#src/command/status.js'
+import { getPointStartedAtByRef } from '#src/core/get-point-started-at-by-ref.js'
+import { migrateCmd } from '#src/command/migrate.js'
+import { getStreamIdByName } from '#src/core/get-stream-id-by-name.js'
 
 const cli = meow(
   `
@@ -19,10 +22,16 @@ Options
   {
     importMeta: import.meta,
     flags: {
+      ref: {
+        type: 'string',
+      },
       at: {
         type: 'string',
       },
       stream: {
+        type: 'string',
+      },
+      value: {
         type: 'string',
       },
     },
@@ -39,14 +48,28 @@ const env = z
 
 const db = createKyselyDb(env.POMO_DATABASE_URL)
 
-const currentTime = cli.flags.at ? chrono.parseDate(cli.flags.at) : new Date()
+if (cli.flags.at && cli.flags.ref) {
+  throw new Error('--at and --ref are mutually exclusive!')
+}
+
+const currentTime = cli.flags.ref
+  ? await getPointStartedAtByRef({ db, ref: cli.flags.ref })
+  : cli.flags.at
+  ? chrono.parseDate(cli.flags.at)
+  : new Date()
+if (currentTime instanceof Error) {
+  throw currentTime
+}
+
+const filterStreamId = cli.flags.stream
+  ? await getStreamIdByName({ db, name: cli.flags.stream })
+  : undefined
+if (filterStreamId instanceof Error) {
+  throw filterStreamId
+}
 
 const main = async (): Promise<void | Error> => {
   switch (command) {
-    case 'fix': {
-      return fixCmd({ db, currentTime })
-    }
-
     case 'edit': {
       return edit({ db, currentTime })
     }
@@ -54,16 +77,31 @@ const main = async (): Promise<void | Error> => {
     case 'log': {
       return logCmd({
         db,
-        filter: { streamName: cli.flags.stream },
+        filter: { streamId: filterStreamId },
         currentTime,
       })
     }
 
-    case 'stats': {
-      return statsCmd({
+    case 'summary': {
+      return summaryCmd({
         db,
-        filter: { streamName: cli.flags.stream },
+        filter: { streamId: filterStreamId, value: cli.flags.value },
         currentTime,
+      })
+    }
+
+    case 'status': {
+      statusCmd({
+        db,
+        filter: { streamId: filterStreamId },
+        currentTime,
+      })
+      return
+    }
+
+    case 'migrate': {
+      return migrateCmd({
+        db,
       })
     }
   }

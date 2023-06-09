@@ -6,8 +6,8 @@ generator kysely {
 
   // Optionally provide a destination directory for the generated file
   // and a filename of your choice
-  output   = "../src"
-  fileName = "db.generated.ts"
+  output      = "../src"
+  fileName    = "db.generated.ts"
   readOnlyIds = true
 }
 
@@ -17,7 +17,7 @@ datasource db {
 }
 
 model Stream {
-  id        Int       @id @default(autoincrement())
+  id        String    @id
   name      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
@@ -25,9 +25,9 @@ model Stream {
 }
 
 model Point {
-  id         Int          @id @default(autoincrement())
+  id         String       @id
   stream     Stream       @relation(fields: [streamId], references: [id])
-  streamId   Int
+  streamId   String
   value      String
   startedAt  DateTime
   createdAt  DateTime     @default(now())
@@ -38,7 +38,7 @@ model Point {
 }
 
 model Label {
-  id         Int          @id @default(autoincrement())
+  id         String       @id
   name       String       @unique
   createdAt  DateTime     @default(now())
   updatedAt  DateTime?    @updatedAt
@@ -47,9 +47,9 @@ model Label {
 
 model PointLabel {
   point     Point     @relation(fields: [pointId], references: [id])
-  pointId   Int
+  pointId   String
   label     Label     @relation(fields: [labelId], references: [id])
-  labelId   Int
+  labelId   String
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 

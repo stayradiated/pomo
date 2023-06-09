@@ -1,4 +1,4 @@
-import type { ColumnType, GeneratedAlways } from 'kysely'
+import type { ColumnType } from 'kysely'
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
@@ -6,27 +6,27 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export type Label = {
-  id: GeneratedAlways<number>
+  id: string
   name: string
   createdAt: Generated<string>
   updatedAt: string | undefined
 }
 export type Point = {
-  id: GeneratedAlways<number>
-  streamId: number
+  id: string
+  streamId: string
   value: string
   startedAt: string
   createdAt: Generated<string>
   updatedAt: string | undefined
 }
 export type PointLabel = {
-  pointId: number
-  labelId: number
+  pointId: string
+  labelId: string
   createdAt: Generated<string>
   updatedAt: string | undefined
 }
 export type Stream = {
-  id: GeneratedAlways<number>
+  id: string
   name: string
   createdAt: Generated<string>
   updatedAt: string | undefined
