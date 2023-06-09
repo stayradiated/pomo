@@ -44,7 +44,7 @@ const currentTime = cli.flags.at ? chrono.parseDate(cli.flags.at) : new Date()
 const main = async (): Promise<void | Error> => {
   switch (command) {
     case 'fix': {
-      return fixCmd({ db })
+      return fixCmd({ db, currentTime })
     }
 
     case 'edit': {

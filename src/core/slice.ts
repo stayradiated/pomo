@@ -27,3 +27,4 @@ const mapLineListToSliceList = (lineList: Line[]): Slice[] | Error => {
 }
 
 export { mapLineListToSliceList }
+export type { Slice }

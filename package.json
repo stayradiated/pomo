@@ -49,6 +49,7 @@
     "@types/react": "18.2.9",
     "@types/unist": "2.0.6",
     "bun-types": "0.6.7",
+    "live-tsc": "1.6.2",
     "prisma": "4.15.0",
     "prisma-kysely": "1.4.2",
     "react-devtools-core": "4.27.8",
