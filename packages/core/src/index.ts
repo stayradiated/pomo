@@ -1,0 +1,6 @@
+export * from './get-next-point-in-stream.js'
+export * from './types.js'
+export * from './map-point-list-to-line-list.js'
+export * from './map-points-to-line.js'
+export * from './slice.js'
+export * from './text.js'
