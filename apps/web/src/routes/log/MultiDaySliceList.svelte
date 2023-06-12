@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { Stream, Point, Slice } from '@stayradiated/pomo-core';
+  import type { Stream, Slice } from '@stayradiated/pomo-core';
   import { format } from 'date-fns'
 
   import SliceList from './SliceList.svelte'
 
   export let streamList: Stream[]
-  export let pointList: Point[]
   export let sliceList: Slice[]
 
   const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
@@ -27,7 +26,6 @@
     <SliceList
       streamList={streamList}
       sliceList={sliceList}
-      pointList={pointList}
     />
   </div>
 {/each}
