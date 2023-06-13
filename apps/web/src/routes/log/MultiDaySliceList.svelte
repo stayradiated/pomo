@@ -22,7 +22,7 @@
 
 {#each Array.from(sliceListByDay.entries()) as [day, sliceList]}
   <div class="container">
-    <p color="#888">{day}</p>
+    <h2>{day}</h2>
     <SliceList
       streamList={streamList}
       sliceList={sliceList}

@@ -31,9 +31,15 @@ const summaryCmd = async (
     return lineList
   }
 
+  const filterValue = filter.value
+  const filteredLineList =
+    typeof filterValue === 'string'
+      ? lineList.filter((line) => line.value.startsWith(filterValue))
+      : lineList
+
   const totalDuration = new Map<string, Map<string, number>>()
 
-  for (const line of lineList) {
+  for (const line of filteredLineList) {
     const { streamId, value: rawValue, durationMs } = line
     const value = stripComments(rawValue)
 

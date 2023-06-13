@@ -26,6 +26,8 @@
     "@stayradiated/pomo-core": "workspace:*",
     "@stayradiated/pomo-db": "workspace:*",
     "@stayradiated/pomo-markdown": "workspace:*",
+    "@types/better-sqlite3": "7.6.4",
+    "better-sqlite3": "8.4.0",
     "chrono-node": "2.6.3",
     "date-fns": "2.30.0",
     "external-editor": "3.1.0",

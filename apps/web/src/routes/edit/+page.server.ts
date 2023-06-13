@@ -1,34 +1,43 @@
-import { streamList, pointList } from "$lib/data";
-import type { Point } from "@stayradiated/pomo-core";
+import type { Point, Stream } from "@stayradiated/pomo-core";
 import { parseISO } from 'date-fns'
 import type { PageServerLoad, Actions } from './$types';
 import { randomUUID } from 'node:crypto'
+import { retrieveStreamList, retrieveCurrentPoint, insertPoint, updatePointValue } from "@stayradiated/pomo-db"
+import type { KyselyDb } from "@stayradiated/pomo-db"
+import { db } from '$lib/data.js'
 
-const getCurrentPoints = (currentTime: Date): Map<string, Point> => {
-  const currentPoints = pointList.reduce<Map<string, Point>>((out, point) => {
-    // TODO: parsing a date every loop is so inefficient it hurts
-    const startedAt = parseISO(point.startedAt)
-    if (startedAt.getTime() > currentTime.getTime()) {
-      return out
+type GetCurrentPointsOptions = {
+  db: KyselyDb,
+  streamList: Stream[],
+  currentTime: Date,
+}
+
+const getCurrentPoints = async (options: GetCurrentPointsOptions): Promise<Map<string, Point>> => {
+  const { db, streamList, currentTime } = options
+
+  const output = new Map<string, Point>()
+
+  for (const stream of streamList) {
+    const currentPoint = await retrieveCurrentPoint({
+      db,
+      streamId: stream.id,
+      currentTime,
+    })
+    if (currentPoint instanceof Error) {
+      throw currentPoint
     }
-
-    const previous = out.get(point.streamId)
-    if (previous) {
-      const previousStartedAt = parseISO(previous.startedAt)
-      if (previousStartedAt >= startedAt) {
-        return out
-      }
+    if (currentPoint) {
+      output.set(stream.id, currentPoint)
     }
+  }
 
-    out.set(point.streamId, point)
-    return out
-  }, new Map())
-  return currentPoints
+  return output
 }
 
 const load = (async () => {
   const currentTime = new Date()
-  const currentPoints = getCurrentPoints(currentTime)
+  const streamList = await retrieveStreamList({ db })
+  const currentPoints = await getCurrentPoints({ db, streamList, currentTime })
 
   return {
     currentTime,
@@ -46,7 +55,9 @@ const actions = {
       throw new Error('Missing currentTime')
     }
     const currentTime = parseISO(currentTimeRaw)
-    const currentPoints = getCurrentPoints(currentTime)
+
+    const streamList = await retrieveStreamList({ db })
+    const currentPoints = await getCurrentPoints({ db, streamList, currentTime })
 
     for (const [key, valueRaw] of formData.entries()) {
       if (key.startsWith('stream-')) {
@@ -59,13 +70,17 @@ const actions = {
         const value = valueRaw.replace(/\r/g, '')
         if (currentPoint?.value !== value) {
           if (currentPoint?.startedAt === currentTime.toISOString()) {
-            currentPoint.value = value
+            await updatePointValue({
+              db,
+              pointId: currentPoint.id,
+              value,
+            })
           } else {
-            pointList.push({
-              id: randomUUID(),
+            await insertPoint({
+              db,
               streamId,
               value,
-              startedAt: currentTime.toISOString()
+              startedAt: currentTime,
             })
           }
         }

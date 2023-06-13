@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto'
 import {
   ExternalEditor,
   CreateFileError,
@@ -10,6 +9,14 @@ import { format } from 'date-fns'
 import { parse } from '@stayradiated/pomo-markdown'
 import { stripComments } from '@stayradiated/pomo-core'
 import type { KyselyDb } from '@stayradiated/pomo-db'
+import {
+  retrieveStreamList,
+  retrieveCurrentPoint,
+  getStreamIdByName,
+  updatePointValue,
+  insertPoint,
+  upsertStream,
+} from '@stayradiated/pomo-db'
 
 // # edit current streams
 //
@@ -34,21 +41,16 @@ const edit = async (options: EditOptions) => {
   const getCurrentText = async (): Promise<string> => {
     let output = `${currentTime.toISOString()}\n\n`
 
-    const streamList = await db
-      .selectFrom('Stream')
-      .select(['id', 'name'])
-      .execute()
+    const streamList = await retrieveStreamList({ db })
 
     for (const stream of streamList) {
       output += `# ${stream.name}\n\n`
 
-      const currentPoint = await db
-        .selectFrom('Point')
-        .select(['value'])
-        .where('streamId', '=', stream.id)
-        .where('startedAt', '<=', currentTime.toISOString())
-        .orderBy('startedAt', 'desc')
-        .executeTakeFirst()
+      const currentPoint = await retrieveCurrentPoint({
+        db,
+        streamId: stream.id,
+        currentTime,
+      })
 
       output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
     }
@@ -83,31 +85,22 @@ const edit = async (options: EditOptions) => {
 
   const streamNameList = Object.keys(userInput)
   for (const streamName of streamNameList) {
-    await db
-      .insertInto('Stream')
-      .values({ id: randomUUID(), name: streamName })
-      .onConflict((oc) => oc.column('name').doNothing())
-      .execute()
+    await upsertStream({ db, name: streamName })
   }
 
   for (const [streamName, value] of Object.entries(userInput)) {
-    const stream = await db
-      .selectFrom('Stream')
-      .select('id')
-      .where('name', '=', streamName)
-      .executeTakeFirstOrThrow()
+    const streamId = await getStreamIdByName({ db, name: streamName })
+    if (streamId instanceof Error) {
+      throw streamId
+    }
 
-    const currentPoint = await db
-      .selectFrom('Point')
-      .select(['id', 'value', 'startedAt'])
-      .where('streamId', '=', stream.id)
-      .where('startedAt', '<=', currentTime.toISOString())
-      .orderBy('startedAt', 'desc')
-      .executeTakeFirst()
+    const currentPoint = await retrieveCurrentPoint({
+      db,
+      streamId,
+      currentTime,
+    })
 
     if (currentPoint?.value !== value) {
-      const updatedAt = new Date().toISOString()
-
       console.log(
         `[${format(currentTime, 'HH:mm')}] ${streamName} → ${stripComments(
           value,
@@ -115,21 +108,18 @@ const edit = async (options: EditOptions) => {
       )
 
       if (currentPoint?.startedAt === currentTime.toISOString()) {
-        await db
-          .updateTable('Point')
-          .set({ value, updatedAt })
-          .where('id', '=', currentPoint.id)
-          .execute()
+        await updatePointValue({
+          db,
+          pointId: currentPoint.id,
+          value,
+        })
       } else {
-        await db
-          .insertInto('Point')
-          .values({
-            id: randomUUID(),
-            streamId: stream.id,
-            value,
-            startedAt: currentTime.toISOString(),
-          })
-          .execute()
+        await insertPoint({
+          db,
+          streamId,
+          value,
+          startedAt: currentTime,
+        })
       }
     }
   }

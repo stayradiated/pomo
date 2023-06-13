@@ -1,5 +1,4 @@
 import { errorBoundary } from '@stayradiated/error-boundary'
-import mem from 'mem'
 import type { KyselyDb } from '#src/db.js'
 
 type GetStreamNameByIdOptions = {
@@ -7,8 +6,7 @@ type GetStreamNameByIdOptions = {
   id: string
 }
 
-const getStreamNameById = mem(
-  async (options: GetStreamNameByIdOptions): Promise<string | Error> => {
+const getStreamNameById = async (options: GetStreamNameByIdOptions): Promise<string | Error> => {
     const { db, id } = options
     return errorBoundary(async () => {
       const row = await db
@@ -18,10 +16,6 @@ const getStreamNameById = mem(
         .executeTakeFirstOrThrow()
       return row.name
     })
-  },
-  {
-    cacheKey: ([options]) => options.id,
-  },
-)
+  }
 
 export { getStreamNameById }

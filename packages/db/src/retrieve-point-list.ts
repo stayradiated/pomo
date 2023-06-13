@@ -8,7 +8,6 @@ type RetrieveOptions = {
   since: Date
   filter: {
     streamId?: string
-    value?: string
   }
 }
 
@@ -48,9 +47,6 @@ const retrievePointList = async (
       )
       .$if(typeof filter.streamId === 'string', (qb) =>
         qb.where('Point.streamId', '=', filter.streamId!),
-      )
-      .$if(typeof filter.value === 'string', (qb) =>
-        qb.where('Point.value', 'like', filter.value! + '%'),
       )
       .orderBy('Point.startedAt', 'asc')
       .execute(),

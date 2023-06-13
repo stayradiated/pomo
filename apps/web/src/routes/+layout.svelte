@@ -1,3 +1,7 @@
+<svelte:head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</svelte:head>
+
 <header>
   <h1>Pomo</h1>
 
@@ -16,6 +20,10 @@
 <slot />
 
 <style>
+  :global(body) {
+    max-width: none;
+  }
+
   header {
     display: flex;
     justify-content: space-between;

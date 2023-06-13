@@ -7,6 +7,7 @@ import {
   getPointStartedAtByRef,
   getStreamIdByName,
 } from '@stayradiated/pomo-db'
+import createSqliteDb from 'better-sqlite3'
 import { edit } from '#src/command/edit.js'
 import { logCmd } from '#src/command/log.js'
 import { summaryCmd } from '#src/command/summary.js'
@@ -49,7 +50,7 @@ const env = z
   })
   .parse(process.env)
 
-const db = createKyselyDb(env.POMO_DATABASE_URL)
+const db = createKyselyDb(createSqliteDb(env.POMO_DATABASE_URL))
 
 if (cli.flags.at && cli.flags.ref) {
   throw new Error('--at and --ref are mutually exclusive!')

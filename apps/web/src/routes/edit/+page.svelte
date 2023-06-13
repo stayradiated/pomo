@@ -10,18 +10,20 @@
   })
 </script>
 
-<form method="POST">
-  <input name="currentTime" type="hidden" value={currentTime.toISOString()} />
-  <p class="currentTime">{format(currentTime, 'PPpp')}</p>
-  {#each rowList as row, index}
-    <div class="stream-control">
-      <label for="edit-stream-{index}">{row.stream.name}</label>
-      <textarea name="stream-{row.stream.id}" id="edit-stream-{index}" value={row.pointValue} />
-    </div>
-  {/each}
+<main>
+  <form method="POST">
+    <input name="currentTime" type="hidden" value={currentTime.toISOString()} />
+    <p class="currentTime">{format(currentTime, 'PPpp')}</p>
+    {#each rowList as row, index}
+      <div class="stream-control">
+        <label for="edit-stream-{index}">{row.stream.name}</label>
+        <textarea name="stream-{row.stream.id}" id="edit-stream-{index}" value={row.pointValue} />
+      </div>
+    {/each}
 
-  <button>Save</button>
-</form>
+    <button>Save</button>
+  </form>
+</main>
 
 <style>
   .currentTime {

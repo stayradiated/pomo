@@ -15,12 +15,13 @@
   },
   "license": "ISC",
   "type": "module",
+  "peerDependencies": {
+    "better-sqlite3": "^8.0.0"
+  },
   "dependencies": {
     "@stayradiated/error-boundary": "4.1.0",
-    "better-sqlite3": "8.4.0",
     "date-fns": "2.30.0",
-    "kysely": "0.25.0",
-    "mem": "9.0.2"
+    "kysely": "0.25.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.4",

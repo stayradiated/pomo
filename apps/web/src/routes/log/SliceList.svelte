@@ -32,7 +32,4 @@
 </table>
 
 <style>
-  td:nth-of-type(2n) {
-    background: #eee;
-  }
 </style>
