@@ -24,7 +24,11 @@
 
         {#each streamList as stream}
           {@const line = slice.lineList.find((line) => line.streamId === stream.id)}
-          <td>{line ? stripComments(line.value) : ''}</td>
+          <td>{line ? stripComments(line.value) : ''}<br />
+          {#if line}
+            <code>{Math.round(line.durationMs / 1000 / 60)}min</code>
+          {/if}
+          </td>
         {/each}
       </tr>
     {/each}
@@ -32,4 +36,7 @@
 </table>
 
 <style>
+  td {
+    white-space: pre-wrap;
+  }
 </style>
