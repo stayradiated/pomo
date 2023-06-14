@@ -1,10 +1,11 @@
 import { z } from 'zod'
 import * as process from 'node:process'
+import { once } from './once.js'
 
-const env = z
+const getEnv = once(() => z
   .object({
-    POMO_DATABASE_URL: z.string(),
+    POMO_DATABASE_URL: z.string()
   })
-  .parse(process.env)
+  .parse(process.env))
 
-export { env }
+export { getEnv }

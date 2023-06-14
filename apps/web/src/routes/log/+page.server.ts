@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit'
-import { db } from '$lib/data.js'
+import { getDb } from '$lib/db.js'
 import { mapPointListToLineList, mapLineListToSliceList } from '@stayradiated/pomo-core'
 import { retrieveStreamList, retrievePointList } from "@stayradiated/pomo-db"
 import type { PageServerLoad } from './$types';
@@ -39,6 +39,8 @@ const load = (async ({ request }) => {
   const url = new URL(request.url)
   const filterStreamId = url.searchParams.get('stream') ?? undefined
   const filterValue = url.searchParams.get('value') ?? undefined
+
+  const db = getDb()
 
   const streamList = await retrieveStreamList({ db })
 

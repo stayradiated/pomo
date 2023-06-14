@@ -3,7 +3,7 @@ import { parseISO } from 'date-fns'
 import type { PageServerLoad, Actions } from './$types';
 import { retrieveStreamList, retrieveCurrentPoint, insertPoint, updatePointValue } from "@stayradiated/pomo-db"
 import type { KyselyDb } from "@stayradiated/pomo-db"
-import { db } from '$lib/data.js'
+import { getDb } from '$lib/db.js'
 
 type GetCurrentPointsOptions = {
   db: KyselyDb,
@@ -35,6 +35,7 @@ const getCurrentPoints = async (options: GetCurrentPointsOptions): Promise<Map<s
 
 const load = (async () => {
   const currentTime = new Date()
+  const db = getDb()
   const streamList = await retrieveStreamList({ db })
   const currentPoints = await getCurrentPoints({ db, streamList, currentTime })
 
@@ -55,6 +56,7 @@ const actions = {
     }
     const currentTime = parseISO(currentTimeRaw)
 
+    const db = getDb()
     const streamList = await retrieveStreamList({ db })
     const currentPoints = await getCurrentPoints({ db, streamList, currentTime })
 
