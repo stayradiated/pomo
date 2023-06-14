@@ -1,5 +1,5 @@
 import { vitePreprocess } from '@sveltejs/kit/vite';
-import adapterNetlify from '@sveltejs/adapter-netlify';
+import adapterNode from '@sveltejs/adapter-node';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,7 +8,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapterNetlify()
+		adapter: adapterNode()
 	}
 };
 

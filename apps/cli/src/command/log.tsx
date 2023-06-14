@@ -5,6 +5,7 @@ import {
   mapPointListToLineList,
   mapLineListToSliceList,
   stripComments,
+  firstLine,
 } from '@stayradiated/pomo-core'
 import { retrievePointList } from '@stayradiated/pomo-db'
 import type { Slice, Stream, Point } from '@stayradiated/pomo-core'
@@ -41,7 +42,7 @@ const SliceList = (props: SliceListProps) => {
 
     const maxLength = list.reduce((acc, point) => {
       const { value } = point
-      return Math.max(acc, stripComments(value).length)
+      return Math.max(acc, firstLine(stripComments(value)).length)
     }, stream.name.length)
     acc.set(streamId, maxLength)
     return acc
@@ -88,7 +89,7 @@ const SliceList = (props: SliceListProps) => {
 
               return (
                 <Box key={index} flexBasis={basis}>
-                  <Text>{stripComments(line.value)}</Text>
+                  <Text>{firstLine(stripComments(line.value))}</Text>
                 </Box>
               )
             })}
