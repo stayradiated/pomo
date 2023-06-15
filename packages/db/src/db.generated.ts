@@ -1,5 +1,4 @@
 import type { ColumnType } from 'kysely'
-
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>
@@ -9,7 +8,7 @@ export type Label = {
   id: string
   name: string
   createdAt: Generated<string>
-  updatedAt: string | undefined
+  updatedAt: string | null
 }
 export type Point = {
   id: string
@@ -17,19 +16,19 @@ export type Point = {
   value: string
   startedAt: string
   createdAt: Generated<string>
-  updatedAt: string | undefined
+  updatedAt: string | null
 }
 export type PointLabel = {
   pointId: string
   labelId: string
   createdAt: Generated<string>
-  updatedAt: string | undefined
+  updatedAt: string | null
 }
 export type Stream = {
   id: string
   name: string
   createdAt: Generated<string>
-  updatedAt: string | undefined
+  updatedAt: string | null
 }
 export type DB = {
   Label: Label

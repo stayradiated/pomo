@@ -7,7 +7,8 @@
     "test": "vitest --watch=false",
     "tidy": "xo --fix",
     "build": "rm -rf dist && tsc",
-    "prisma": "DATABASE_URL=file:$POMO_DATABASE_URL prisma"
+    "prisma": "DATABASE_URL=file:$POMO_DATABASE_URL prisma",
+    "db:generate": "$npm_execpath run prisma generate"
   },
   "keywords": [],
   "author": {

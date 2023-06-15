@@ -6,13 +6,13 @@
   export let data: PageData
 </script>
 
-<form use:enhance>
-  <select name="stream" placeholder="Stream" value={ data.filterStreamId }>
+<form method="GET" use:enhance>
+  <select name="stream" placeholder="Stream" value={ data.filterStreamId ?? '' }>
     {#each data.streamList as stream}
       <option value={stream.id}>{stream.name}</option>
     {/each}
   </select>
-  <input type="text" name="value" placeholder="Value" value={ data.filterValue } />
+  <input type="text" name="value" placeholder="Value" value={ data.filterValue ?? '' } />
 </form>
 
 <MultiDaySliceList

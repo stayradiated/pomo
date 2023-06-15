@@ -4,6 +4,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { retrieveStreamList, retrieveCurrentPoint, insertPoint, updatePointValue } from "@stayradiated/pomo-db"
 import type { KyselyDb } from "@stayradiated/pomo-db"
 import { getDb } from '$lib/db.js'
+import { redirect } from '@sveltejs/kit';
 
 type GetCurrentPointsOptions = {
   db: KyselyDb,
@@ -87,6 +88,8 @@ const actions = {
         }
       }
     }
+
+    throw redirect(303, '/')
 
   }
 } satisfies Actions;

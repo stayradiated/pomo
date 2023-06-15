@@ -1,4 +1,10 @@
 {
   "private": true,
-  "packageManager": "pnpm@8.5.1"
+  "packageManager": "pnpm@8.5.1",
+  "scripts": {
+    "build": "turbo build --no-daemon"
+  },
+  "devDependencies": {
+    "turbo": "1.10.3"
+  }
 }
