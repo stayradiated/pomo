@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
   import type { PageData } from './$types'
   import MultiDaySliceList from './MultiDaySliceList.svelte'
 
   export let data: PageData
 </script>
 
-<form method="GET" use:enhance>
+<form method="POST">
   <select name="stream" placeholder="Stream" value={ data.filterStreamId ?? '' }>
     {#each data.streamList as stream}
       <option value={stream.id}>{stream.name}</option>

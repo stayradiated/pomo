@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "POMO_DATABASE_URL=./test.db vite dev",
+		"build:vite": "vite build",
 		"build": "rm -rf dist && vite build && node ./scripts/build.mjs && cp -r ./build/client ./dist/client",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

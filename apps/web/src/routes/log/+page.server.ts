@@ -2,8 +2,9 @@ import { error } from '@sveltejs/kit'
 import { getDb } from '$lib/db.js'
 import { mapPointListToLineList, mapLineListToSliceList } from '@stayradiated/pomo-core'
 import { retrieveStreamList, retrievePointList } from "@stayradiated/pomo-db"
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 import type { Slice } from '@stayradiated/pomo-core';
+import { redirect } from '@sveltejs/kit';
 
 type FilterSlicesByValueOptions = {
   sliceList: Slice[],
@@ -80,4 +81,15 @@ const load = (async ({ request }) => {
   }
 }) satisfies PageServerLoad;
 
-export { load }
+const actions = {
+  default: async ({ request }) => {
+    const formData = await request.formData()
+    const url = new URL(request.url)
+    url.searchParams.set('stream', formData.get('stream'))
+    url.searchParams.set('value', formData.get('value'))
+
+    throw redirect(303, url.toString())
+  }
+} satisfies Actions;
+
+export { load, actions }
