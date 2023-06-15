@@ -20,7 +20,7 @@
   <tbody>
     {#each sliceList as slice}
       <tr>
-        <td>{format(slice.startedAt, 'HH:mm')}</td>
+        <td><a href='/fix?ref={slice.lineList[0]?.id}'>{format(slice.startedAt, 'HH:mm')}</a></td>
 
         {#each streamList as stream}
           {@const line = slice.lineList.find((line) => line.streamId === stream.id)}

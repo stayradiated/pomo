@@ -1,4 +1,5 @@
 export * from './db.js'
+export * from './get-point-by-id.js'
 export * from './get-point-started-at-by-ref.js'
 export * from './get-stream-id-by-name.js'
 export * from './get-stream-name-by-id.js'

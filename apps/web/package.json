@@ -16,7 +16,8 @@
 		"@stayradiated/pomo-db": "workspace:*",
 		"better-sqlite3": "8.4.0",
 		"date-fns": "2.30.0",
-		"zod": "3.21.4"
+		"zod": "3.21.4",
+		"zod-form-data": "2.0.1"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "2.1.0",

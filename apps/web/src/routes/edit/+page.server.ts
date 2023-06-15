@@ -1,38 +1,9 @@
-import type { Point, Stream } from "@stayradiated/pomo-core";
 import { parseISO } from 'date-fns'
 import type { PageServerLoad, Actions } from './$types';
-import { retrieveStreamList, retrieveCurrentPoint, insertPoint, updatePointValue } from "@stayradiated/pomo-db"
-import type { KyselyDb } from "@stayradiated/pomo-db"
+import { retrieveStreamList, insertPoint, updatePointValue } from "@stayradiated/pomo-db"
 import { getDb } from '$lib/db.js'
 import { redirect } from '@sveltejs/kit';
-
-type GetCurrentPointsOptions = {
-  db: KyselyDb,
-  streamList: Stream[],
-  currentTime: Date,
-}
-
-const getCurrentPoints = async (options: GetCurrentPointsOptions): Promise<Map<string, Point>> => {
-  const { db, streamList, currentTime } = options
-
-  const output = new Map<string, Point>()
-
-  for (const stream of streamList) {
-    const currentPoint = await retrieveCurrentPoint({
-      db,
-      streamId: stream.id,
-      currentTime,
-    })
-    if (currentPoint instanceof Error) {
-      throw currentPoint
-    }
-    if (currentPoint) {
-      output.set(stream.id, currentPoint)
-    }
-  }
-
-  return output
-}
+import { getCurrentPoints } from "$lib/get-current-points";
 
 const load = (async () => {
   const currentTime = new Date()
