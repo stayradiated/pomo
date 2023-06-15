@@ -53,9 +53,9 @@ jobs:
         run: pnpm install
 
       - 
-        name: Compile Typescript Packages
+        name: Build Packages
         run: |
-          pnpm -r run build
+          pnpm run build
 
       -
         # https://github.com/docker/metadata-action
