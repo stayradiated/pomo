@@ -21,7 +21,7 @@ const retrievePointList = async (
 ): Promise<RetrievePointResult[] | Error> => {
   const { db, since, filter } = options
 
-  const sinceISO = since.toISOString()
+  const sinceTimeMs = since.getTime()
 
   return errorBoundary(async () =>
     db
@@ -30,7 +30,7 @@ const retrievePointList = async (
         db
           .selectFrom('Point')
           .select(['streamId', sql`MAX(startedAt)`.as('maxStartedAt')])
-          .where('startedAt', '<', sinceISO)
+          .where('startedAt', '<', sinceTimeMs)
           .groupBy('streamId')
           .as('sv2'),
         (join) =>
@@ -41,7 +41,7 @@ const retrievePointList = async (
       .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value'])
       .where(({ or, cmpr }) =>
         or([
-          cmpr('Point.startedAt', '>', sinceISO),
+          cmpr('Point.startedAt', '>', sinceTimeMs),
           cmpr('sv2.streamId', 'is not', null),
         ]),
       )

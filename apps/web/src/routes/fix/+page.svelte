@@ -26,6 +26,7 @@
 
 
 <form method="POST">
+  <input type="hidden" name="datetime" value={inputDate.toISOString()} />
   {#each pointList as point}
     <input type="hidden" name="pointId" value={point.id} />
   {/each}

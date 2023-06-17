@@ -42,7 +42,7 @@ const actions = {
 
         const value = valueRaw.replace(/\r/g, '')
         if (currentPoint?.value !== value) {
-          if (currentPoint?.startedAt === currentTime.toISOString()) {
+          if (currentPoint?.startedAt === currentTime.getTime()) {
             await updatePointValue({
               db,
               pointId: currentPoint.id,

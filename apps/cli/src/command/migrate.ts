@@ -4,8 +4,11 @@ type MigrateCmdOptions = {
   db: KyselyDb
 }
 
-const migrateCmd = async (_options: MigrateCmdOptions) => {
-  console.log('Nothing to migrate yet')
+const migrateCmd = async (options: MigrateCmdOptions) => {
+  const { db } = options
+
+  console.warn(`Nothing to migrate yet`)
+  console.log(db.schema)
 }
 
 export { migrateCmd }

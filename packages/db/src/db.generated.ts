@@ -7,32 +7,39 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>
 export type Label = {
   id: string
   name: string
-  createdAt: Generated<string>
-  updatedAt: string | null
+  createdAt: number
+  updatedAt: number | null
 }
 export type Point = {
   id: string
   streamId: string
   value: string
-  startedAt: string
-  createdAt: Generated<string>
-  updatedAt: string | null
+  startedAt: number
+  createdAt: number
+  updatedAt: number | null
 }
 export type PointLabel = {
   pointId: string
   labelId: string
-  createdAt: Generated<string>
-  updatedAt: string | null
+  createdAt: number
+  updatedAt: number | null
 }
 export type Stream = {
   id: string
   name: string
-  createdAt: Generated<string>
-  updatedAt: string | null
+  createdAt: number
+  updatedAt: number | null
+}
+export type User = {
+  id: string
+  createdAt: number
+  updatedAt: number | null
+  timeZone: Generated<string>
 }
 export type DB = {
   Label: Label
   Point: Point
   PointLabel: PointLabel
   Stream: Stream
+  User: User
 }

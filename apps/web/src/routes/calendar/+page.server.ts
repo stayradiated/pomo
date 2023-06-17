@@ -5,6 +5,7 @@ import { retrieveStreamList, retrievePointList } from "@stayradiated/pomo-db"
 import type { PageServerLoad, Actions } from './$types';
 import type { Slice } from '@stayradiated/pomo-core';
 import { redirect } from '@sveltejs/kit';
+import { startOfToday } from 'date-fns'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
 
@@ -49,7 +50,7 @@ const load = (async ({ request }) => {
 
   const pointList = await retrievePointList({
     db,
-    since: new Date('2023-06-01'),
+    since: startOfToday(),
     filter: {}
   })
   if (pointList instanceof Error) {

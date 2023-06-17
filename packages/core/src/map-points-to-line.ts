@@ -1,4 +1,3 @@
-import { parseISO } from 'date-fns'
 import type { Line, Point } from './types.js'
 
 const mapPointsToLine = <T extends Point>(
@@ -9,8 +8,8 @@ const mapPointsToLine = <T extends Point>(
     return new Error('Stream IDs must match')
   }
 
-  const startedAt = parseISO(startPoint.startedAt)
-  const stoppedAt = stopPoint ? parseISO(stopPoint.startedAt) : undefined
+  const startedAt = new Date(startPoint.startedAt)
+  const stoppedAt = stopPoint ? new Date(stopPoint.startedAt) : undefined
   const durationMs = stoppedAt
     ? stoppedAt.getTime() - startedAt.getTime()
     : Date.now() - startedAt.getTime()

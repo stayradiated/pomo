@@ -1,19 +1,23 @@
 import type { Selectable } from 'kysely'
-import type { KyselyDb, Point } from "./db.js"
 import { errorBoundary } from '@stayradiated/error-boundary'
+import type { KyselyDb, Point } from './db.js'
 
 type GetPointByIdOptions = {
   db: KyselyDb
   id: string
 }
 
-const getPointById = (options: GetPointByIdOptions): Promise<Selectable<Point>|Error> => {
+const getPointById = async (
+  options: GetPointByIdOptions,
+): Promise<Selectable<Point> | Error> => {
   const { db, id } = options
-  return errorBoundary(() => db
-    .selectFrom('Point')
-    .where('id', '=', id)
-    .selectAll()
-    .executeTakeFirstOrThrow())
+  return errorBoundary(async () =>
+    db
+      .selectFrom('Point')
+      .where('id', '=', id)
+      .selectAll()
+      .executeTakeFirstOrThrow(),
+  )
 }
 
 export { getPointById }

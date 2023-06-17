@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit'
 import { getPointStartedAtByRef, getPointById, retrieveStreamList } from '@stayradiated/pomo-db'
 import { getDb } from '$lib/db';
 import { getCurrentPoints } from "$lib/get-current-points";
-import { parseISO, parse } from 'date-fns'
+import { parseISO } from 'date-fns'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
 import { errorListBoundary } from '@stayradiated/error-boundary';
@@ -26,7 +26,7 @@ const load = (async ({ request }) => {
   const streamList = await retrieveStreamList({ db })
   const pointMap = await getCurrentPoints({ db, streamList, currentTime: startedAt})
   const pointList = [...pointMap.values()].filter((point) => {
-    return parseISO(point.startedAt) >= startedAt
+    return new Date(point.startedAt) >= startedAt
   })
 
   return {
@@ -37,17 +37,18 @@ const load = (async ({ request }) => {
 }) satisfies PageServerLoad
 
 const $schema = zfd.formData({
-  datetimeLocal: zfd.text(z.string().length(16)),
+  datetime: zfd.text(z.string().length(24)),
   pointId: zfd.repeatable(z.array(zfd.text()).min(1))
 });
 
 const actions = {
   default: async ({ request }) => {
     const formData = $schema.parse(await request.formData())
-    const { datetimeLocal, pointId: userPointIdList } = formData
+    const { datetime, pointId: userPointIdList } = formData
 
     const db = getDb()
 
+    // verify that each point exists
     const pointList = await errorListBoundary(() => Promise.all(userPointIdList.map((pointId) => {
       return getPointById({ db, id: pointId })
     })))
@@ -55,14 +56,9 @@ const actions = {
       throw error(500, pointList.message)
     }
 
+    const nextStartedAt = parseISO(datetime)
+
     const pointIdList = [...new Set(pointList.map((point) => point.id))]
-
-    const nextStartedAt = parse(
-      datetimeLocal,
-      "yyyy-MM-dd'T'HH:mm",
-      new Date(),
-    )
-
     await db.updateTable('Point')
       .set({ startedAt: nextStartedAt.toISOString() })
       .where('id', 'in', pointIdList)

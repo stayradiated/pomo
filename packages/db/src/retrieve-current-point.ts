@@ -1,7 +1,7 @@
 import type { KyselyDb } from './db.js'
 
 type RetrieveCurrentPointOptions = {
-  db: KyselyDb,
+  db: KyselyDb
   streamId: string
   currentTime: Date
 }
@@ -13,11 +13,11 @@ const retrieveCurrentPoint = async (options: RetrieveCurrentPointOptions) => {
     .selectFrom('Point')
     .selectAll()
     .where('streamId', '=', streamId)
-    .where('startedAt', '<=', currentTime.toISOString())
+    .where('startedAt', '<=', currentTime.getTime())
     .orderBy('startedAt', 'desc')
     .executeTakeFirst()
 
-    return currentPoint
+  return currentPoint
 }
 
 export { retrieveCurrentPoint }

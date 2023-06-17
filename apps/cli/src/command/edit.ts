@@ -107,7 +107,7 @@ const edit = async (options: EditOptions) => {
         )}`,
       )
 
-      if (currentPoint?.startedAt === currentTime.toISOString()) {
+      if (currentPoint?.startedAt === currentTime.getTime()) {
         await updatePointValue({
           db,
           pointId: currentPoint.id,

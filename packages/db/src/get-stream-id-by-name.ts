@@ -6,14 +6,16 @@ type GetStreamIdByNameOptions = {
   name: string
 }
 
-const getStreamIdByName = async (options: GetStreamIdByNameOptions): Promise<string | Error> => {
+const getStreamIdByName = async (
+  options: GetStreamIdByNameOptions,
+): Promise<string | Error> => {
   const { db, name } = options
   return errorBoundary(async () => {
     const row = await db
-    .selectFrom('Stream')
-    .select('id')
-    .where('name', '=', name)
-    .executeTakeFirstOrThrow()
+      .selectFrom('Stream')
+      .select('id')
+      .where('name', '=', name)
+      .executeTakeFirstOrThrow()
     return row.id
   })
 }

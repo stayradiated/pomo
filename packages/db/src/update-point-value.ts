@@ -1,15 +1,15 @@
 import type { KyselyDb } from './db.js'
 
 type UpdatePointValueOptions = {
-  db: KyselyDb,
-  pointId: string,
-  value: string,
+  db: KyselyDb
+  pointId: string
+  value: string
 }
 
 const updatePointValue = async (options: UpdatePointValueOptions) => {
   const { db, pointId, value } = options
 
-  const updatedAt = new Date().toISOString()
+  const updatedAt = Date.now()
 
   await db
     .updateTable('Point')

@@ -138,3 +138,21 @@ Perhaps I could start by using #hashtags in my notes
 | 08:55 |              |          |         | Meeting  |
 | 09:20 |              | City     | Life    | Walking  |
 |-------|--------------|----------|---------|----------|
+
+## Time Zones
+
+What a pain to deal with.
+
+Store dates in the database as UTC.
+(.getISOString())
+
+Could we store these as numbers?
+It would be easier to calculate the difference?
+
+Never use `new Date()`
+
+Whenever we convert the date from a string into a Date object we should convert
+it to the user's timezone, using `date-fns-tz`.
+
+Exceptions are if we just comparing two dates to get the duration.
+

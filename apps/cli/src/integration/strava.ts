@@ -281,6 +281,7 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
     .values({
       id: randomUUID(),
       name: 'Strava',
+      createdAt: Date.now(),
     })
     .onConflict((oc) => oc.column('name').doNothing())
     .execute()
@@ -308,7 +309,8 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
         id: randomUUID(),
         streamId,
         value: activity.name,
-        startedAt: startDate.toISOString(),
+        startedAt: startDate.getTime(),
+        createdAt: Date.now(),
       })
       // .onConflict((oc) => oc.constraint('streamId_startedAt').doNothing())
       .execute()
@@ -319,7 +321,8 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
         id: randomUUID(),
         streamId,
         value: '',
-        startedAt: stopDate.toISOString(),
+        startedAt: stopDate.getTime(),
+        createdAt: Date.now(),
       })
       // .onConflict((oc) => oc.constraint('streamId_startedAt').doNothing())
       .execute()

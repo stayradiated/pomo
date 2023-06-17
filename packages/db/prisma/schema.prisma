@@ -16,11 +16,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String @id
+  createdAt Int
+  updatedAt Int?
+  timeZone  String @default("UTC")
+}
+
 model Stream {
-  id        String    @id
-  name      String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  id        String  @id
+  name      String  @unique
+  createdAt Int
+  updatedAt Int?
   pointList Point[]
 }
 
@@ -29,9 +36,9 @@ model Point {
   stream     Stream       @relation(fields: [streamId], references: [id])
   streamId   String
   value      String
-  startedAt  DateTime
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime?    @updatedAt
+  startedAt  Int
+  createdAt  Int
+  updatedAt  Int?
   PointLabel PointLabel[]
 
   @@index([streamId, startedAt], name: "streamId_startedAt")
@@ -40,18 +47,18 @@ model Point {
 model Label {
   id         String       @id
   name       String       @unique
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime?    @updatedAt
+  createdAt  Int
+  updatedAt  Int?
   PointLabel PointLabel[]
 }
 
 model PointLabel {
-  point     Point     @relation(fields: [pointId], references: [id])
+  point     Point  @relation(fields: [pointId], references: [id])
   pointId   String
-  label     Label     @relation(fields: [labelId], references: [id])
+  label     Label  @relation(fields: [labelId], references: [id])
   labelId   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt Int
+  updatedAt Int?
 
   @@id([pointId, labelId])
 }

@@ -1,5 +1,4 @@
 import { errorBoundary } from '@stayradiated/error-boundary'
-import { parseISO } from 'date-fns'
 import type { KyselyDb } from '#src/db.js'
 
 type GetPointStartedAtByRefOptions = {
@@ -17,7 +16,7 @@ const getPointStartedAtByRef = async (
       .select('startedAt')
       .where('id', 'like', ref + '%')
       .executeTakeFirstOrThrow()
-    return parseISO(row.startedAt)
+    return new Date(row.startedAt)
   })
 }
 

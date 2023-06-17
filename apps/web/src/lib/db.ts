@@ -6,7 +6,10 @@ import { once } from './once.js'
 const getDb = once(() => {
   const env = getEnv()
 
-  return createKyselyDb(createSqliteDb(env.POMO_DATABASE_URL))
+  const sqliteDb = createSqliteDb(env.POMO_DATABASE_URL)
+  sqliteDb.pragma('journal_mode = WAL')
+
+  return createKyselyDb(sqliteDb)
 })
 
 export { getDb }

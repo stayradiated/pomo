@@ -1,4 +1,4 @@
-import type { KyselyDb } from "./db.js"
+import type { KyselyDb } from './db.js'
 
 type RetrieveOptions = {
   db: KyselyDb
@@ -10,7 +10,7 @@ const retrieveStreamList = async (options: RetrieveOptions) => {
     .selectFrom('Stream')
     .select(['id', 'name'])
     .execute()
-    return streamList
+  return streamList
 }
 
 export { retrieveStreamList }

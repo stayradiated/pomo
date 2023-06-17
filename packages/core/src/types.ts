@@ -7,7 +7,7 @@ type Point = {
   id: string
   streamId: string
   value: string
-  startedAt: string
+  startedAt: number
 }
 
 type Line = {
