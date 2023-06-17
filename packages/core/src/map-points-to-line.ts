@@ -8,11 +8,11 @@ const mapPointsToLine = <T extends Point>(
     return new Error('Stream IDs must match')
   }
 
-  const startedAt = new Date(startPoint.startedAt)
-  const stoppedAt = stopPoint ? new Date(stopPoint.startedAt) : undefined
-  const durationMs = stoppedAt
-    ? stoppedAt.getTime() - startedAt.getTime()
-    : Date.now() - startedAt.getTime()
+  const startedAt = startPoint.startedAt
+  const stoppedAt = stopPoint ? stopPoint.startedAt : undefined
+
+  // TODO: is using Date.now() to calculate duration timezone safe?
+  const durationMs = stoppedAt ? stoppedAt - startedAt : Date.now() - startedAt
 
   const line: Line = {
     id: startPoint.id,

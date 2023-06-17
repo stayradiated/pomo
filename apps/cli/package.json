@@ -30,6 +30,7 @@
     "better-sqlite3": "8.4.0",
     "chrono-node": "2.6.3",
     "date-fns": "2.30.0",
+    "date-fns-tz": "2.0.0",
     "external-editor": "3.1.0",
     "ink": "4.2.0",
     "ink-select-input": "5.0.0",

@@ -1,4 +1,4 @@
-import { Text, Box, render } from 'ink'
+import { Text, Box, Newline, render } from 'ink'
 import React from 'react'
 import { format, startOfDay } from 'date-fns'
 import {
@@ -87,9 +87,18 @@ const SliceList = (props: SliceListProps) => {
                 return <Box key={index} flexBasis={basis} />
               }
 
+              const duration = format(
+                new Date(line.durationMs),
+                "H'h' mm'm'",
+              )
+
               return (
                 <Box key={index} flexBasis={basis}>
-                  <Text>{firstLine(stripComments(line.value))}</Text>
+                  <Text>
+                    {firstLine(stripComments(line.value))}
+                    <Newline />
+                    <Text color='blueBright'>+{duration}</Text>
+                  </Text>
                 </Box>
               )
             })}

@@ -1,7 +1,7 @@
 import type { Line } from './types.js'
 
 type Slice = {
-  startedAt: Date
+  startedAt: number
   lineList: Line[]
 }
 
@@ -11,7 +11,7 @@ const mapLineListToSliceList = (lineList: Line[]): Slice[] | Error => {
   let previousSlice: Slice | undefined
   for (const line of lineList) {
     const timestamp = line.startedAt
-    if (timestamp.getTime() === previousSlice?.startedAt.getTime()) {
+    if (timestamp === previousSlice?.startedAt) {
       previousSlice.lineList.push(line)
     } else {
       const slice = {
