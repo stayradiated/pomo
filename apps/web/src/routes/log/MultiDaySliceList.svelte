@@ -1,16 +1,22 @@
 <script lang="ts">
   import type { Stream, Slice } from '@stayradiated/pomo-core';
   import { format } from 'date-fns'
+  import { utcToZonedTime } from 'date-fns-tz'
 
   import SliceList from './SliceList.svelte'
 
   export let streamList: Stream[]
   export let sliceList: Slice[]
+  export let timeZone: string
 
   const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
     (acc, slice) => {
+      const { startedAt: startedAtUTC } = slice
+      const startedAt = utcToZonedTime(startedAtUTC, timeZone)
+
       // Format as Friday 02 June 2023
-      const day = format(slice.startedAt, 'EEEE dd MMMM yyyy')
+      const day = format(startedAt, 'EEEE dd MMMM yyyy')
+
       const list: Slice[] = acc.get(day) ?? []
       list.push(slice)
       acc.set(day, list)
@@ -26,6 +32,7 @@
     <SliceList
       streamList={streamList}
       sliceList={sliceList}
+      timeZone={timeZone}
     />
   </div>
 {/each}

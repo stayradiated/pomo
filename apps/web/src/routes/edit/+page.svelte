@@ -1,23 +1,32 @@
 <script lang="ts">
   import { format } from 'date-fns'
+  import { utcToZonedTime } from 'date-fns-tz';
   import type { PageData } from "./$types";
+
   export let data: PageData;
-  const { currentTime, streamList, currentPoints } = data
+  const { currentTimeUTC, streamList, currentPoints, timeZone } = data
 
   const rowList = streamList.map((stream) => {
     const pointValue = currentPoints.get(stream.id)?.value ?? ''
     return { stream, pointValue }
   })
+
+  const currentTimeLocal = utcToZonedTime(currentTimeUTC, timeZone)
+  const currentTimeLocalString = format(currentTimeLocal, 'PPpp')
+
+  console.log({ currentTimeUTC, timeZone, currentTimeLocal, currentTimeLocalString })
 </script>
 
 <main>
   <form method="POST">
-    <input name="currentTime" type="hidden" value={currentTime.toISOString()} />
-    <p class="currentTime">{format(currentTime, 'PPpp')}</p>
+    <input name="startedAt" type="hidden" value={currentTimeUTC} />
+    <time class="currentTime">{currentTimeLocalString}</time>
+
     {#each rowList as row, index}
       <div class="stream-control">
         <label for="edit-stream-{index}">{row.stream.name}</label>
-        <textarea name="stream-{row.stream.id}" id="edit-stream-{index}" value={row.pointValue} />
+        <input name="stream[{index}].id" value={row.stream.id} type="hidden" />
+        <textarea name="stream[{index}].value" id="edit-stream-{index}" value={row.pointValue} />
       </div>
     {/each}
 

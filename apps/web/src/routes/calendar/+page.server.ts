@@ -50,7 +50,7 @@ const load = (async ({ request }) => {
 
   const pointList = await retrievePointList({
     db,
-    since: startOfToday(),
+    since: startOfToday().getTime(),
     filter: {}
   })
   if (pointList instanceof Error) {

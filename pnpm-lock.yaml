@@ -151,6 +151,9 @@ importers:
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
+      date-fns-tz:
+        specifier: 2.0.0
+        version: 2.0.0(date-fns@2.30.0)
       mem:
         specifier: 9.0.2
         version: 9.0.2

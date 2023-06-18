@@ -8,7 +8,7 @@ type GetPointStartedAtByRefOptions = {
 
 const getPointStartedAtByRef = async (
   options: GetPointStartedAtByRefOptions,
-): Promise<Date | Error> => {
+): Promise<number | Error> => {
   const { db, ref } = options
   return errorBoundary(async () => {
     const row = await db
@@ -16,7 +16,7 @@ const getPointStartedAtByRef = async (
       .select('startedAt')
       .where('id', 'like', ref + '%')
       .executeTakeFirstOrThrow()
-    return new Date(row.startedAt)
+    return row.startedAt
   })
 }
 

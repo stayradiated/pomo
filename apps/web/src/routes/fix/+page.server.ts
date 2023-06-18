@@ -1,9 +1,9 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error } from '@sveltejs/kit'
-import { getPointStartedAtByRef, getPointById, retrieveStreamList } from '@stayradiated/pomo-db'
+import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone } from '@stayradiated/pomo-db'
 import { getDb } from '$lib/db';
 import { getCurrentPoints } from "$lib/get-current-points";
-import { parseISO } from 'date-fns'
+import { toDate, formatInTimeZone } from 'date-fns-tz'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
 import { errorListBoundary } from '@stayradiated/error-boundary';
@@ -26,25 +26,28 @@ const load = (async ({ request }) => {
   const streamList = await retrieveStreamList({ db })
   const pointMap = await getCurrentPoints({ db, streamList, currentTime: startedAt})
   const pointList = [...pointMap.values()].filter((point) => {
-    return new Date(point.startedAt) >= startedAt
+    return point.startedAt >= startedAt
   })
 
+  const timeZone = await getUserTimeZone({ db })
+  const startedAtLocalString = formatInTimeZone(startedAt, timeZone, 'yyyy-MM-dd HH:mm')
+
   return {
-    startedAt,
+    startedAtLocalString,
     streamList,
     pointList,
   }
 }) satisfies PageServerLoad
 
 const $schema = zfd.formData({
-  datetime: zfd.text(z.string().length(24)),
+  datetimeLocal: zfd.text(),
   pointId: zfd.repeatable(z.array(zfd.text()).min(1))
 });
 
 const actions = {
   default: async ({ request }) => {
     const formData = $schema.parse(await request.formData())
-    const { datetime, pointId: userPointIdList } = formData
+    const { datetimeLocal, pointId: userPointIdList } = formData
 
     const db = getDb()
 
@@ -56,7 +59,8 @@ const actions = {
       throw error(500, pointList.message)
     }
 
-    const nextStartedAt = parseISO(datetime)
+    const timeZone = await getUserTimeZone({ db })
+    const nextStartedAt = toDate(datetimeLocal, { timeZone })
 
     const pointIdList = [...new Set(pointList.map((point) => point.id))]
     await db.updateTable('Point')

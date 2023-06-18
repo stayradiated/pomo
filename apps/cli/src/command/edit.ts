@@ -7,7 +7,6 @@ import {
   RemoveFileError,
   LaunchEditorError,
 } from 'external-editor'
-import { format } from 'date-fns'
 import { parse } from '@stayradiated/pomo-markdown'
 import { stripComments } from '@stayradiated/pomo-core'
 import type { KyselyDb } from '@stayradiated/pomo-db'
@@ -19,7 +18,9 @@ import {
   updatePointValue,
   insertPoint,
   upsertStream,
+  getUserTimeZone,
 } from '@stayradiated/pomo-db'
+import { formatInTimeZone } from 'date-fns-tz'
 import { getDb } from '#src/lib/db.js'
 
 // # edit current streams
@@ -36,14 +37,19 @@ import { getDb } from '#src/lib/db.js'
 
 type EditOptions = {
   db: KyselyDb
-  currentTime: Date
+  currentTime: number
+  timeZone: string
 }
 
 const handler = async (options: EditOptions) => {
-  const { db, currentTime } = options
+  const { db, currentTime, timeZone } = options
 
   const getCurrentText = async (): Promise<string> => {
-    let output = `${currentTime.toISOString()}\n\n`
+    let output = `${formatInTimeZone(
+      currentTime,
+      timeZone,
+      'yyyy-MM-dd HH:mm:ss zzz',
+    )}\n\n`
 
     const streamList = await retrieveStreamList({ db })
 
@@ -106,12 +112,14 @@ const handler = async (options: EditOptions) => {
 
     if (currentPoint?.value !== value) {
       console.log(
-        `[${format(currentTime, 'HH:mm')}] ${streamName} → ${stripComments(
-          value,
-        )}`,
+        `[${formatInTimeZone(
+          currentTime,
+          timeZone,
+          'HH:mm',
+        )}] ${streamName} → ${stripComments(value)}`,
       )
 
-      if (currentPoint?.startedAt === currentTime.getTime()) {
+      if (currentPoint?.startedAt === currentTime) {
         await updatePointValue({
           db,
           pointId: currentPoint.id,
@@ -169,17 +177,24 @@ const editCmd = new CliCommand('edit')
   .withHandler(async (_args, options, _extra) => {
     const db = getDb()
 
+    const timeZone = await getUserTimeZone({ db })
+
     const currentTime = options['ref']
       ? await getPointStartedAtByRef({ db, ref: options['ref'] })
       : options['from']
-      ? chrono.parseDate(options['from'])
-      : new Date()
+      ? chrono
+          .parseDate(options['from'], {
+            instant: new Date(),
+            timezone: timeZone,
+          })
+          .getTime()
+      : Date.now()
 
     if (currentTime instanceof Error) {
       throw currentTime
     }
 
-    await handler({ db, currentTime })
+    await handler({ db, currentTime, timeZone })
   })
 
 export { editCmd }

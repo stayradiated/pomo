@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "tidy": {},
     "build": {
       "dependsOn": ["^build", "db:generate"],
       "inputs": ["./src/**"],

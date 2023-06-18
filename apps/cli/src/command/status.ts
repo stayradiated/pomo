@@ -21,7 +21,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
 
   const pointList = await retrievePointList({
     db,
-    since: currentTime,
+    since: currentTime.getTime(),
     filter,
   })
   if (pointList instanceof Error) {

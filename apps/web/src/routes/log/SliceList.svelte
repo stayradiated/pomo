@@ -2,9 +2,16 @@
   import type { Stream, Slice } from '@stayradiated/pomo-core';
   import { format } from 'date-fns'
   import { stripComments } from '@stayradiated/pomo-core';
+  import { utcToZonedTime } from 'date-fns-tz';
 
   export let streamList: Stream[]
   export let sliceList: Slice[]
+  export let timeZone: string
+
+  const formatTime = (utc: number): string => {
+    const time = utcToZonedTime(utc, timeZone)
+    return format(time, 'HH:mm')
+  }
 </script>
 
 <table>
@@ -20,7 +27,7 @@
   <tbody>
     {#each sliceList as slice}
       <tr>
-        <td><a href='/fix?ref={slice.lineList[0]?.id}'>{format(slice.startedAt, 'HH:mm')}</a></td>
+        <td><a href='/fix?ref={slice.lineList[0]?.id}'>{formatTime(slice.startedAt)}</a></td>
 
         {#each streamList as stream}
           {@const line = slice.lineList.find((line) => line.streamId === stream.id)}

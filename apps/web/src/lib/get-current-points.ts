@@ -5,7 +5,7 @@ import { retrieveCurrentPoint } from "@stayradiated/pomo-db"
 type GetCurrentPointsOptions = {
   db: KyselyDb,
   streamList: Stream[],
-  currentTime: Date,
+  currentTime: number,
 }
 
 const getCurrentPoints = async (options: GetCurrentPointsOptions): Promise<Map<string, Point>> => {

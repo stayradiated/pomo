@@ -1,6 +1,10 @@
-// Import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
-// Import { getDb } from '#src/lib/db.js'
+import { z } from 'zod'
+import { getUserTimeZone, setUserTimeZone } from '@stayradiated/pomo-db'
+import { isValidTimeZone } from '@stayradiated/pomo-core'
+import { getDb } from '#src/lib/db.js'
+
+const $Key = z.literal('timezone')
 
 const setCmd = new CliCommand('set')
   .withDescription('Set user info')
@@ -14,8 +18,26 @@ const setCmd = new CliCommand('set')
       required: true,
     },
   )
-  .withHandler(() => {
-    setCmd.help()
+  .withHandler(async (args, _options, _extra) => {
+    const key = $Key.parse(args['key'].toLowerCase())
+    const value = args['value']
+
+    const db = getDb()
+
+    switch (key) {
+      case 'timezone': {
+        if (!isValidTimeZone(value)) {
+          throw new Error(`Invalid time zone: ${value}`)
+        }
+
+        const result = await setUserTimeZone({ db, timeZone: value })
+        if (result instanceof Error) {
+          throw result
+        }
+
+        break
+      }
+    }
   })
 
 const getCmd = new CliCommand('get')
@@ -24,8 +46,18 @@ const getCmd = new CliCommand('get')
     name: 'key',
     required: true,
   })
-  .withHandler(() => {
-    getCmd.help()
+  .withHandler(async (args, _options, _extra) => {
+    const key = $Key.parse(args['key'].toLowerCase())
+
+    const db = getDb()
+
+    switch (key) {
+      case 'timezone': {
+        const timeZone = await getUserTimeZone({ db })
+        console.log(timeZone)
+        break
+      }
+    }
   })
 
 const userCmd = new CliCommand('user')

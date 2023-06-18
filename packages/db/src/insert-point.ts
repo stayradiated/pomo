@@ -5,7 +5,7 @@ type InsertPointOptions = {
   db: KyselyDb
   streamId: string
   value: string
-  startedAt: Date
+  startedAt: number
 }
 
 const insertPoint = async (options: InsertPointOptions) => {
@@ -18,7 +18,7 @@ const insertPoint = async (options: InsertPointOptions) => {
       id: randomUUID(),
       streamId,
       value,
-      startedAt: startedAt.getTime(),
+      startedAt,
       createdAt,
     })
     .execute()

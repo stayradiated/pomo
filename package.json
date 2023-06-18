@@ -2,7 +2,8 @@
   "private": true,
   "packageManager": "pnpm@8.5.1",
   "scripts": {
-    "build": "turbo build --no-daemon"
+    "build": "turbo build --no-daemon",
+    "tidy": "turbo tidy --no-daemon"
   },
   "devDependencies": {
     "turbo": "1.10.3"

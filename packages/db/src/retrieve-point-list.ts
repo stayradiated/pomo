@@ -5,7 +5,7 @@ import type { KyselyDb, Point } from '#src/db.js'
 
 type RetrieveOptions = {
   db: KyselyDb
-  since: Date
+  since: number
   filter: {
     streamId?: string
   }
@@ -21,8 +21,6 @@ const retrievePointList = async (
 ): Promise<RetrievePointResult[] | Error> => {
   const { db, since, filter } = options
 
-  const sinceTimeMs = since.getTime()
-
   return errorBoundary(async () =>
     db
       .selectFrom('Point')
@@ -30,7 +28,7 @@ const retrievePointList = async (
         db
           .selectFrom('Point')
           .select(['streamId', sql`MAX(startedAt)`.as('maxStartedAt')])
-          .where('startedAt', '<', sinceTimeMs)
+          .where('startedAt', '<', since)
           .groupBy('streamId')
           .as('sv2'),
         (join) =>
@@ -41,7 +39,7 @@ const retrievePointList = async (
       .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value'])
       .where(({ or, cmpr }) =>
         or([
-          cmpr('Point.startedAt', '>', sinceTimeMs),
+          cmpr('Point.startedAt', '>', since),
           cmpr('sv2.streamId', 'is not', null),
         ]),
       )

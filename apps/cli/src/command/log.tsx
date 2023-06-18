@@ -1,27 +1,35 @@
 import * as chrono from 'chrono-node'
-import { getStreamIdByName, retrievePointList } from '@stayradiated/pomo-db'
+import {
+  getStreamIdByName,
+  retrievePointList,
+  getUserTimeZone,
+} from '@stayradiated/pomo-db'
 import { Text, Box, Newline, render } from 'ink'
 import React from 'react'
-import { format, startOfDay } from 'date-fns'
+import { format, intervalToDuration, formatDuration } from 'date-fns'
 import {
   mapPointListToLineList,
   mapLineListToSliceList,
   stripComments,
   firstLine,
+  startOfDayWithTimeZone,
+  durationLocale,
 } from '@stayradiated/pomo-core'
 import type { Slice, Stream, Point } from '@stayradiated/pomo-core'
 import type { KyselyDb } from '@stayradiated/pomo-db'
 import { CliCommand } from 'cilly'
+import { utcToZonedTime } from 'date-fns-tz'
 import { getDb } from '#src/lib/db.js'
 
 type SliceListProps = {
   streamList: Stream[]
   sliceList: Slice[]
   pointList: Point[]
+  timeZone: string
 }
 
 const SliceList = (props: SliceListProps) => {
-  const { streamList, sliceList, pointList } = props
+  const { streamList, sliceList, pointList, timeZone } = props
 
   const pointsByStreamId = pointList.reduce<Map<string, Point[]>>(
     (acc, point) => {
@@ -70,7 +78,9 @@ const SliceList = (props: SliceListProps) => {
         })}
       </Box>
       {sliceList.map((slice, index) => {
-        const { lineList, startedAt } = slice
+        const { lineList, startedAt: startedAtUTC } = slice
+
+        const startedAt = utcToZonedTime(startedAtUTC, timeZone)
 
         return (
           <Box key={index} columnGap={1}>
@@ -90,14 +100,20 @@ const SliceList = (props: SliceListProps) => {
                 return <Box key={index} flexBasis={basis} />
               }
 
-              const duration = format(new Date(line.durationMs), "H'h' mm'm'")
+              const duration = formatDuration(
+                intervalToDuration({ start: 0, end: line.durationMs }),
+                {
+                  format: ['hours', 'minutes'],
+                  locale: durationLocale,
+                },
+              )
 
               return (
                 <Box key={index} flexBasis={basis}>
                   <Text>
                     {firstLine(stripComments(line.value))}
                     <Newline />
-                    <Text color="blueBright">+{duration}</Text>
+                    <Text color="blueBright">{duration}</Text>
                   </Text>
                 </Box>
               )
@@ -110,12 +126,15 @@ const SliceList = (props: SliceListProps) => {
 }
 
 const MultiDaySliceList = (props: SliceListProps) => {
-  const { sliceList, streamList, pointList } = props
+  const { sliceList, streamList, pointList, timeZone } = props
 
   const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
     (acc, slice) => {
+      const { startedAt: startedAtUTC } = slice
+      const startedAt = utcToZonedTime(startedAtUTC, timeZone)
+
       // Format as Friday 02 June 2023
-      const day = format(slice.startedAt, 'EEEE dd MMMM yyyy')
+      const day = format(startedAt, 'EEEE dd MMMM yyyy')
       const list: Slice[] = acc.get(day) ?? []
       list.push(slice)
       acc.set(day, list)
@@ -134,6 +153,7 @@ const MultiDaySliceList = (props: SliceListProps) => {
               streamList={streamList}
               sliceList={sliceList}
               pointList={pointList}
+              timeZone={timeZone}
             />
           </Box>
         )
@@ -144,18 +164,19 @@ const MultiDaySliceList = (props: SliceListProps) => {
 
 type HandlerOptions = {
   db: KyselyDb
-  currentTime: Date
+  since: Date
   filter: {
     streamId: string | undefined
   }
+  timeZone: string
 }
 
 const handler = async (options: HandlerOptions) => {
-  const { db, currentTime, filter } = options
+  const { db, since, filter, timeZone } = options
 
   const pointList = await retrievePointList({
     db,
-    since: startOfDay(currentTime),
+    since: since.getTime(),
     filter,
   })
   if (pointList instanceof Error) {
@@ -183,6 +204,7 @@ const handler = async (options: HandlerOptions) => {
         streamList={streamList}
         pointList={pointList}
         sliceList={sliceList}
+        timeZone={timeZone}
       />
     </Box>,
   )
@@ -215,13 +237,14 @@ const logCmd = new CliCommand('log')
   .withHandler(async (_args, options, _extra) => {
     const db = getDb()
 
-    const currentTime = options['from']
-      ? chrono.parseDate(options['from'])
-      : new Date()
+    const timeZone = await getUserTimeZone({ db })
 
-    if (currentTime instanceof Error) {
-      throw currentTime
-    }
+    const since = options['from']
+      ? chrono.parseDate(options['from'], {
+          instant: new Date(),
+          timezone: timeZone,
+        })
+      : startOfDayWithTimeZone(Date.now(), timeZone)
 
     const filterStreamId = options['stream']
       ? await getStreamIdByName({ db, name: options['stream'] })
@@ -239,7 +262,8 @@ const logCmd = new CliCommand('log')
     return handler({
       db,
       filter: { streamId: filterStreamId },
-      currentTime,
+      since,
+      timeZone,
     })
   })
 

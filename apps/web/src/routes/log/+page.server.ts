@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import { getDb } from '$lib/db.js'
 import { mapPointListToLineList, mapLineListToSliceList } from '@stayradiated/pomo-core'
-import { retrieveStreamList, retrievePointList } from "@stayradiated/pomo-db"
+import { retrieveStreamList, retrievePointList, getUserTimeZone } from "@stayradiated/pomo-db"
 import type { PageServerLoad, Actions } from './$types';
 import type { Slice } from '@stayradiated/pomo-core';
 import { redirect } from '@sveltejs/kit';
@@ -45,11 +45,13 @@ const load = (async ({ request }) => {
 
   const db = getDb()
 
+  const timeZone = await getUserTimeZone({ db })
+
   const streamList = await retrieveStreamList({ db })
 
   const pointList = await retrievePointList({
     db,
-    since: new Date('2023-06-01'),
+    since: new Date('2023-06-17').getTime(),
     filter: {}
   })
   if (pointList instanceof Error) {
@@ -79,7 +81,8 @@ const load = (async ({ request }) => {
     sliceList: filteredSliceList,
     streamList,
     filterStreamId,
-    filterValue
+    filterValue,
+    timeZone,
   }
 }) satisfies PageServerLoad;
 

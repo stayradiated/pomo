@@ -17,4 +17,5 @@
 <MultiDaySliceList
   streamList={data.streamList}
   sliceList={data.sliceList}
+  timeZone={data.timeZone}
 />
