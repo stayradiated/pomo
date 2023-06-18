@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error } from '@sveltejs/kit'
-import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone } from '@stayradiated/pomo-db'
+import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-db'
 import { getDb } from '$lib/db';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { toDate, formatInTimeZone } from 'date-fns-tz'
@@ -30,24 +30,24 @@ const load = (async ({ request }) => {
   })
 
   const timeZone = await getUserTimeZone({ db })
-  const startedAtLocalString = formatInTimeZone(startedAt, timeZone, 'yyyy-MM-dd HH:mm')
+  const startedAtLocal = formatInTimeZone(startedAt, timeZone, 'yyyy-MM-dd HH:mm')
 
   return {
-    startedAtLocalString,
+    startedAtLocal,
     streamList,
     pointList,
   }
 }) satisfies PageServerLoad
 
 const $schema = zfd.formData({
-  datetimeLocal: zfd.text(),
+  startedAtLocal: zfd.text(),
   pointId: zfd.repeatable(z.array(zfd.text()).min(1))
 });
 
 const actions = {
   default: async ({ request }) => {
     const formData = $schema.parse(await request.formData())
-    const { datetimeLocal, pointId: userPointIdList } = formData
+    const { startedAtLocal, pointId: userPointIdList } = formData
 
     const db = getDb()
 
@@ -60,13 +60,11 @@ const actions = {
     }
 
     const timeZone = await getUserTimeZone({ db })
-    const nextStartedAt = toDate(datetimeLocal, { timeZone })
+    const startedAt = toDate(startedAtLocal, { timeZone }).getTime()
 
     const pointIdList = [...new Set(pointList.map((point) => point.id))]
-    await db.updateTable('Point')
-      .set({ startedAt: nextStartedAt.toISOString() })
-      .where('id', 'in', pointIdList)
-      .execute()
+
+    await updatePointStartedAt({ db, pointIdList, startedAt })
 
     throw redirect(303, '/log')
   }
