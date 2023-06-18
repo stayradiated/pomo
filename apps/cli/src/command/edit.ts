@@ -1,3 +1,5 @@
+import { CliCommand } from 'cilly'
+import * as chrono from 'chrono-node'
 import {
   ExternalEditor,
   CreateFileError,
@@ -13,10 +15,12 @@ import {
   retrieveStreamList,
   retrieveCurrentPoint,
   getStreamIdByName,
+  getPointStartedAtByRef,
   updatePointValue,
   insertPoint,
   upsertStream,
 } from '@stayradiated/pomo-db'
+import { getDb } from '#src/lib/db.js'
 
 // # edit current streams
 //
@@ -35,7 +39,7 @@ type EditOptions = {
   currentTime: Date
 }
 
-const edit = async (options: EditOptions) => {
+const handler = async (options: EditOptions) => {
   const { db, currentTime } = options
 
   const getCurrentText = async (): Promise<string> => {
@@ -136,4 +140,46 @@ const edit = async (options: EditOptions) => {
   }
 }
 
-export { edit }
+const editCmd = new CliCommand('edit')
+  .withDescription('Edit current streams')
+  .withOptions(
+    {
+      name: ['-a', '--at'],
+      description: 'Edit status at a current time',
+      args: [
+        {
+          name: 'datetime',
+          description: 'Date/time to show points from',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: ['-r', '--ref'],
+      description: 'Edit points for an existing slice',
+      args: [
+        {
+          name: 'sliceId',
+          description: 'ID of the slice to edit',
+          required: true,
+        },
+      ],
+    },
+  )
+  .withHandler(async (_args, options, _extra) => {
+    const db = getDb()
+
+    const currentTime = options['ref']
+      ? await getPointStartedAtByRef({ db, ref: options['ref'] })
+      : options['from']
+      ? chrono.parseDate(options['from'])
+      : new Date()
+
+    if (currentTime instanceof Error) {
+      throw currentTime
+    }
+
+    await handler({ db, currentTime })
+  })
+
+export { editCmd }

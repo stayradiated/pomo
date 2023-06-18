@@ -1,9 +1,16 @@
+import * as chrono from 'chrono-node'
+import {
+  getStreamIdByName,
+  retrievePointList,
+  getStreamNameById,
+} from '@stayradiated/pomo-db'
+import { CliCommand } from 'cilly'
 import { startOfDay } from 'date-fns'
 import type { KyselyDb } from '@stayradiated/pomo-db'
 import { stripComments, mapPointListToLineList } from '@stayradiated/pomo-core'
-import { retrievePointList, getStreamNameById } from '@stayradiated/pomo-db'
+import { getDb } from '#src/lib/db.js'
 
-type SummaryCmdOptions = {
+type HandlerOptions = {
   db: KyselyDb
   filter: {
     streamId: string | undefined
@@ -12,9 +19,7 @@ type SummaryCmdOptions = {
   currentTime: Date
 }
 
-const summaryCmd = async (
-  options: SummaryCmdOptions,
-): Promise<void | Error> => {
+const handler = async (options: HandlerOptions): Promise<void | Error> => {
   const { db, filter, currentTime } = options
 
   const pointList = await retrievePointList({
@@ -75,5 +80,65 @@ const summaryCmd = async (
 
   return undefined
 }
+
+const summaryCmd = new CliCommand('summary')
+  .withDescription('Show summary of today')
+  .withOptions(
+    {
+      name: ['-s', '--stream'],
+      description: 'Filter points by a Stream ',
+      args: [
+        { name: 'name', description: 'Name of the stream', required: true },
+      ],
+    },
+    {
+      name: ['-v', '--value'],
+      description: 'Filter points by a Point value ',
+      args: [
+        { name: 'value', description: 'Value to filter by', required: true },
+      ],
+    },
+    {
+      name: ['-f', '--from'],
+      description: 'Show points from a certain time',
+      args: [
+        {
+          name: 'datetime',
+          description: 'Date/time to show points from',
+          required: true,
+        },
+      ],
+    },
+  )
+  .withHandler(async (_args, options, _extra) => {
+    const db = getDb()
+
+    const currentTime = options['from']
+      ? chrono.parseDate(options['from'])
+      : new Date()
+
+    if (currentTime instanceof Error) {
+      throw currentTime
+    }
+
+    const filterStreamId = options['stream']
+      ? await getStreamIdByName({ db, name: options['stream'] })
+      : undefined
+
+    if (filterStreamId instanceof Error) {
+      throw new TypeError(
+        `Could not find stream with name: ${options['stream']}`,
+        {
+          cause: filterStreamId,
+        },
+      )
+    }
+
+    return handler({
+      db,
+      filter: { streamId: filterStreamId, value: options['value'] },
+      currentTime,
+    })
+  })
 
 export { summaryCmd }

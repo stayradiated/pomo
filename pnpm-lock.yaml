@@ -35,6 +35,9 @@ importers:
       chrono-node:
         specifier: 2.6.3
         version: 2.6.3
+      cilly:
+        specifier: 1.0.25
+        version: 1.0.25
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -2018,6 +2021,10 @@ packages:
   /ci-info@3.8.0:
     resolution: {integrity: sha512-eXTggHWSooYhq49F2opQhuHWgzucfF2YgODK4e1566GQs5BIfP30B0oenwBJHfWxAs2fyPB1s7Mg949zLf61Yw==}
     engines: {node: '>=8'}
+
+  /cilly@1.0.25:
+    resolution: {integrity: sha512-C6hHDOyK4GLd5upybso8QZ2CN0AqivsK+EjLz8GO0cAk1EsYiFL1rlbNTJK+77FwLbWbgM9f4PuEc2Y3h1IINw==}
+    dev: false
 
   /clean-regexp@1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
