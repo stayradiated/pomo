@@ -2,6 +2,7 @@ import * as chrono from 'chrono-node'
 import {
   getStreamIdByName,
   retrievePointList,
+  retrieveStreamList,
   getUserTimeZone,
 } from '@stayradiated/pomo-db'
 import { Text, Box, Newline, render } from 'ink'
@@ -193,10 +194,7 @@ const handler = async (options: HandlerOptions) => {
     return sliceList
   }
 
-  const streamList = await db
-    .selectFrom('Stream')
-    .select(['id', 'name'])
-    .execute()
+  const streamList = await retrieveStreamList({ db })
 
   render(
     <Box flexDirection="column" margin={1}>

@@ -1,7 +1,7 @@
 import { sql } from 'kysely'
-import type { Selectable } from 'kysely'
 import { errorBoundary } from '@stayradiated/error-boundary'
-import type { KyselyDb, Point } from '#src/db.js'
+import type { KyselyDb } from '#src/db.js'
+import type { Point } from '@stayradiated/pomo-core'
 
 type RetrieveOptions = {
   db: KyselyDb
@@ -11,14 +11,9 @@ type RetrieveOptions = {
   }
 }
 
-type RetrievePointResult = Pick<
-  Selectable<Point>,
-  'id' | 'startedAt' | 'streamId' | 'value'
->
-
 const retrievePointList = async (
   options: RetrieveOptions,
-): Promise<RetrievePointResult[] | Error> => {
+): Promise<Point[] | Error> => {
   const { db, since, filter } = options
 
   return errorBoundary(async () =>
@@ -36,7 +31,7 @@ const retrievePointList = async (
             .onRef('Point.streamId', '=', 'sv2.streamId')
             .onRef('Point.startedAt', '=', 'sv2.maxStartedAt'),
       )
-      .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value'])
+      .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value', 'Point.createdAt', 'Point.updatedAt'])
       .where(({ or, cmpr }) =>
         or([
           cmpr('Point.startedAt', '>', since),

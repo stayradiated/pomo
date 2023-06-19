@@ -1,6 +1,8 @@
 type Stream = {
   id: string
   name: string
+  createdAt: number
+  updatedAt: number | null
 }
 
 type Point = {
@@ -8,6 +10,8 @@ type Point = {
   streamId: string
   value: string
   startedAt: number
+  createdAt: number
+  updatedAt: number | null
 }
 
 type Line = {
@@ -15,7 +19,7 @@ type Line = {
   streamId: string
   value: string
   startedAt: number
-  stoppedAt: number | undefined
+  stoppedAt: number | null
   durationMs: number
 }
 

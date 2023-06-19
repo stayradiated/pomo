@@ -1,6 +1,11 @@
 const isValidTimeZone = (tz: string): boolean => {
   try {
-    if (!Intl || !Intl.DateTimeFormat().resolvedOptions().timeZone) {
+    if (!Intl) {
+      return false
+    }
+
+    const testDateTimeFormat = new Intl.DateTimeFormat()
+    if (testDateTimeFormat.resolvedOptions().timeZone) {
       return false
     }
 
@@ -9,8 +14,9 @@ const isValidTimeZone = (tz: string): boolean => {
     }
 
     // Throws an error if timezone is not valid
-    Intl.DateTimeFormat(undefined, { timeZone: tz })
-    return true
+    const result = new Intl.DateTimeFormat(undefined, { timeZone: tz })
+
+    return Boolean(result) // True
   } catch {
     return false
   }

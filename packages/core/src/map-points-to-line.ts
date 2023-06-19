@@ -9,9 +9,8 @@ const mapPointsToLine = <T extends Point>(
   }
 
   const startedAt = startPoint.startedAt
-  const stoppedAt = stopPoint ? stopPoint.startedAt : undefined
+  const stoppedAt = stopPoint ? stopPoint.startedAt : null
 
-  // TODO: is using Date.now() to calculate duration timezone safe?
   const durationMs = stoppedAt ? stoppedAt - startedAt : Date.now() - startedAt
 
   const line: Line = {

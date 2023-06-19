@@ -29,7 +29,10 @@
   "xo": {
     "space": true,
     "semicolon": false,
-    "prettier": true
+    "prettier": true,
+    "rules": {
+      "@typescript-eslint/ban-types": "off"
+    }
   },
   "prettier": {
     "arrowParens": "always",
