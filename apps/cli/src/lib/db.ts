@@ -7,7 +7,7 @@ const getDb = once(() => {
   const env = getEnv()
 
   const sqliteDb = createSqliteDb(env.POMO_DATABASE_URL)
-  sqliteDb.pragma('journal_mode = WAL')
+  sqliteDb.pragma('journal_mode = TRUNCATE')
 
   const db = createKyselyDb(sqliteDb)
 

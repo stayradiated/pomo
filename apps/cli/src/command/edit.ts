@@ -181,9 +181,9 @@ const editCmd = new CliCommand('edit')
 
     const currentTime = options['ref']
       ? await getPointStartedAtByRef({ db, ref: options['ref'] })
-      : options['from']
+      : options['at']
       ? chrono
-          .parseDate(options['from'], {
+          .parseDate(options['at'], {
             instant: new Date(),
             timezone: timeZone,
           })
