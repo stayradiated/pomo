@@ -1,31 +1,14 @@
 import * as fs from 'node:fs/promises'
 import { CliCommand } from 'cilly'
 import type { KyselyDb } from '@stayradiated/pomo-db'
-import * as Automerge from '@automerge/automerge'
-import type { Point, Stream } from '@stayradiated/pomo-core'
-import { retrieveStreamList, retrieveAllPointList } from '@stayradiated/pomo-db'
+import {
+  retrieveUserList,
+  retrieveStreamList,
+  retrieveAllPointList,
+} from '@stayradiated/pomo-db'
+import { loadDoc, saveDoc, createDocWithData } from '@stayradiated/pomo-doc'
 import { getDb } from '#src/lib/db.js'
-
-type Doc = {
-  pointList: Point[]
-  streamList: Stream[]
-}
-
-const createDoc = () => {
-  const schema = Automerge.change(
-    Automerge.init<Doc>('0000'),
-    { time: 0 },
-    (doc) => {
-      doc.pointList = [] as unknown as Automerge.List<Point>
-      doc.streamList = [] as unknown as Automerge.List<Stream>
-    },
-  )
-
-  const initChange = Automerge.getLastLocalChange(schema)
-  const [doc] = Automerge.applyChanges(Automerge.init<Doc>(), [initChange])
-
-  return doc
-}
+import { User, Stream, Point } from '@stayradiated/pomo-core'
 
 type DumpHandlerOptions = {
   db: KyselyDb
@@ -35,16 +18,28 @@ type DumpHandlerOptions = {
 const dumpHandler = async (options: DumpHandlerOptions) => {
   const { db, outputFilePath } = options
 
+  const userList = await retrieveUserList({ db })
   const streamList = await retrieveStreamList({ db })
   const pointList = await retrieveAllPointList({ db })
 
-  const doc = Automerge.change(createDoc(), (doc) => {
-    doc.streamList.push(...streamList)
-    doc.pointList.push(...pointList)
-  })
+  const userRecord = userList.reduce((acc, user) => {
+    acc[user.id] = user
+    return acc
+  }, {} as Record<string, User>)
 
-  const byteArray = Automerge.save(doc)
+  const streamRecord = streamList.reduce((acc, stream) => {
+    acc[stream.id] = stream
+    return acc
+  }, {} as Record<string, Stream>)
 
+  const pointRecord = pointList.reduce((acc, point) => {
+    acc[point.id] = point
+    return acc
+  }, {} as Record<string, Point>)
+
+  const doc = createDocWithData({ user: userRecord, stream: streamRecord, point: pointRecord })
+
+  const byteArray = saveDoc(doc)
   await fs.writeFile(outputFilePath, byteArray)
 }
 
@@ -76,10 +71,10 @@ const restoreHandler = async (options: RestoreHandlerOptions) => {
   const { inputFilePath } = options
 
   const byteArray = await fs.readFile(inputFilePath)
-  const doc = Automerge.load<Doc>(byteArray)
+  const doc = loadDoc(byteArray)
 
-  for (const stream of doc.streamList) {
-    const pointList = doc.pointList.filter(
+  for (const stream of Object.values(doc.stream)) {
+    const pointList = Object.values(doc.point).filter(
       (point) => point.streamId === stream.id,
     )
     console.log(

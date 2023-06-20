@@ -29,6 +29,7 @@
     "useDefineForClassFields": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "rootDir": "src",
     "baseUrl": ".",
     "paths": {
       "#src/*": [

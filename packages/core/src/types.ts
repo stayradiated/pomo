@@ -1,3 +1,10 @@
+type User = {
+  id: string
+  timeZone: string
+  createdAt: number
+  updatedAt: number | null
+}
+
 type Stream = {
   id: string
   name: string
@@ -23,4 +30,4 @@ type Line = {
   durationMs: number
 }
 
-export type { Stream, Point, Line }
+export type { User, Stream, Point, Line }
