@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Stream, Slice } from '@stayradiated/pomo-core';
-  import { format } from 'date-fns'
-  import { stripComments } from '@stayradiated/pomo-core';
+  import * as dateFns from 'date-fns'
+  import { stripComments, durationLocale } from '@stayradiated/pomo-core';
   import { utcToZonedTime } from 'date-fns-tz';
 
   export let streamList: Stream[]
@@ -10,7 +10,17 @@
 
   const formatTime = (utc: number): string => {
     const time = utcToZonedTime(utc, timeZone)
-    return format(time, 'HH:mm')
+    return dateFns.format(time, 'HH:mm')
+  }
+
+  const formatDuration = (ms: number): string => {
+    return dateFns.formatDuration(
+      dateFns.intervalToDuration({ start: 0, end: ms }),
+      {
+        format: ['hours', 'minutes'],
+        locale: durationLocale,
+      },
+    )
   }
 </script>
 
@@ -33,7 +43,7 @@
           {@const line = slice.lineList.find((line) => line.streamId === stream.id)}
           <td>{line ? stripComments(line.value) : ''}<br />
           {#if line}
-            <code>{Math.round(line.durationMs / 1000 / 60)}min</code>
+            <code>{formatDuration(line.durationMs)}</code>
           {/if}
           </td>
         {/each}

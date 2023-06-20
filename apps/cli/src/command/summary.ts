@@ -5,9 +5,9 @@ import {
   getStreamNameById,
 } from '@stayradiated/pomo-db'
 import { CliCommand } from 'cilly'
-import { startOfDay } from 'date-fns'
+import { startOfDay, intervalToDuration, formatDuration } from 'date-fns'
 import type { KyselyDb } from '@stayradiated/pomo-db'
-import { stripComments, mapPointListToLineList } from '@stayradiated/pomo-core'
+import { stripComments, mapPointListToLineList, durationLocale } from '@stayradiated/pomo-core'
 import { getDb } from '#src/lib/db.js'
 
 type HandlerOptions = {
@@ -25,7 +25,9 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   const pointList = await retrievePointList({
     db,
     since: startOfDay(currentTime).getTime(),
-    filter,
+    filter: {
+      streamId: filter.streamId,
+    }
   })
   if (pointList instanceof Error) {
     return pointList
@@ -63,16 +65,20 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
       return name
     }
 
-    for (const [value, duration] of values.entries()) {
-      const hours = Math.round(duration / 1000 / 60 / 60)
-      const minutes = Math.round(duration / 1000 / 60) % 60
-      const seconds = Math.round(duration / 1000) % 60
+    for (const [value, durationMs] of values.entries()) {
+      const duration = formatDuration(
+        intervalToDuration({ start: 0, end: durationMs }),
+        {
+          format: ['hours', 'minutes'],
+          locale: durationLocale,
+        },
+      )
 
       console.log(
         JSON.stringify({
           stream: name,
           value,
-          duration: `${hours}h ${minutes}m ${seconds}s`,
+          duration,
         }),
       )
     }
