@@ -9,19 +9,8 @@ import {
 } from 'external-editor'
 import { parse } from '@stayradiated/pomo-markdown'
 import { stripComments } from '@stayradiated/pomo-core'
-import type { KyselyDb } from '@stayradiated/pomo-db'
-import {
-  retrieveStreamList,
-  retrieveCurrentPoint,
-  getStreamIdByName,
-  getPointStartedAtByRef,
-  updatePointValue,
-  insertPoint,
-  upsertStream,
-  getUserTimeZone,
-} from '@stayradiated/pomo-db'
 import { formatInTimeZone } from 'date-fns-tz'
-import { getDb } from '#src/lib/db.js'
+import { client } from '@stayradiated/pomo-daemon'
 
 // # edit current streams
 //
@@ -36,13 +25,13 @@ import { getDb } from '#src/lib/db.js'
 // Each stream is defined by a header, which is a markdown header (e.g. `#` or `##`).
 
 type EditOptions = {
-  db: KyselyDb
+  trpc: ReturnType<(typeof client)['getTrpcClient']>
   currentTime: number
   timeZone: string
 }
 
 const handler = async (options: EditOptions) => {
-  const { db, currentTime, timeZone } = options
+  const { trpc, currentTime, timeZone } = options
 
   const getCurrentText = async (): Promise<string> => {
     let output = `${formatInTimeZone(
@@ -51,13 +40,12 @@ const handler = async (options: EditOptions) => {
       'yyyy-MM-dd HH:mm:ss zzz',
     )}\n\n`
 
-    const streamList = await retrieveStreamList({ db })
+    const streamList = await trpc.retrieveStreamList.query()
 
     for (const stream of streamList) {
       output += `# ${stream.name}\n\n`
 
-      const currentPoint = await retrieveCurrentPoint({
-        db,
+      const currentPoint = await trpc.retrieveCurrentPoint.query({
         streamId: stream.id,
         currentTime,
       })
@@ -95,17 +83,16 @@ const handler = async (options: EditOptions) => {
 
   const streamNameList = Object.keys(userInput)
   for (const streamName of streamNameList) {
-    await upsertStream({ db, name: streamName })
+    await trpc.upsertStream.mutate({ name: streamName })
   }
 
   for (const [streamName, value] of Object.entries(userInput)) {
-    const streamId = await getStreamIdByName({ db, name: streamName })
-    if (streamId instanceof Error) {
-      throw streamId
+    const streamId = await trpc.getStreamIdByName.query({ name: streamName })
+    if (streamId === undefined) {
+      throw new TypeError(`Could not find stream with name "${streamName}"`)
     }
 
-    const currentPoint = await retrieveCurrentPoint({
-      db,
+    const currentPoint = await trpc.retrieveCurrentPoint.query({
       streamId,
       currentTime,
     })
@@ -120,14 +107,12 @@ const handler = async (options: EditOptions) => {
       )
 
       if (currentPoint?.startedAt === currentTime) {
-        await updatePointValue({
-          db,
+        await trpc.updatePointValue.mutate({
           pointId: currentPoint.id,
           value,
         })
       } else {
-        await insertPoint({
-          db,
+        await trpc.upsertPoint.mutate({
           streamId,
           value,
           startedAt: currentTime,
@@ -175,12 +160,12 @@ const editCmd = new CliCommand('edit')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const db = getDb()
+    const trpc = client.getTrpcClient()
 
-    const timeZone = await getUserTimeZone({ db })
+    const timeZone = await trpc.getUserTimeZone.query()
 
     const currentTime = options['ref']
-      ? await getPointStartedAtByRef({ db, ref: options['ref'] })
+      ? await trpc.getPointStartedAtByRef.query({ ref: options['ref'] })
       : options['at']
       ? chrono
           .parseDate(options['at'], {
@@ -190,11 +175,11 @@ const editCmd = new CliCommand('edit')
           .getTime()
       : Date.now()
 
-    if (currentTime instanceof Error) {
-      throw currentTime
+    if (currentTime === undefined) {
+      throw new TypeError('Could not figure out current time')
     }
 
-    await handler({ db, currentTime, timeZone })
+    await handler({ trpc, currentTime, timeZone })
   })
 
 export { editCmd }

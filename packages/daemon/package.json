@@ -1,14 +1,13 @@
 {
-  "name": "@stayradiated/pomo-db",
-  "version": "0.0.1",
+  "name": "@stayradiated/pomo-daemon",
+  "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "vitest --watch=false",
     "tidy": "xo --fix",
-    "build": "rm -rf dist && tsc",
-    "prisma": "DATABASE_URL=file:$POMO_DATABASE_URL prisma",
-    "db:generate": "$npm_execpath run prisma generate"
+    "build": "tsc"
   },
   "keywords": [],
   "author": {
@@ -16,27 +15,11 @@
   },
   "license": "ISC",
   "type": "module",
-  "peerDependencies": {
-    "better-sqlite3": "^8.0.0"
-  },
-  "dependencies": {
-    "@stayradiated/error-boundary": "4.1.0",
-    "@stayradiated/pomo-core": "workspace:*",
-    "date-fns": "2.30.0",
-    "kysely": "0.25.0"
-  },
   "devDependencies": {
-    "@types/better-sqlite3": "7.6.4",
-    "prisma": "4.16.0",
-    "prisma-kysely": "1.4.2",
+    "@types/node": "20.3.1",
     "typescript": "5.1.3",
     "vitest": "0.32.2",
     "xo": "0.54.2"
-  },
-  "imports": {
-    "#src/*": {
-      "node": "./dist/*"
-    }
   },
   "__comment": "The following configs are managed by `@stayradiated/jsconfig`",
   "xo": {
@@ -52,5 +35,19 @@
     "tabWidth": 2,
     "trailingComma": "all",
     "useTabs": false
+  },
+  "imports": {
+    "#src/*": {
+      "node": "./dist/*"
+    }
+  },
+  "dependencies": {
+    "@stayradiated/error-boundary": "4.1.0",
+    "@stayradiated/pomo-core": "workspace:*",
+    "@stayradiated/pomo-doc": "workspace:*",
+    "@trpc/client": "10.31.0",
+    "@trpc/server": "10.31.0",
+    "rambda": "7.5.0",
+    "zod": "3.21.4"
   }
 }

@@ -8,11 +8,20 @@ type UpsertStreamOptions = {
 }
 
 const upsertStream = (options: UpsertStreamOptions): AutomergeDoc => {
-  const { doc, name } = options
+  const { doc: srcDoc, name } = options
 
-  const id = randomUUID()
+  return Automerge.change(srcDoc, 'upsertStream', (doc) => {
+    const existingStream = Object.values(doc.stream).find((stream) => {
+      return stream.name === name
+    })
 
-  return Automerge.change(doc, 'upsertStream', (doc) => {
+    if (existingStream) {
+      existingStream.name = name
+      existingStream.updatedAt = Date.now()
+      return
+    }
+
+    const id = randomUUID()
     doc.stream[id] = {
       id,
       name,

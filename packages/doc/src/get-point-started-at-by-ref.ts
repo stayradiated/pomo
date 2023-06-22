@@ -5,9 +5,9 @@ type GetPointStartedAtByRefOptions = {
   ref: string
 }
 
-const getPointStartedAtByRef = async (
+const getPointStartedAtByRef = (
   options: GetPointStartedAtByRefOptions,
-): Promise<number | Error> => {
+): number | undefined => {
   const { doc, ref } = options
 
   for (const key of Object.keys(doc.point)) {
@@ -19,7 +19,7 @@ const getPointStartedAtByRef = async (
     }
   }
 
-  return new Error(`Point not found: ${ref}`)
+  return undefined
 }
 
 export { getPointStartedAtByRef }

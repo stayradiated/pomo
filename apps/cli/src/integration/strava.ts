@@ -1,10 +1,9 @@
 import { URL } from 'node:url'
 import http from 'node:http'
 import { spawn } from 'node:child_process'
-import { randomUUID } from 'node:crypto'
 import { fetch } from 'undici'
 import { z } from 'zod'
-import type { KyselyDb } from '@stayradiated/pomo-db'
+import { type client } from '@stayradiated/pomo-daemon'
 
 const CLIENT_ID = '41535'
 const CLIENT_SECRET = '8037af8638f3f1d10e77d1fce824070cf64f2101'
@@ -264,7 +263,7 @@ const getAllActivities = (
 }
 
 type Options = {
-  db: KyselyDb
+  trpc: ReturnType<typeof client.getTrpcClient>
   initialSession?: Session
 }
 
@@ -273,24 +272,14 @@ type Result = {
 }
 
 const pullStravaActivities = async (options: Options): Promise<Result> => {
-  const { db, initialSession } = options
+  const { trpc, initialSession } = options
   const session = await refreshSession(initialSession)
 
-  await db
-    .insertInto('Stream')
-    .values({
-      id: randomUUID(),
-      name: 'Strava',
-      createdAt: Date.now(),
-    })
-    .onConflict((oc) => oc.column('name').doNothing())
-    .execute()
-
-  const { id: streamId } = await db
-    .selectFrom('Stream')
-    .select('id')
-    .where('name', '=', 'Strava')
-    .executeTakeFirstOrThrow()
+  await trpc.upsertStream.mutate({ name: 'Strava' })
+  const streamId = await trpc.getStreamIdByName.query({ name: 'Strava' })
+  if (streamId === undefined) {
+    throw new TypeError('Stream not found')
+  }
 
   console.log({ streamId })
 
@@ -303,29 +292,17 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
 
     console.log(activity.name, startDate, stopDate, durationMin)
 
-    await db
-      .insertInto('Point')
-      .values({
-        id: randomUUID(),
-        streamId,
-        value: activity.name,
-        startedAt: startDate.getTime(),
-        createdAt: Date.now(),
-      })
-      // .onConflict((oc) => oc.constraint('streamId_startedAt').doNothing())
-      .execute()
+    await trpc.upsertPoint.mutate({
+      streamId,
+      value: activity.name,
+      startedAt: startDate.getTime(),
+    })
 
-    await db
-      .insertInto('Point')
-      .values({
-        id: randomUUID(),
-        streamId,
-        value: '',
-        startedAt: stopDate.getTime(),
-        createdAt: Date.now(),
-      })
-      // .onConflict((oc) => oc.constraint('streamId_startedAt').doNothing())
-      .execute()
+    await trpc.upsertPoint.mutate({
+      streamId,
+      value: '',
+      startedAt: stopDate.getTime(),
+    })
   }
 
   return { session }

@@ -7,8 +7,8 @@ import {
   retrieveAllPointList,
 } from '@stayradiated/pomo-db'
 import { loadDoc, saveDoc, createDocWithData } from '@stayradiated/pomo-doc'
+import { type User, type Stream, type Point } from '@stayradiated/pomo-core'
 import { getDb } from '#src/lib/db.js'
-import { User, Stream, Point } from '@stayradiated/pomo-core'
 
 type DumpHandlerOptions = {
   db: KyselyDb
@@ -22,22 +22,29 @@ const dumpHandler = async (options: DumpHandlerOptions) => {
   const streamList = await retrieveStreamList({ db })
   const pointList = await retrieveAllPointList({ db })
 
-  const userRecord = userList.reduce((acc, user) => {
+  const userRecord = userList.reduce<Record<string, User>>((acc, user) => {
     acc[user.id] = user
     return acc
-  }, {} as Record<string, User>)
+  }, {})
 
-  const streamRecord = streamList.reduce((acc, stream) => {
-    acc[stream.id] = stream
-    return acc
-  }, {} as Record<string, Stream>)
+  const streamRecord = streamList.reduce<Record<string, Stream>>(
+    (acc, stream) => {
+      acc[stream.id] = stream
+      return acc
+    },
+    {},
+  )
 
-  const pointRecord = pointList.reduce((acc, point) => {
+  const pointRecord = pointList.reduce<Record<string, Point>>((acc, point) => {
     acc[point.id] = point
     return acc
-  }, {} as Record<string, Point>)
+  }, {})
 
-  const doc = createDocWithData({ user: userRecord, stream: streamRecord, point: pointRecord })
+  const doc = createDocWithData({
+    user: userRecord,
+    stream: streamRecord,
+    point: pointRecord,
+  })
 
   const byteArray = saveDoc(doc)
   await fs.writeFile(outputFilePath, byteArray)

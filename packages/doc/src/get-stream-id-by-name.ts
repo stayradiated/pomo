@@ -5,9 +5,9 @@ type GetStreamIdByNameOptions = {
   name: string
 }
 
-const getStreamIdByName = async (
+const getStreamIdByName = (
   options: GetStreamIdByNameOptions,
-): Promise<string | Error> => {
+): string | undefined => {
   const { doc, name } = options
 
   for (const stream of Object.values(doc.stream)) {
@@ -16,7 +16,7 @@ const getStreamIdByName = async (
     }
   }
 
-  return new Error(`Stream not found: ${name}`)
+  return undefined
 }
 
 export { getStreamIdByName }

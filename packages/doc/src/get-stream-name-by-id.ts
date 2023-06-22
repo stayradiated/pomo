@@ -5,13 +5,13 @@ type GetStreamNameByIdOptions = {
   id: string
 }
 
-const getStreamNameById = async (
+const getStreamNameById = (
   options: GetStreamNameByIdOptions,
-): Promise<string | Error> => {
+): string | undefined => {
   const { doc, id } = options
   const stream = doc.stream[id]
   if (!stream) {
-    return new Error(`Stream not found: ${id}`)
+    return undefined
   }
 
   return stream.name

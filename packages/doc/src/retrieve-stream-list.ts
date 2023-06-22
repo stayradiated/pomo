@@ -5,9 +5,7 @@ type RetrieveOptions = {
   doc: AutomergeDoc
 }
 
-const retrieveStreamList = async (
-  options: RetrieveOptions,
-): Promise<Stream[]> => {
+const retrieveStreamList = (options: RetrieveOptions): Stream[] => {
   const { doc } = options
 
   const streamList = Object.values(doc.stream)

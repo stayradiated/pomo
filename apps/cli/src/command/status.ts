@@ -1,26 +1,19 @@
 import { CliCommand } from 'cilly'
 import * as chrono from 'chrono-node'
-import {
-  getStreamIdByName,
-  retrievePointList,
-  getStreamNameById,
-} from '@stayradiated/pomo-db'
 import { intervalToDuration, formatDuration } from 'date-fns'
-import type { KyselyDb } from '@stayradiated/pomo-db'
 import { mapPointListToLineList, stripComments } from '@stayradiated/pomo-core'
-import { getDb } from '#src/lib/db.js'
+import { client } from '@stayradiated/pomo-daemon'
 
 type HandlerOptions = {
-  db: KyselyDb
+  trpc: ReturnType<typeof client.getTrpcClient>
   filter: { streamId?: string }
   currentTime: Date
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { db, currentTime, filter } = options
+  const { trpc, currentTime, filter } = options
 
-  const pointList = await retrievePointList({
-    db,
+  const pointList = await trpc.retrievePointList.query({
     since: currentTime.getTime(),
     filter,
   })
@@ -34,9 +27,9 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   }
 
   for (const line of lineList) {
-    const streamName = await getStreamNameById({ db, id: line.streamId })
-    if (streamName instanceof Error) {
-      return streamName
+    const streamName = await trpc.getStreamNameById.query({ id: line.streamId })
+    if (streamName === undefined) {
+      return new Error(`Stream not found: ${line.streamId}`)
     }
 
     const elapsed = intervalToDuration({
@@ -83,7 +76,7 @@ const statusCmd = new CliCommand('status')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const db = getDb()
+    const trpc = client.getTrpcClient()
 
     const currentTime = options['from']
       ? chrono.parseDate(options['from'])
@@ -94,20 +87,11 @@ const statusCmd = new CliCommand('status')
     }
 
     const filterStreamId = options['stream']
-      ? await getStreamIdByName({ db, name: options['stream'] })
+      ? await trpc.getStreamIdByName.query({ name: options['stream'] })
       : undefined
 
-    if (filterStreamId instanceof Error) {
-      throw new TypeError(
-        `Could not find stream with name: ${options['stream']}`,
-        {
-          cause: filterStreamId,
-        },
-      )
-    }
-
     return handler({
-      db,
+      trpc,
       filter: { streamId: filterStreamId },
       currentTime,
     })

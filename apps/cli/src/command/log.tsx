@@ -1,10 +1,4 @@
 import * as chrono from 'chrono-node'
-import {
-  getStreamIdByName,
-  retrievePointList,
-  retrieveStreamList,
-  getUserTimeZone,
-} from '@stayradiated/pomo-db'
 import { Text, Box, Newline, render } from 'ink'
 import React from 'react'
 import { format, intervalToDuration, formatDuration } from 'date-fns'
@@ -17,10 +11,9 @@ import {
   durationLocale,
 } from '@stayradiated/pomo-core'
 import type { Slice, Stream, Point } from '@stayradiated/pomo-core'
-import type { KyselyDb } from '@stayradiated/pomo-db'
 import { CliCommand } from 'cilly'
 import { utcToZonedTime } from 'date-fns-tz'
-import { getDb } from '#src/lib/db.js'
+import { client } from '@stayradiated/pomo-daemon'
 
 type SliceListProps = {
   streamList: Stream[]
@@ -164,7 +157,7 @@ const MultiDaySliceList = (props: SliceListProps) => {
 }
 
 type HandlerOptions = {
-  db: KyselyDb
+  trpc: ReturnType<(typeof client)['getTrpcClient']>
   since: Date
   filter: {
     streamId: string | undefined
@@ -173,16 +166,12 @@ type HandlerOptions = {
 }
 
 const handler = async (options: HandlerOptions) => {
-  const { db, since, filter, timeZone } = options
+  const { trpc, since, filter, timeZone } = options
 
-  const pointList = await retrievePointList({
-    db,
+  const pointList = await trpc.retrievePointList.query({
     since: since.getTime(),
     filter,
   })
-  if (pointList instanceof Error) {
-    return pointList
-  }
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
@@ -194,7 +183,7 @@ const handler = async (options: HandlerOptions) => {
     return sliceList
   }
 
-  const streamList = await retrieveStreamList({ db })
+  const streamList = await trpc.retrieveStreamList.query()
 
   render(
     <Box flexDirection="column" margin={1}>
@@ -233,9 +222,9 @@ const logCmd = new CliCommand('log')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const db = getDb()
+    const trpc = client.getTrpcClient()
 
-    const timeZone = await getUserTimeZone({ db })
+    const timeZone = await trpc.getUserTimeZone.query()
 
     const since = options['from']
       ? chrono.parseDate(options['from'], {
@@ -245,20 +234,11 @@ const logCmd = new CliCommand('log')
       : startOfDayWithTimeZone(Date.now(), timeZone)
 
     const filterStreamId = options['stream']
-      ? await getStreamIdByName({ db, name: options['stream'] })
+      ? await trpc.getStreamIdByName.query({ name: options['stream'] })
       : undefined
 
-    if (filterStreamId instanceof Error) {
-      throw new TypeError(
-        `Could not find stream with name: ${options['stream']}`,
-        {
-          cause: filterStreamId,
-        },
-      )
-    }
-
     return handler({
-      db,
+      trpc,
       filter: { streamId: filterStreamId },
       since,
       timeZone,

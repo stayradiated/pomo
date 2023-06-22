@@ -1,17 +1,15 @@
 import * as chrono from 'chrono-node'
-import {
-  getStreamIdByName,
-  retrievePointList,
-  getStreamNameById,
-} from '@stayradiated/pomo-db'
 import { CliCommand } from 'cilly'
 import { startOfDay, intervalToDuration, formatDuration } from 'date-fns'
-import type { KyselyDb } from '@stayradiated/pomo-db'
-import { stripComments, mapPointListToLineList, durationLocale } from '@stayradiated/pomo-core'
-import { getDb } from '#src/lib/db.js'
+import {
+  stripComments,
+  mapPointListToLineList,
+  durationLocale,
+} from '@stayradiated/pomo-core'
+import { client } from '@stayradiated/pomo-daemon'
 
 type HandlerOptions = {
-  db: KyselyDb
+  trpc: ReturnType<(typeof client)['getTrpcClient']>
   filter: {
     streamId: string | undefined
     value: string | undefined
@@ -20,18 +18,14 @@ type HandlerOptions = {
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { db, filter, currentTime } = options
+  const { trpc, filter, currentTime } = options
 
-  const pointList = await retrievePointList({
-    db,
+  const pointList = await trpc.retrievePointList.query({
     since: startOfDay(currentTime).getTime(),
     filter: {
       streamId: filter.streamId,
-    }
+    },
   })
-  if (pointList instanceof Error) {
-    return pointList
-  }
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
@@ -60,10 +54,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
 
   for (const entry of totalDuration.entries()) {
     const [streamId, values] = entry
-    const name = await getStreamNameById({ db, id: streamId })
-    if (name instanceof Error) {
-      return name
-    }
+    const name = await trpc.getStreamNameById.query({ id: streamId })
 
     for (const [value, durationMs] of values.entries()) {
       const duration = formatDuration(
@@ -117,7 +108,7 @@ const summaryCmd = new CliCommand('summary')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const db = getDb()
+    const trpc = client.getTrpcClient()
 
     const currentTime = options['from']
       ? chrono.parseDate(options['from'])
@@ -128,20 +119,11 @@ const summaryCmd = new CliCommand('summary')
     }
 
     const filterStreamId = options['stream']
-      ? await getStreamIdByName({ db, name: options['stream'] })
+      ? await trpc.getStreamIdByName.query({ name: options['stream'] })
       : undefined
 
-    if (filterStreamId instanceof Error) {
-      throw new TypeError(
-        `Could not find stream with name: ${options['stream']}`,
-        {
-          cause: filterStreamId,
-        },
-      )
-    }
-
     return handler({
-      db,
+      trpc,
       filter: { streamId: filterStreamId, value: options['value'] },
       currentTime,
     })

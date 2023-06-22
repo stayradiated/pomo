@@ -4,8 +4,8 @@ const isValidTimeZone = (tz: string): boolean => {
       return false
     }
 
-    const testDateTimeFormat = new Intl.DateTimeFormat()
-    if (testDateTimeFormat.resolvedOptions().timeZone) {
+    const dtf = new Intl.DateTimeFormat()
+    if (!dtf.resolvedOptions().timeZone) {
       return false
     }
 

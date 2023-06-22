@@ -9,9 +9,7 @@ type RetrieveOptions = {
   }
 }
 
-const retrievePointList = async (
-  options: RetrieveOptions,
-): Promise<Point[] | Error> => {
+const retrievePointList = (options: RetrieveOptions): Point[] => {
   const { doc, since, filter } = options
 
   const pointList = Object.values(doc.point).filter((point) => {
@@ -52,6 +50,9 @@ const retrievePointList = async (
 
   const bonusPoints = Object.values(latestPointByStream).flat()
   pointList.push(...bonusPoints)
+
+  // Sort by startedAt ascending
+  pointList.sort((a, b) => a.startedAt - b.startedAt)
 
   return pointList
 }

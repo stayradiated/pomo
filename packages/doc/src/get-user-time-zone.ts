@@ -4,11 +4,10 @@ type GetUserTimeZoneOptions = {
   doc: AutomergeDoc
 }
 
-const getUserTimeZone = async (
-  options: GetUserTimeZoneOptions,
-): Promise<string> => {
+const getUserTimeZone = (options: GetUserTimeZoneOptions): string => {
   const { doc } = options
-  const user = doc.user[0]
+
+  const user = Object.values(doc.user)[0]
 
   if (!user) {
     return 'UTC'

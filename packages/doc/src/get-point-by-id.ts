@@ -6,15 +6,9 @@ type GetPointByIdOptions = {
   id: string
 }
 
-const getPointById = async (
-  options: GetPointByIdOptions,
-): Promise<Point | Error> => {
+const getPointById = (options: GetPointByIdOptions): Point | undefined => {
   const { doc, id } = options
   const point = doc.point[id]
-  if (!point) {
-    return new Error(`Point not found: ${id}`)
-  }
-
   return point
 }
 

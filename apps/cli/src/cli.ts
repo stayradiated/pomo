@@ -6,6 +6,8 @@ import { statusCmd } from './command/status.js'
 import { summaryCmd } from './command/summary.js'
 import { pullStravaCmd } from './command/pull-strava.js'
 import { automergeCmd } from './command/automerge.js'
+import { daemonCmd } from './command/daemon.js'
+import { exportCmd } from './command/export.js'
 
 export const cli = new CliCommand('pomo')
   .withDescription('Get your program to your users easily')
@@ -16,7 +18,10 @@ export const cli = new CliCommand('pomo')
     statusCmd,
     summaryCmd,
     pullStravaCmd,
+    exportCmd,
+
     automergeCmd,
+    daemonCmd,
   )
   .withHandler(() => {
     cli.help()
