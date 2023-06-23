@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error } from '@sveltejs/kit'
 import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-doc'
-import { getDoc, setDoc } from '$lib/doc';
+import { getDoc, saveDoc }  from '$lib/doc';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { toDate, formatInTimeZone } from 'date-fns-tz'
 import { zfd } from 'zod-form-data'
@@ -72,7 +72,9 @@ const actions = {
 
     const pointIdList = [...new Set(pointList.map((point) => point.id))]
 
-    setDoc(updatePointStartedAt({ doc, pointIdList, startedAt }))
+    updatePointStartedAt({ doc, pointIdList, startedAt })
+
+    await saveDoc()
 
     throw redirect(303, '/log')
   }

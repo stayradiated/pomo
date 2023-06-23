@@ -90,12 +90,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@automerge/automerge':
-        specifier: 2.0.3
-        version: 2.0.3
-      '@automerge/automerge-wasm':
-        specifier: 0.2.5
-        version: 0.2.5
       '@stayradiated/error-boundary':
         specifier: 4.1.0
         version: 4.1.0
@@ -115,9 +109,6 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(zod@3.21.4)
     devDependencies:
-      '@sveltejs/adapter-auto':
-        specifier: 2.1.0
-        version: 2.1.0(@sveltejs/kit@1.20.5)
       '@sveltejs/adapter-node':
         specifier: 1.2.4
         version: 1.2.4(@sveltejs/kit@1.20.5)
@@ -282,21 +273,6 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
-
-  /@automerge/automerge-wasm@0.1.26:
-    resolution: {integrity: sha512-NLH7KpErTuy2O1VIA0uE+48e0u69o0qL8/9RZYjLd2uEZeWBzIWbhyDJGfUPDMIYXtkcy8z2H7h6YcwusG0BXA==}
-    dev: false
-
-  /@automerge/automerge-wasm@0.2.5:
-    resolution: {integrity: sha512-UCEn3r5CMXu2pq/VK5WyyJvWce2IbRPPhPLIZlM6wxe43EhOJUUbV/0LjPJ3eFgCw2FhvfTqUuca1I5/mcVrNw==}
-    dev: false
-
-  /@automerge/automerge@2.0.3:
-    resolution: {integrity: sha512-ihfyW/pt+bmHNmPzf4nyH9OzfowAlOaK+1XD8wbtbsJeaGL/8Kap88xMO0lU3wgrddsrZtX5uTbrB/6kMl1PEA==}
-    dependencies:
-      '@automerge/automerge-wasm': 0.1.26
-      uuid: 9.0.0
-    dev: false
 
   /@babel/code-frame@7.22.5:
     resolution: {integrity: sha512-Xmwn266vad+6DAqEB2A6V/CcZVp62BbwVmcOJc2RPuwih1kw02TjQvWVWlcKGbBPd+8/0V5DEkOcizRGYsspYQ==}
@@ -1123,15 +1099,6 @@ packages:
   /@stayradiated/error-boundary@4.1.0:
     resolution: {integrity: sha512-DNRjLSEgKk8CWuLp9fibO4Zk5B6zE27yEVEQG3j6JovY7mWu6k9taluspipX410cDDoStuOilcpLvGWZJQ12Sw==}
     dev: false
-
-  /@sveltejs/adapter-auto@2.1.0(@sveltejs/kit@1.20.5):
-    resolution: {integrity: sha512-o2pZCfATFtA/Gw/BB0Xm7k4EYaekXxaPGER3xGSY3FvzFJGTlJlZjBseaXwYSM94lZ0HniOjTokN3cWaLX6fow==}
-    peerDependencies:
-      '@sveltejs/kit': ^1.0.0
-    dependencies:
-      '@sveltejs/kit': 1.20.5(svelte@4.0.0)(vite@4.3.9)
-      import-meta-resolve: 3.0.0
-    dev: true
 
   /@sveltejs/adapter-node@1.2.4(@sveltejs/kit@1.20.5):
     resolution: {integrity: sha512-TNnhS+OKRZ9RKnC+ho5mlE2FJquI61i0v7yOXxBUSU3LAoYH2kwVVL8P8ecjefmZ8BOfM1V54pBnDODBU5CEaA==}
@@ -3674,10 +3641,6 @@ packages:
 
   /import-meta-resolve@2.2.2:
     resolution: {integrity: sha512-f8KcQ1D80V7RnqVm+/lirO9zkOxjGxhaTC1IPrBGd3MEfNgmNG67tSUO9gTi2F3Blr2Az6g1vocaxzkVnWl9MA==}
-    dev: true
-
-  /import-meta-resolve@3.0.0:
-    resolution: {integrity: sha512-4IwhLhNNA8yy445rPjD/lWh++7hMDOml2eHtd58eG7h+qK3EryMuuRbsHGPikCoAgIkkDnckKfWSk2iDla/ejg==}
     dev: true
 
   /import-modules@2.1.0:
@@ -6503,11 +6466,6 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
     dev: true
-
-  /uuid@9.0.0:
-    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
-    hasBin: true
-    dev: false
 
   /uvu@0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}

@@ -1,9 +1,9 @@
 import type { Point, Stream } from "@stayradiated/pomo-core";
-import type { AutomergeDoc } from "@stayradiated/pomo-doc"
+import type { Doc } from "@stayradiated/pomo-doc"
 import { retrieveCurrentPoint } from "@stayradiated/pomo-doc"
 
 type GetCurrentPointsOptions = {
-  doc: AutomergeDoc,
+  doc: Doc,
   streamList: Stream[],
   currentTime: number,
 }

@@ -11,8 +11,6 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"dependencies": {
-		"@automerge/automerge": "2.0.3",
-		"@automerge/automerge-wasm": "0.2.5",
 		"@stayradiated/error-boundary": "4.1.0",
 		"@stayradiated/pomo-core": "workspace:*",
 		"@stayradiated/pomo-doc": "workspace:*",
@@ -21,7 +19,6 @@
 		"zod-form-data": "2.0.1"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "2.1.0",
 		"@sveltejs/adapter-node": "1.2.4",
 		"@sveltejs/kit": "1.20.5",
 		"@vercel/ncc": "0.36.1",

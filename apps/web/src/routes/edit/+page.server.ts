@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types';
 import { retrieveStreamList, upsertPoint, updatePointValue, getUserTimeZone } from "@stayradiated/pomo-doc"
-import { getDoc, setDoc } from '$lib/doc.js'
+import { getDoc, saveDoc } from '$lib/doc.js'
 import { redirect } from '@sveltejs/kit';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { zfd } from 'zod-form-data'
@@ -42,7 +42,7 @@ const actions = {
     const formData = $Schema.parse(await request.formData())
     const { startedAtLocal, stream: streamValueList } = formData
 
-    let doc = await getDoc()
+    const doc = await getDoc()
     if (doc instanceof Error) {
       throw error(500, doc.message)
     }
@@ -62,18 +62,18 @@ const actions = {
       const value = valueRaw.replace(/\r/g, '')
       if (currentPoint?.value !== value) {
         if (currentPoint?.startedAt === startedAt) {
-          doc = setDoc(updatePointValue({
+          updatePointValue({
             doc,
             pointId: currentPoint.id,
             value,
-          }))
+          })
         } else {
-          doc = setDoc(upsertPoint({
+          upsertPoint({
             doc,
             streamId,
             value,
             startedAt,
-          }))
+          })
         }
       }
     }
