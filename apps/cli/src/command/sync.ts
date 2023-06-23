@@ -10,6 +10,7 @@ import { fetch, FormData } from 'undici'
 import { getDoc, replaceDoc, saveDoc } from '#src/lib/doc.js'
 
 type postDiffOptions = {
+  remoteUrl: string
   localStateVector?: Uint8Array
   localDiff?: Uint8Array
 }
@@ -20,7 +21,7 @@ type PostDiffResult = {
 }
 
 const postDiff = async (options: postDiffOptions): Promise<PostDiffResult> => {
-  const { localStateVector, localDiff } = options
+  const { remoteUrl, localStateVector, localDiff } = options
 
   const formData = new FormData()
 
@@ -32,7 +33,7 @@ const postDiff = async (options: postDiffOptions): Promise<PostDiffResult> => {
     formData.append('stateVector', new Blob([localStateVector]))
   }
 
-  const response = await fetch('http://localhost:5173/sync', {
+  const response = await fetch(`${remoteUrl}/sync`, {
     method: 'POST',
     body: formData,
     headers: {
@@ -69,7 +70,13 @@ const postDiff = async (options: postDiffOptions): Promise<PostDiffResult> => {
   return output
 }
 
-const handler = async (): Promise<void | Error> => {
+type HandlerOptions = {
+  remoteUrl: string
+}
+
+const handler = async (options: HandlerOptions): Promise<void | Error> => {
+  const { remoteUrl } = options
+
   const doc = await getDoc()
   if (doc instanceof Error) {
     return doc
@@ -81,7 +88,10 @@ const handler = async (): Promise<void | Error> => {
   console.log(
     `Sending state vector to the server: ${localStateVector.length} bytes`,
   )
-  const { remoteDiff, remoteStateVector } = await postDiff({ localStateVector })
+  const { remoteDiff, remoteStateVector } = await postDiff({
+    remoteUrl,
+    localStateVector,
+  })
   if (!remoteDiff) {
     throw new Error('Expected remoteDiff, but got none')
   }
@@ -99,16 +109,24 @@ const handler = async (): Promise<void | Error> => {
     )
     const localDiff = diffUpdate(localState, remoteStateVector)
     console.log(`Sending diff to the server: ${localDiff.length} bytes`)
-    const response = await postDiff({ localDiff })
+    const response = await postDiff({ remoteUrl, localDiff })
     console.log(Object.keys(response))
   }
 }
 
-const syncCmd = new CliCommand('sync').withHandler(async () => {
-  const result = await handler()
-  if (result instanceof Error) {
-    throw result
-  }
-})
+const syncCmd = new CliCommand('sync')
+  .withDescription('Sync with a remote server')
+  .withArguments({
+    name: 'url',
+    description: 'The URL of the remote server',
+    required: true,
+  })
+  .withHandler(async (args) => {
+    const { url: remoteUrl } = args
+    const result = await handler({ remoteUrl })
+    if (result instanceof Error) {
+      throw result
+    }
+  })
 
 export { syncCmd }
