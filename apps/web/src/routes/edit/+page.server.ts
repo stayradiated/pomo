@@ -50,8 +50,6 @@ const actions = {
     const timeZone = getUserTimeZone({ doc })
     const startedAt = toDate(startedAtLocal, { timeZone }).getTime()
 
-    console.log({ startedAtLocal, startedAt, date: new Date(startedAt) })
-
     const streamList = retrieveStreamList({ doc })
     const currentPoints = getCurrentPoints({ doc, streamList, currentTime: startedAt })
     for (const streamValue of streamValueList) {

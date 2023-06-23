@@ -16,6 +16,11 @@ export * from './upsert-stream.js'
 export * from './create-doc.js'
 export * from './create-doc-with-data.js'
 export * from './load-doc.js'
-export * from './save-doc.js'
+
+export * from './encode-state-as-update.js'
+export * from './encode-state-vector.js'
+export * from './encode-state-vector-from-update.js'
+export * from './diff-update.js'
+export * from './merge-updates.js'
 
 export * from './types.js'

@@ -4,7 +4,7 @@ import type { KyselyDb } from '@stayradiated/pomo-db'
 import * as pomoDb from '@stayradiated/pomo-db'
 import {
   createDocWithData,
-  saveDoc,
+  encodeStateAsUpdate,
   loadDoc,
   retrieveStreamList,
   retrieveAllPointList,
@@ -53,7 +53,7 @@ const dumpHandler = async (options: DumpHandlerOptions) => {
   console.timeEnd('createDocWithData')
 
   console.time('saveAndWriteDoc')
-  const byteArray = saveDoc(doc)
+  const byteArray = encodeStateAsUpdate(doc)
   await fs.writeFile(outputFilePath, byteArray)
   console.timeEnd('saveAndWriteDoc')
 }

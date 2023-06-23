@@ -47,9 +47,13 @@ const saveDoc = async () => {
     throw new Error('No doc')
   }
 
-  const byteArray = pomoDoc.saveDoc(doc)
+  const byteArray = pomoDoc.encodeStateAsUpdate(doc)
   const filePath = path.join(getEnv().POMO_DIR, 'state')
   await fs.writeFile(filePath, byteArray)
 }
 
-export { getDoc, saveDoc }
+const replaceDoc = async (doc: Doc) => {
+  ref.doc = doc
+}
+
+export { getDoc, replaceDoc, saveDoc }

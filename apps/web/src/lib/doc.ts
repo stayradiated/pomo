@@ -44,6 +44,10 @@ const getDoc: GetDocFn = async (): Promise<Doc | Error> => {
   return doc
 }
 
+const replaceDoc = (doc: Doc) => {
+  ref.doc = doc
+}
+
 const saveDoc = async () => {
   const doc = ref.doc
   if (!doc) {
@@ -51,8 +55,8 @@ const saveDoc = async () => {
   }
 
   const filePath = getDocFilePath()
-  const byteArray = pomoDoc.saveDoc(doc)
+  const byteArray = pomoDoc.encodeStateAsUpdate(doc)
   await fs.writeFile(filePath, byteArray)
 }
 
-export { getDoc, saveDoc }
+export { getDoc, replaceDoc, saveDoc }
