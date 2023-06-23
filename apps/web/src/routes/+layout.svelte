@@ -8,10 +8,13 @@
   <nav>
     <ul>
       <li>
-        <a href='/edit'>Edit</a>
+        <a href='/edit'>Add</a>
       </li>
       <li>
         <a href='/log'>Log</a>
+      </li>
+      <li>
+        <a href='/week'>Week</a>
       </li>
     </ul>
   </nav>

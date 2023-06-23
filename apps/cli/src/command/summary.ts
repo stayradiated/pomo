@@ -3,6 +3,7 @@ import { CliCommand } from 'cilly'
 import { startOfDay, intervalToDuration, formatDuration } from 'date-fns'
 import {
   stripComments,
+  firstLine,
   mapPointListToLineList,
   durationLocale,
 } from '@stayradiated/pomo-core'
@@ -44,7 +45,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
 
   for (const line of filteredLineList) {
     const { streamId, value: rawValue, durationMs } = line
-    const value = stripComments(rawValue)
+    const value = firstLine(stripComments(rawValue))
 
     if (!totalDuration.has(streamId)) {
       totalDuration.set(streamId, new Map())

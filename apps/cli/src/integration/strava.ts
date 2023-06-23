@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process'
 import { fetch } from 'undici'
 import { z } from 'zod'
 import { proxy } from '#src/lib/proxy.js'
+import { saveDoc } from '#src/lib/doc.js'
 
 const CLIENT_ID = '41535'
 const CLIENT_SECRET = '8037af8638f3f1d10e77d1fce824070cf64f2101'
@@ -306,6 +307,8 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
       throw upsertStartResult
     }
   }
+
+  await saveDoc()
 
   return { session }
 }
