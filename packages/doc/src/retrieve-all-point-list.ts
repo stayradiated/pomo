@@ -1,14 +1,14 @@
-import type { Point } from '@stayradiated/pomo-core'
-import type { AutomergeDoc } from './types.js'
+import type { Doc, Point } from './types.js'
 
 type RetrieveOptions = {
-  doc: AutomergeDoc
+  doc: Doc
 }
 
 const retrieveAllPointList = (options: RetrieveOptions): Point[] => {
   const { doc } = options
 
-  const pointList = Object.values(doc.point)
+  const pointMap = doc.getMap('point')
+  const pointList = Object.values(pointMap.toJSON()) as Point[]
 
   return pointList
 }

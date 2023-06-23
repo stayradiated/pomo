@@ -1,19 +1,18 @@
-import type { AutomergeDoc } from './types.js'
+import { head } from '@vangware/iterables'
+import type { Doc } from './types.js'
 
 type GetUserTimeZoneOptions = {
-  doc: AutomergeDoc
+  doc: Doc
 }
 
 const getUserTimeZone = (options: GetUserTimeZoneOptions): string => {
   const { doc } = options
 
-  const user = Object.values(doc.user)[0]
+  const userMap = doc.getMap('user')
 
-  if (!user) {
-    return 'UTC'
-  }
+  const user = head(userMap.values())
 
-  return user.timeZone
+  return user?.get('timeZone') ?? 'UTC'
 }
 
 export { getUserTimeZone }

@@ -1,33 +1,36 @@
 import { randomUUID } from 'node:crypto'
-import Automerge from '@automerge/automerge'
-import type { AutomergeDoc } from './types.js'
+import * as Y from 'yjs'
+import { find } from '@vangware/iterables'
+import type { Doc, YStream } from './types.js'
 
 type UpsertStreamOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   name: string
 }
 
-const upsertStream = (options: UpsertStreamOptions): AutomergeDoc => {
-  const { doc: srcDoc, name } = options
+const upsertStream = (options: UpsertStreamOptions): string => {
+  const { doc, name } = options
 
-  return Automerge.change(srcDoc, 'upsertStream', (doc) => {
-    const existingStream = Object.values(doc.stream).find((stream) => {
-      return stream.name === name
-    })
+  const streamMap = doc.getMap('stream')
 
+  const findStream = find((stream: YStream) => stream.get('name') === name)
+  const existingStream = findStream(streamMap.values())
+
+  return Y.transact<string>(doc as Y.Doc, () => {
     if (existingStream) {
-      existingStream.name = name
-      existingStream.updatedAt = Date.now()
-      return
+      existingStream.set('name', name)
+      existingStream.set('updatedAt', Date.now())
+      return existingStream.get('id')!
     }
 
-    const id = randomUUID()
-    doc.stream[id] = {
-      id,
-      name,
-      createdAt: Date.now(),
-      updatedAt: null,
-    }
+    const streamId = randomUUID()
+    const stream = new Y.Map() as YStream
+    stream.set('id', streamId)
+    stream.set('name', name)
+    stream.set('createdAt', Date.now())
+    stream.set('updatedAt', null)
+    streamMap.set(streamId, stream)
+    return streamId
   })
 }
 

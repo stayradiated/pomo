@@ -1,15 +1,20 @@
-import type { Point } from '@stayradiated/pomo-core'
-import type { AutomergeDoc } from './types.js'
+import type { Doc, Point } from './types.js'
 
 type GetPointByIdOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   id: string
 }
 
 const getPointById = (options: GetPointByIdOptions): Point | undefined => {
   const { doc, id } = options
-  const point = doc.point[id]
-  return point
+
+  const pointMap = doc.getMap('point')
+  const point = pointMap.get(id)
+  if (!point) {
+    return undefined
+  }
+
+  return point.toJSON() as Point
 }
 
 export { getPointById }

@@ -3,7 +3,6 @@ import * as path from 'node:path'
 import { loadDoc, createDoc, saveDoc } from '@stayradiated/pomo-doc'
 import type { AutomergeDoc } from '@stayradiated/pomo-doc'
 import { errorBoundary } from '@stayradiated/error-boundary'
-import debounce from 'p-debounce'
 import { getEnv } from './env.js'
 
 type GetDocFn = () => Promise<AutomergeDoc | Error>
@@ -43,7 +42,7 @@ const getDoc: GetDocFn = async (): Promise<AutomergeDoc | Error> => {
   return doc
 }
 
-const saveChanges = debounce(async () => {
+const saveChanges = async () => {
   const doc = ref.doc
   if (!doc) {
     throw new Error('No doc')
@@ -52,11 +51,11 @@ const saveChanges = debounce(async () => {
   const byteArray = saveDoc(doc)
   const filePath = path.join(getEnv().POMO_DIR, 'state')
   await fs.writeFile(filePath, byteArray)
-}, 1000)
+}
 
-const setDoc = async (doc: AutomergeDoc) => {
+const setDoc = (doc: AutomergeDoc): AutomergeDoc => {
   ref.doc = doc
-  void saveChanges()
+  return doc
 }
 
 export { getDoc, setDoc, saveChanges }

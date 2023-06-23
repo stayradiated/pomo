@@ -1,25 +1,31 @@
+import { error } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types';
-import { retrieveStreamList, insertPoint, updatePointValue, getUserTimeZone } from "@stayradiated/pomo-db"
-import { getDb } from '$lib/db.js'
+import { retrieveStreamList, upsertPoint, updatePointValue, getUserTimeZone } from "@stayradiated/pomo-doc"
+import { getDoc, setDoc } from '$lib/doc.js'
 import { redirect } from '@sveltejs/kit';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
 import { toDate, formatInTimeZone } from 'date-fns-tz'
+import { cloneList, cloneMap } from '$lib/clone';
 
 const load = (async () => {
   const currentTime = Date.now()
-  const db = getDb()
-  const streamList = await retrieveStreamList({ db })
-  const currentPoints = await getCurrentPoints({ db, streamList, currentTime })
+  const doc = await getDoc()
+  if (doc instanceof Error) {
+    throw error(500, doc.message)
+  }
 
-  const timeZone = await getUserTimeZone({ db })
+  const streamList = retrieveStreamList({ doc })
+  const currentPoints = getCurrentPoints({ doc, streamList, currentTime })
+
+  const timeZone = getUserTimeZone({ doc })
   const startedAtLocal = formatInTimeZone(Date.now(), timeZone, 'yyyy-MM-dd HH:mm')
 
   return {
     startedAtLocal,
-    streamList,
-    currentPoints,
+    streamList: cloneList(streamList),
+    currentPoints: cloneMap(currentPoints),
   }
 }) satisfies PageServerLoad;
 
@@ -36,15 +42,18 @@ const actions = {
     const formData = $Schema.parse(await request.formData())
     const { startedAtLocal, stream: streamValueList } = formData
 
-    const db = getDb()
+    let doc = await getDoc()
+    if (doc instanceof Error) {
+      throw error(500, doc.message)
+    }
 
-    const timeZone = await getUserTimeZone({ db })
+    const timeZone = getUserTimeZone({ doc })
     const startedAt = toDate(startedAtLocal, { timeZone }).getTime()
 
     console.log({ startedAtLocal, startedAt, date: new Date(startedAt) })
 
-    const streamList = await retrieveStreamList({ db })
-    const currentPoints = await getCurrentPoints({ db, streamList, currentTime: startedAt })
+    const streamList = retrieveStreamList({ doc })
+    const currentPoints = getCurrentPoints({ doc, streamList, currentTime: startedAt })
     for (const streamValue of streamValueList) {
       const { id: streamId, value: valueRaw } = streamValue
 
@@ -53,18 +62,18 @@ const actions = {
       const value = valueRaw.replace(/\r/g, '')
       if (currentPoint?.value !== value) {
         if (currentPoint?.startedAt === startedAt) {
-          await updatePointValue({
-            db,
+          doc = setDoc(updatePointValue({
+            doc,
             pointId: currentPoint.id,
             value,
-          })
+          }))
         } else {
-          await insertPoint({
-            db,
+          doc = setDoc(upsertPoint({
+            doc,
             streamId,
             value,
             startedAt,
-          })
+          }))
         }
       }
     }

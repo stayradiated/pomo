@@ -1,7 +1,7 @@
-import type { AutomergeDoc } from './types.js'
+import type { Doc } from './types.js'
 
 type GetPointStartedAtByRefOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   ref: string
 }
 
@@ -10,11 +10,13 @@ const getPointStartedAtByRef = (
 ): number | undefined => {
   const { doc, ref } = options
 
-  for (const key of Object.keys(doc.point)) {
+  const pointMap = doc.getMap('point')
+
+  for (const key of pointMap.keys()) {
     if (key.startsWith(ref)) {
-      const row = doc.point[key]
+      const row = pointMap.get(key)
       if (row) {
-        return row.startedAt
+        return row.get('startedAt')
       }
     }
   }

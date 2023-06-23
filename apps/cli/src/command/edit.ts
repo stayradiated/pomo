@@ -10,7 +10,37 @@ import {
 import { parse } from '@stayradiated/pomo-markdown'
 import { stripComments } from '@stayradiated/pomo-core'
 import { formatInTimeZone } from 'date-fns-tz'
-import { client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
+import { saveDoc } from '#src/lib/doc.js'
+
+  const getCurrentText = async (currentTime: number, timeZone: string): Promise<string|Error> => {
+    let output = `${formatInTimeZone(
+      currentTime,
+      timeZone,
+      'yyyy-MM-dd HH:mm:ss zzz',
+    )}\n\n`
+
+    const streamList = await proxy.retrieveStreamList({})
+    if (streamList instanceof Error) {
+      return streamList
+    }
+
+    for (const stream of streamList) {
+      output += `# ${stream.name}\n\n`
+
+      const currentPoint = await proxy.retrieveCurrentPoint({
+        streamId: stream.id,
+        currentTime,
+      })
+      if (currentPoint instanceof Error) {
+        return currentPoint
+      }
+
+      output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
+    }
+
+    return output
+  }
 
 // # edit current streams
 //
@@ -25,38 +55,17 @@ import { client } from '@stayradiated/pomo-daemon'
 // Each stream is defined by a header, which is a markdown header (e.g. `#` or `##`).
 
 type EditOptions = {
-  trpc: ReturnType<(typeof client)['getTrpcClient']>
   currentTime: number
   timeZone: string
 }
 
-const handler = async (options: EditOptions) => {
-  const { trpc, currentTime, timeZone } = options
+const handler = async (options: EditOptions): Promise<void|Error> => {
+  const { currentTime, timeZone } = options
 
-  const getCurrentText = async (): Promise<string> => {
-    let output = `${formatInTimeZone(
-      currentTime,
-      timeZone,
-      'yyyy-MM-dd HH:mm:ss zzz',
-    )}\n\n`
-
-    const streamList = await trpc.retrieveStreamList.query()
-
-    for (const stream of streamList) {
-      output += `# ${stream.name}\n\n`
-
-      const currentPoint = await trpc.retrieveCurrentPoint.query({
-        streamId: stream.id,
-        currentTime,
-      })
-
-      output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
-    }
-
-    return output
+  const pleaseEditThisText = await getCurrentText(currentTime, timeZone)
+  if (pleaseEditThisText instanceof Error) {
+    return pleaseEditThisText
   }
-
-  const pleaseEditThisText = await getCurrentText()
 
   const editor = new ExternalEditor(pleaseEditThisText, {
     postfix: '.md',
@@ -83,19 +92,28 @@ const handler = async (options: EditOptions) => {
 
   const streamNameList = Object.keys(userInput)
   for (const streamName of streamNameList) {
-    await trpc.upsertStream.mutate({ name: streamName })
+    const result = await proxy.upsertStream({ name: streamName })
+    if (result instanceof Error) {
+      return result
+    }
   }
 
   for (const [streamName, value] of Object.entries(userInput)) {
-    const streamId = await trpc.getStreamIdByName.query({ name: streamName })
+    const streamId = await proxy.getStreamIdByName({ name: streamName })
+    if (streamId instanceof Error) {
+      return streamId
+    }
     if (streamId === undefined) {
       throw new TypeError(`Could not find stream with name "${streamName}"`)
     }
 
-    const currentPoint = await trpc.retrieveCurrentPoint.query({
+    const currentPoint = await proxy.retrieveCurrentPoint({
       streamId,
       currentTime,
     })
+    if (currentPoint instanceof Error) {
+      return currentPoint
+    }
 
     if (currentPoint?.value !== value) {
       console.log(
@@ -106,17 +124,12 @@ const handler = async (options: EditOptions) => {
         )}] ${streamName} → ${stripComments(value)}`,
       )
 
-      if (currentPoint?.startedAt === currentTime) {
-        await trpc.updatePointValue.mutate({
-          pointId: currentPoint.id,
-          value,
-        })
-      } else {
-        await trpc.upsertPoint.mutate({
-          streamId,
-          value,
-          startedAt: currentTime,
-        })
+      const result = (currentPoint?.startedAt === currentTime) 
+        ? await proxy.updatePointValue({ pointId: currentPoint.id, value })
+        : await proxy.upsertPoint({ streamId, value, startedAt: currentTime })
+
+      if (result instanceof Error) {
+        return result
       }
     }
   }
@@ -160,12 +173,13 @@ const editCmd = new CliCommand('edit')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const trpc = client.getTrpcClient()
-
-    const timeZone = await trpc.getUserTimeZone.query()
+    const timeZone = await proxy.getUserTimeZone({})
+    if (timeZone instanceof Error) {
+      throw timeZone
+    }
 
     const currentTime = options['ref']
-      ? await trpc.getPointStartedAtByRef.query({ ref: options['ref'] })
+      ? await proxy.getPointStartedAtByRef({ ref: options['ref'] })
       : options['at']
       ? chrono
           .parseDate(options['at'], {
@@ -175,11 +189,19 @@ const editCmd = new CliCommand('edit')
           .getTime()
       : Date.now()
 
+    if (currentTime instanceof Error) {
+      throw currentTime
+    }
     if (currentTime === undefined) {
       throw new TypeError('Could not figure out current time')
     }
 
-    await handler({ trpc, currentTime, timeZone })
+    const result = await handler({ currentTime, timeZone })
+    if (result instanceof Error) {
+      throw result
+    }
+
+    await saveDoc()
   })
 
 export { editCmd }

@@ -1,14 +1,14 @@
-import type { Stream } from '@stayradiated/pomo-core'
-import type { AutomergeDoc } from './types.js'
+import type { Doc, Stream } from './types.js'
 
 type RetrieveOptions = {
-  doc: AutomergeDoc
+  doc: Doc
 }
 
 const retrieveStreamList = (options: RetrieveOptions): Stream[] => {
   const { doc } = options
 
-  const streamList = Object.values(doc.stream)
+  const streamMap = doc.getMap('stream')
+  const streamList = Object.values(streamMap.toJSON()) as Stream[]
 
   return streamList
 }

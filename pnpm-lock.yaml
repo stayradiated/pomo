@@ -14,6 +14,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@automerge/automerge':
+        specifier: 2.0.3
+        version: 2.0.3
       '@stayradiated/error-boundary':
         specifier: 4.1.0
         version: 4.1.0
@@ -93,18 +96,21 @@ importers:
 
   apps/web:
     dependencies:
+      '@automerge/automerge':
+        specifier: 2.0.3
+        version: 2.0.3
+      '@automerge/automerge-wasm':
+        specifier: 0.2.4
+        version: 0.2.4
       '@stayradiated/error-boundary':
         specifier: 4.1.0
         version: 4.1.0
       '@stayradiated/pomo-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@stayradiated/pomo-db':
+      '@stayradiated/pomo-doc':
         specifier: workspace:*
-        version: link:../../packages/db
-      better-sqlite3:
-        specifier: 8.4.0
-        version: 8.4.0
+        version: link:../../packages/doc
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -124,9 +130,6 @@ importers:
       '@sveltejs/kit':
         specifier: 1.20.4
         version: 1.20.4(svelte@3.59.2)(vite@4.3.9)
-      '@types/better-sqlite3':
-        specifier: 7.6.4
-        version: 7.6.4
       '@vercel/ncc':
         specifier: 0.36.1
         version: 0.36.1
@@ -176,6 +179,9 @@ importers:
 
   packages/daemon:
     dependencies:
+      '@automerge/automerge':
+        specifier: 2.0.3
+        version: 2.0.3
       '@stayradiated/error-boundary':
         specifier: 4.1.0
         version: 4.1.0
@@ -191,6 +197,9 @@ importers:
       '@trpc/server':
         specifier: 10.31.0
         version: 10.31.0
+      p-debounce:
+        specifier: 4.0.0
+        version: 4.0.0
       rambda:
         specifier: 7.5.0
         version: 7.5.0
@@ -250,15 +259,21 @@ importers:
 
   packages/doc:
     dependencies:
-      '@automerge/automerge':
-        specifier: 2.0.3
-        version: 2.0.3
+      '@stayradiated/error-boundary':
+        specifier: 4.1.0
+        version: 4.1.0
       '@stayradiated/pomo-core':
         specifier: workspace:*
         version: link:../core
+      '@vangware/iterables':
+        specifier: 3.1.0
+        version: 3.1.0
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
+      yjs:
+        specifier: 13.6.5
+        version: 13.6.5
     devDependencies:
       '@types/node':
         specifier: 20.3.1
@@ -272,6 +287,9 @@ importers:
       xo:
         specifier: 0.54.2
         version: 0.54.2(webpack@5.86.0)
+      yjs-types:
+        specifier: 0.0.1
+        version: 0.0.1(yjs@13.6.5)
 
   packages/markdown:
     dependencies:
@@ -308,6 +326,10 @@ packages:
 
   /@automerge/automerge-wasm@0.1.26:
     resolution: {integrity: sha512-NLH7KpErTuy2O1VIA0uE+48e0u69o0qL8/9RZYjLd2uEZeWBzIWbhyDJGfUPDMIYXtkcy8z2H7h6YcwusG0BXA==}
+    dev: false
+
+  /@automerge/automerge-wasm@0.2.4:
+    resolution: {integrity: sha512-qbXpBbdMb/t+ufWCvn5ZLFkDpWhO2eko+dgv1NCfS9Z9DMLI9cvr+foxZ6ekTc6iDEVtgftbhZJiDcN1LPkDcw==}
     dev: false
 
   /@automerge/automerge@2.0.3:
@@ -1486,6 +1508,43 @@ packages:
       '@typescript-eslint/types': 5.59.9
       eslint-visitor-keys: 3.4.1
     dev: true
+
+  /@vangware/iterables@3.1.0:
+    resolution: {integrity: sha512-j0JTkFafY9jk/AtvgGvVI+Xb9d2Q6nzQwQGw2ysQoV0xpgsszINQjr+ovyWxpW0Qpyd1mtZlzZGJRHmK2Rq8nQ==}
+    engines: {node: '>=20', pnpm: '>=8'}
+    dependencies:
+      '@vangware/predicates': 2.1.15
+      '@vangware/types': 6.0.0
+      '@vangware/utils': 10.1.1
+    dev: false
+
+  /@vangware/parsers@1.2.14:
+    resolution: {integrity: sha512-Yorat4y23muKH973KoKLjcd61FOzOXtjrztfsuk2RalUjfTI1PDBxwN76o/pBOwtMbB8gOJuIFZEBIekff/BOA==}
+    engines: {node: '>=20', pnpm: '>=8'}
+    dependencies:
+      '@vangware/types': 6.0.0
+    dev: false
+
+  /@vangware/predicates@2.1.15:
+    resolution: {integrity: sha512-mpa3HTQehoc4WX2+SYhS9TPT9LyD4COaCNqfc13g1bHxkkLGeQYzNJZlBTlHZp2xTrRDs6PsEPH/21OMAL7TbQ==}
+    engines: {node: '>=20', pnpm: '>=8'}
+    dependencies:
+      '@vangware/parsers': 1.2.14
+      '@vangware/types': 6.0.0
+    dev: false
+
+  /@vangware/types@6.0.0:
+    resolution: {integrity: sha512-Z7Qyl7wKRRVjNckyAonbnxyrROL8kICPAQjK1al7OkJT5f7i6duiq2Pnn/buKKnSe1ok392+e5Y7qKRmSRPW7w==}
+    engines: {node: '>=20', pnpm: '>=8'}
+    dev: false
+
+  /@vangware/utils@10.1.1:
+    resolution: {integrity: sha512-8CW6fPpW4bAesw9kbCVmxIytf8zekQREWqZnRWWAWOE0fFN2AcpN+FGaBKQtS37xvJ9QB6+OQNynw12Q2UVX0Q==}
+    engines: {node: '>=20', pnpm: '>=8'}
+    dependencies:
+      '@vangware/predicates': 2.1.15
+      '@vangware/types': 6.0.0
+    dev: false
 
   /@vercel/ncc@0.36.1:
     resolution: {integrity: sha512-S4cL7Taa9yb5qbv+6wLgiKVZ03Qfkc4jGRuiUQMQ8HGBD5pcNRnHeYM33zBvJE4/zJGjJJ8GScB+WmTsn9mORw==}
@@ -4048,6 +4107,9 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
+  /isomorphic.js@0.2.5:
+    resolution: {integrity: sha512-PIeMbHqMt4DnUP3MA/Flc0HElYjMXArsw1qwJZcm9sqR8mq3l8NYizFMty0pWwE/tzIGH3EKK5+jes5mAr85yw==}
+
   /jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
@@ -4150,6 +4212,13 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /lib0@0.2.78:
+    resolution: {integrity: sha512-SV2nU43/6eaYnGH3l0lg2wg1ziB/TH3sAd2E8quXPGwrqo+aX98SNT2ZKucpUr5B8A52jD7ZMjAl+r87Fa/bLQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dependencies:
+      isomorphic.js: 0.2.5
 
   /line-column-path@3.0.0:
     resolution: {integrity: sha512-Atocnm7Wr9nuvAn97yEPQa3pcQI5eLQGBz+m6iTb+CVw+IOzYB9MrYK7jI7BfC9ISnT4Fu0eiwhAScV//rp4Hw==}
@@ -4915,6 +4984,11 @@ packages:
   /os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /p-debounce@4.0.0:
+    resolution: {integrity: sha512-4Ispi9I9qYGO4lueiLDhe4q4iK5ERK8reLsuzH6BPaXn53EGaua8H66PXIFGrW897hwjXp+pVLrm/DLxN0RF0A==}
+    engines: {node: '>=12'}
     dev: false
 
   /p-defer@1.0.0:
@@ -6821,6 +6895,20 @@ packages:
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
+
+  /yjs-types@0.0.1(yjs@13.6.5):
+    resolution: {integrity: sha512-ruTBSiNYR7AyaI+fV+1SLitWIYzHfmAgBM+Py/vo4fGVckBbUMv3atqPcK1YOrL0FGJLRboqWXHS9GYA1V8kxg==}
+    peerDependencies:
+      yjs: ^13.5.29
+    dependencies:
+      yjs: 13.6.5
+    dev: true
+
+  /yjs@13.6.5:
+    resolution: {integrity: sha512-5JdxEzrGpDJxMK99Cf1ICTAaplJf4xIW74ZPvXRzLJJd4PIxVX5ZYjhBsW8cXBPweSghPz95sPIVvyYtS9fHFQ==}
+    engines: {node: '>=16.0.0', npm: '>=8.0.0'}
+    dependencies:
+      lib0: 0.2.78
 
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}

@@ -42,11 +42,13 @@
     }
   },
   "dependencies": {
+    "@automerge/automerge": "2.0.3",
     "@stayradiated/error-boundary": "4.1.0",
     "@stayradiated/pomo-core": "workspace:*",
     "@stayradiated/pomo-doc": "workspace:*",
     "@trpc/client": "10.31.0",
     "@trpc/server": "10.31.0",
+    "p-debounce": "4.0.0",
     "rambda": "7.5.0",
     "zod": "3.21.4"
   }

@@ -1,23 +1,26 @@
-import Automerge from '@automerge/automerge'
-import type { AutomergeDoc } from './types.js'
+import * as Y from 'yjs'
+import type { Doc } from './types.js'
 
 type UpdatePointValueOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   pointId: string
   value: string
 }
 
-const updatePointValue = (options: UpdatePointValueOptions): AutomergeDoc => {
+const updatePointValue = (options: UpdatePointValueOptions): void | Error => {
   const { doc, pointId, value } = options
 
-  const updatedAt = Date.now()
+  const pointMap = doc.getMap('point')
 
-  return Automerge.change(doc, 'updatePointValue', (doc) => {
-    const point = doc.point[pointId]
-    if (point) {
-      point.value = value
-      point.updatedAt = updatedAt
+  return Y.transact(doc as Y.Doc, (): void | Error => {
+    const point = pointMap.get(pointId)
+
+    if (!point) {
+      return new Error(`Point ${pointId} not found`)
     }
+
+    point.set('value', value)
+    point.set('updatedAt', Date.now())
   })
 }
 

@@ -5,7 +5,7 @@ import { userCmd } from './command/user.js'
 import { statusCmd } from './command/status.js'
 import { summaryCmd } from './command/summary.js'
 import { pullStravaCmd } from './command/pull-strava.js'
-import { automergeCmd } from './command/automerge.js'
+import { yjsCmd } from './command/yjs.js'
 import { daemonCmd } from './command/daemon.js'
 import { exportCmd } from './command/export.js'
 
@@ -20,7 +20,7 @@ export const cli = new CliCommand('pomo')
     pullStravaCmd,
     exportCmd,
 
-    automergeCmd,
+    yjsCmd,
     daemonCmd,
   )
   .withHandler(() => {

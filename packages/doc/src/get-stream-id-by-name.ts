@@ -1,7 +1,7 @@
-import type { AutomergeDoc } from './types.js'
+import type { Doc } from './types.js'
 
 type GetStreamIdByNameOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   name: string
 }
 
@@ -10,9 +10,11 @@ const getStreamIdByName = (
 ): string | undefined => {
   const { doc, name } = options
 
-  for (const stream of Object.values(doc.stream)) {
-    if (stream.name === name) {
-      return stream.id
+  const streamMap = doc.getMap('stream')
+
+  for (const stream of streamMap.values()) {
+    if (stream.get('name') === name) {
+      return stream.get('id')
     }
   }
 

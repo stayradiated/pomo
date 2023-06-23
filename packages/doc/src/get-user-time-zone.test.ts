@@ -1,4 +1,3 @@
-import Automerge from '@automerge/automerge'
 import { describe, test, expect } from 'vitest'
 import { getUserTimeZone } from './get-user-time-zone.js'
 import { setUserTimeZone } from './set-user-time-zone.js'
@@ -11,18 +10,14 @@ describe('getUserTimeZone', () => {
     const timeZone = getUserTimeZone({ doc })
 
     expect(timeZone).toBe('UTC')
-
-    Automerge.free(doc)
   })
 
   test('should return the user time zone', async () => {
-    const doc1 = createDoc()
-    const doc2 = setUserTimeZone({ doc: doc1, timeZone: 'America/New_York' })
+    const doc = createDoc()
+    setUserTimeZone({ doc, timeZone: 'America/New_York' })
 
-    const timeZone = getUserTimeZone({ doc: doc2 })
+    const timeZone = getUserTimeZone({ doc })
 
     expect(timeZone).toBe('America/New_York')
-
-    Automerge.free(doc2)
   })
 })

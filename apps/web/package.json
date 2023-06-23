@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "POMO_DATABASE_URL=./test.db vite dev",
+		"dev": "vite dev",
 		"build:vite": "vite build",
 		"build": "rm -rf dist && vite build && node ./scripts/build.mjs && cp -r ./build/client ./dist/client",
 		"preview": "vite preview",
@@ -11,10 +11,11 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"dependencies": {
+		"@automerge/automerge": "2.0.3",
+		"@automerge/automerge-wasm": "0.2.4",
 		"@stayradiated/error-boundary": "4.1.0",
 		"@stayradiated/pomo-core": "workspace:*",
-		"@stayradiated/pomo-db": "workspace:*",
-		"better-sqlite3": "8.4.0",
+		"@stayradiated/pomo-doc": "workspace:*",
 		"date-fns": "2.30.0",
 		"zod": "3.21.4",
 		"zod-form-data": "2.0.1"
@@ -23,7 +24,6 @@
 		"@sveltejs/adapter-auto": "2.1.0",
 		"@sveltejs/adapter-node": "1.2.4",
 		"@sveltejs/kit": "1.20.4",
-		"@types/better-sqlite3": "7.6.4",
 		"@vercel/ncc": "0.36.1",
 		"date-fns-tz": "2.0.0",
 		"svelte": "3.59.2",

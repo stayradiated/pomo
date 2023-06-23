@@ -1,32 +1,48 @@
-import type { Point } from '@stayradiated/pomo-core'
-import type { AutomergeDoc } from './types.js'
+import type { Doc, Point } from './types.js'
+
+const reducePointListToStreamIdSet = (pointList: Point[]): Set<string> => {
+  return pointList.reduce((set, point) => {
+    set.add(point.streamId)
+    return set
+  }, new Set<string>())
+}
 
 type RetrieveOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   since: number
-  filter: {
+  where: {
     streamId?: string
   }
 }
 
 const retrievePointList = (options: RetrieveOptions): Point[] => {
-  const { doc, since, filter } = options
+  const { doc, since, where } = options
 
-  const pointList = Object.values(doc.point).filter((point) => {
-    if (point.startedAt < since) {
-      return false
-    }
+  const pointMap = doc.getMap('point')
+  const streamMap = doc.getMap('stream')
 
-    if (typeof filter.streamId === 'string') {
-      return point.streamId === filter.streamId
-    }
+  const streamIdList =
+    typeof where.streamId === 'string'
+      ? [where.streamId]
+      : [...streamMap.keys()]
 
-    return true
-  })
+  const pointList = [...pointMap.values()]
+    .filter((point) => {
+      if (point.get('startedAt')! < since) {
+        return false
+      }
 
-  const streamIdList = Object.keys(doc.stream)
+      if (typeof where.streamId === 'string') {
+        return point.get('streamId') === where.streamId
+      }
 
-  const coveredStreamIdSet = new Set(pointList.map((point) => point.streamId))
+      return true
+    })
+    .map((point) => {
+      return point.toJSON() as Point
+    })
+
+  const coveredStreamIdSet = reducePointListToStreamIdSet(pointList)
   const uncoveredStreamIdSet = new Set(
     streamIdList.filter((streamId) => {
       return !coveredStreamIdSet.has(streamId)
@@ -39,11 +55,14 @@ const retrievePointList = (options: RetrieveOptions): Point[] => {
 
   const latestPointByStream: Record<string, Point> = {}
 
-  for (const point of Object.values(doc.point)) {
-    if (uncoveredStreamIdSet.has(point.streamId) && point.startedAt < since) {
-      const latestPoint = latestPointByStream[point.streamId]
-      if (!latestPoint || point.startedAt > latestPoint.startedAt) {
-        latestPointByStream[point.streamId] = point
+  for (const point of pointMap.values()) {
+    const pointStreamId = point.get('streamId')!
+    const pointStartedAt = point.get('startedAt')!
+
+    if (uncoveredStreamIdSet.has(pointStreamId) && pointStartedAt < since) {
+      const latestPoint = latestPointByStream[pointStreamId]
+      if (!latestPoint || pointStartedAt > latestPoint.startedAt) {
+        latestPointByStream[pointStreamId] = point.toJSON() as Point
       }
     }
   }

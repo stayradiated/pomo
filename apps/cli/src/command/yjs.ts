@@ -1,13 +1,15 @@
 import * as fs from 'node:fs/promises'
 import { CliCommand } from 'cilly'
 import type { KyselyDb } from '@stayradiated/pomo-db'
+import * as pomoDb from '@stayradiated/pomo-db'
 import {
-  retrieveUserList,
+  createDocWithData,
+  saveDoc,
+  loadDoc,
   retrieveStreamList,
   retrieveAllPointList,
-} from '@stayradiated/pomo-db'
-import { loadDoc, saveDoc, createDocWithData } from '@stayradiated/pomo-doc'
-import { type User, type Stream, type Point } from '@stayradiated/pomo-core'
+} from '@stayradiated/pomo-doc'
+import type { User, Stream, Point } from '@stayradiated/pomo-core'
 import { getDb } from '#src/lib/db.js'
 
 type DumpHandlerOptions = {
@@ -18,9 +20,10 @@ type DumpHandlerOptions = {
 const dumpHandler = async (options: DumpHandlerOptions) => {
   const { db, outputFilePath } = options
 
-  const userList = await retrieveUserList({ db })
-  const streamList = await retrieveStreamList({ db })
-  const pointList = await retrieveAllPointList({ db })
+  console.time('retrieveData')
+  const userList = await pomoDb.retrieveUserList({ db })
+  const streamList = await pomoDb.retrieveStreamList({ db })
+  const pointList = await pomoDb.retrieveAllPointList({ db })
 
   const userRecord = userList.reduce<Record<string, User>>((acc, user) => {
     acc[user.id] = user
@@ -39,15 +42,20 @@ const dumpHandler = async (options: DumpHandlerOptions) => {
     acc[point.id] = point
     return acc
   }, {})
+  console.timeEnd('retrieveData')
 
+  console.time('createDocWithData')
   const doc = createDocWithData({
     user: userRecord,
     stream: streamRecord,
     point: pointRecord,
   })
+  console.timeEnd('createDocWithData')
 
+  console.time('saveAndWriteDoc')
   const byteArray = saveDoc(doc)
   await fs.writeFile(outputFilePath, byteArray)
+  console.timeEnd('saveAndWriteDoc')
 }
 
 const dumpCmd = new CliCommand('dump')
@@ -65,7 +73,7 @@ const dumpCmd = new CliCommand('dump')
   })
   .withHandler(async (_args, options) => {
     const { output: outputFilePath } = options
-    const db = await getDb()
+    const db = getDb()
     await dumpHandler({ db, outputFilePath })
   })
 
@@ -80,12 +88,15 @@ const restoreHandler = async (options: RestoreHandlerOptions) => {
   const byteArray = await fs.readFile(inputFilePath)
   const doc = loadDoc(byteArray)
 
-  for (const stream of Object.values(doc.stream)) {
-    const pointList = Object.values(doc.point).filter(
+  const streamList = retrieveStreamList({ doc })
+  const pointList = retrieveAllPointList({ doc })
+
+  for (const stream of streamList) {
+    const streamPointList = pointList.filter(
       (point) => point.streamId === stream.id,
     )
     console.log(
-      `Stream ${stream.id}: ${stream.name} (${pointList.length} points)`,
+      `Stream ${stream.id}: ${stream.name} (${streamPointList.length} points)`,
     )
   }
 }
@@ -105,15 +116,15 @@ const restoreCmd = new CliCommand('restore')
   })
   .withHandler(async (_args, options) => {
     const { input: inputFilePath } = options
-    const db = await getDb()
+    const db = getDb()
     await restoreHandler({ db, inputFilePath })
   })
 
-const automergeCmd = new CliCommand('automerge')
+const yjsCmd = new CliCommand('yjs')
   .withDescription('Experiment with CRDTs')
   .withSubCommands(dumpCmd, restoreCmd)
   .withHandler(async () => {
-    automergeCmd.help()
+    yjsCmd.help()
   })
 
-export { automergeCmd }
+export { yjsCmd }

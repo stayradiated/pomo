@@ -1,20 +1,8 @@
-import * as Automerge from '@automerge/automerge'
-import type { Doc, AutomergeDoc } from './types.js'
+import * as Y from 'yjs'
+import type { Doc } from './types.js'
 
-const createDoc = (): AutomergeDoc => {
-  const schema = Automerge.change(
-    Automerge.init<Doc>('0000'),
-    { time: 0 },
-    (doc) => {
-      doc.user = {}
-      doc.point = {}
-      doc.stream = {}
-    },
-  )
-
-  const initChange = Automerge.getLastLocalChange(schema) as AutomergeDoc
-  const [doc] = Automerge.applyChanges(Automerge.init<Doc>(), [initChange])
-
+const createDoc = (): Doc => {
+  const doc = new Y.Doc() as Doc
   return doc
 }
 

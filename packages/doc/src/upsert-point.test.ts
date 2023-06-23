@@ -1,68 +1,61 @@
-import Automerge from '@automerge/automerge'
 import { describe, test, expect } from 'vitest'
 import { upsertPoint } from './upsert-point.js'
 import { createDoc } from './create-doc.js'
 
 describe('upsertPoint', () => {
   test('insert new point', () => {
-    let doc = createDoc()
-    doc = upsertPoint({
+    const doc = createDoc()
+
+    const pointId = upsertPoint({
       doc,
       streamId: 'streamId',
       startedAt: 1,
       value: 'test',
     })
 
-    const keys = Object.keys(doc.point)
-    expect(keys.length).toBe(1)
+    const pointMap = doc.getMap('point')
 
-    const pointId = keys[0]!
-    expect(pointId).toBeTypeOf('string')
-
-    const point = doc.point[pointId]!
-    expect(point).toBeTypeOf('object')
-
-    expect(point.id).toBeTypeOf('string')
-    expect(point.streamId).toBe('streamId')
-    expect(point.startedAt).toBe(1)
-    expect(point.value).toBe('test')
-    expect(point.createdAt).toBeTypeOf('number')
-    expect(point.updatedAt).toBe(null)
-
-    Automerge.free(doc)
+    expect(pointMap.toJSON()).toStrictEqual({
+      [pointId]: {
+        id: pointId,
+        streamId: 'streamId',
+        startedAt: 1,
+        value: 'test',
+        createdAt: expect.any(Number),
+        updatedAt: null,
+      },
+    })
   })
 
   test('update existing point', () => {
-    let doc = createDoc()
-    doc = upsertPoint({
+    const doc = createDoc()
+
+    const pointIdA = upsertPoint({
       doc,
       streamId: 'streamId',
       startedAt: 1,
       value: 'test',
     })
-    doc = upsertPoint({
+    const pointIdB = upsertPoint({
       doc,
       streamId: 'streamId',
       startedAt: 1,
       value: 'test2',
     })
 
-    const keys = Object.keys(doc.point)
-    expect(keys.length).toBe(1)
+    expect(pointIdA).toBe(pointIdB)
 
-    const pointId = keys[0]!
-    expect(pointId).toBeTypeOf('string')
+    const pointMap = doc.getMap('point')
 
-    const point = doc.point[pointId]!
-    expect(point).toBeTypeOf('object')
-
-    expect(point.id).toBeTypeOf('string')
-    expect(point.streamId).toBe('streamId')
-    expect(point.startedAt).toBe(1)
-    expect(point.value).toBe('test2')
-    expect(point.createdAt).toBeTypeOf('number')
-    expect(point.updatedAt).toBeTypeOf('number')
-
-    Automerge.free(doc)
+    expect(pointMap.toJSON()).toStrictEqual({
+      [pointIdA]: {
+        id: pointIdA,
+        streamId: 'streamId',
+        startedAt: 1,
+        value: 'test2',
+        createdAt: expect.any(Number),
+        updatedAt: expect.any(Number),
+      },
+    })
   })
 })

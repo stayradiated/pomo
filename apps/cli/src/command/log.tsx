@@ -13,7 +13,7 @@ import {
 import type { Slice, Stream, Point } from '@stayradiated/pomo-core'
 import { CliCommand } from 'cilly'
 import { utcToZonedTime } from 'date-fns-tz'
-import { client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
 
 type SliceListProps = {
   streamList: Stream[]
@@ -157,21 +157,23 @@ const MultiDaySliceList = (props: SliceListProps) => {
 }
 
 type HandlerOptions = {
-  trpc: ReturnType<(typeof client)['getTrpcClient']>
   since: Date
-  filter: {
+  where: {
     streamId: string | undefined
   }
   timeZone: string
 }
 
-const handler = async (options: HandlerOptions) => {
-  const { trpc, since, filter, timeZone } = options
+const handler = async (options: HandlerOptions): Promise<void | Error> => {
+  const { since, where, timeZone } = options
 
-  const pointList = await trpc.retrievePointList.query({
+  const pointList = await proxy.retrievePointList({
     since: since.getTime(),
-    filter,
+    where,
   })
+  if (pointList instanceof Error) {
+    return pointList
+  }
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
@@ -183,7 +185,10 @@ const handler = async (options: HandlerOptions) => {
     return sliceList
   }
 
-  const streamList = await trpc.retrieveStreamList.query()
+  const streamList = await proxy.retrieveStreamList({})
+  if (streamList instanceof Error) {
+    return streamList
+  }
 
   render(
     <Box flexDirection="column" margin={1}>
@@ -222,9 +227,10 @@ const logCmd = new CliCommand('log')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const trpc = client.getTrpcClient()
-
-    const timeZone = await trpc.getUserTimeZone.query()
+    const timeZone = await proxy.getUserTimeZone({})
+    if (timeZone instanceof Error) {
+      throw timeZone
+    }
 
     const since = options['from']
       ? chrono.parseDate(options['from'], {
@@ -233,16 +239,22 @@ const logCmd = new CliCommand('log')
         })
       : startOfDayWithTimeZone(Date.now(), timeZone)
 
-    const filterStreamId = options['stream']
-      ? await trpc.getStreamIdByName.query({ name: options['stream'] })
+    const whereStreamId = options['stream']
+      ? await proxy.getStreamIdByName({ name: options['stream'] })
       : undefined
 
-    return handler({
-      trpc,
-      filter: { streamId: filterStreamId },
+    if (whereStreamId instanceof Error) {
+      throw whereStreamId
+    }
+
+    const result = await handler({
+      where: { streamId: whereStreamId },
       since,
       timeZone,
     })
+    if (result instanceof Error) {
+      throw result
+    }
   })
 
 export { logCmd }

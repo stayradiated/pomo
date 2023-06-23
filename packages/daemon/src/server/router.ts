@@ -65,31 +65,14 @@ const appRouter = router({
       return pomoDoc.getStreamNameById({ doc, ...input })
     }),
 
-  getUserTimeZone: publicProcedure
-    .query(async (): Promise<string> => {
-      const doc = await getDoc()
-      if (doc instanceof Error) {
-        throw doc
-      }
-      return pomoDoc.getUserTimeZone({ doc })
-    }),
+  getUserTimeZone: publicProcedure.query(async (): Promise<string> => {
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw doc
+    }
 
-  upsertPoint: publicProcedure
-    .input(
-      z.object({
-        streamId: z.string(),
-        value: z.string(),
-        startedAt: z.number(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const doc = await getDoc()
-      if (doc instanceof Error) {
-        throw doc
-      }
-
-      await setDoc(pomoDoc.upsertPoint({ doc, ...input }))
-    }),
+    return pomoDoc.getUserTimeZone({ doc })
+  }),
 
   retrieveAllPointList: publicProcedure.query(async (): Promise<Point[]> => {
     const doc = await getDoc()
@@ -142,6 +125,25 @@ const appRouter = router({
 
     return pomoDoc.retrieveStreamList({ doc })
   }),
+
+  /* MUTATIONS */
+
+  upsertPoint: publicProcedure
+    .input(
+      z.object({
+        streamId: z.string(),
+        value: z.string(),
+        startedAt: z.number(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const doc = await getDoc()
+      if (doc instanceof Error) {
+        throw doc
+      }
+
+      await setDoc(pomoDoc.upsertPoint({ doc, ...input }))
+    }),
 
   setUserTimeZone: publicProcedure
     .input(

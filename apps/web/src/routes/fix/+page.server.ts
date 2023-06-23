@@ -1,13 +1,13 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error } from '@sveltejs/kit'
-import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-db'
-import { getDb } from '$lib/db';
+import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-doc'
+import { getDoc, setDoc } from '$lib/doc';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { toDate, formatInTimeZone } from 'date-fns-tz'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
-import { errorListBoundary } from '@stayradiated/error-boundary';
 import { redirect } from '@sveltejs/kit';
+import { cloneList } from '$lib/clone.js'
 
 const load = (async ({ request }) => {
   const url = new URL(request.url)
@@ -17,25 +17,29 @@ const load = (async ({ request }) => {
     throw error(400, 'Missing ref')
   }
 
-  const db = getDb()
-  const startedAt = await getPointStartedAtByRef({ db, ref })
-  if (startedAt instanceof Error) {
-    throw error(500, startedAt.message)
+  const doc = await getDoc()
+  if (doc instanceof Error) {
+    throw error(500, doc.message)
   }
 
-  const streamList = await retrieveStreamList({ db })
-  const pointMap = await getCurrentPoints({ db, streamList, currentTime: startedAt})
+  const startedAt = getPointStartedAtByRef({ doc, ref })
+  if (typeof startedAt === 'undefined') {
+    throw error(500, `Point ${ref} does not exist`)
+  }
+
+  const streamList = retrieveStreamList({ doc })
+  const pointMap = getCurrentPoints({ doc, streamList, currentTime: startedAt})
   const pointList = [...pointMap.values()].filter((point) => {
     return point.startedAt >= startedAt
   })
 
-  const timeZone = await getUserTimeZone({ db })
+  const timeZone = getUserTimeZone({ doc })
   const startedAtLocal = formatInTimeZone(startedAt, timeZone, 'yyyy-MM-dd HH:mm')
 
   return {
     startedAtLocal,
-    streamList,
-    pointList,
+    streamList: cloneList(streamList),
+    pointList: cloneList(pointList),
   }
 }) satisfies PageServerLoad
 
@@ -49,22 +53,26 @@ const actions = {
     const formData = $schema.parse(await request.formData())
     const { startedAtLocal, pointId: userPointIdList } = formData
 
-    const db = getDb()
-
-    // verify that each point exists
-    const pointList = await errorListBoundary(() => Promise.all(userPointIdList.map((pointId) => {
-      return getPointById({ db, id: pointId })
-    })))
-    if (pointList instanceof Error) {
-      throw error(500, pointList.message)
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw error(500, doc.message)
     }
 
-    const timeZone = await getUserTimeZone({ db })
+    // verify that each point exists
+    const pointList = userPointIdList.map((pointId) => {
+      const point = getPointById({ doc, id: pointId })
+      if (typeof point === 'undefined') {
+        throw error(400, `Point ${pointId} does not exist`)
+      }
+      return point
+    })
+
+    const timeZone = getUserTimeZone({ doc })
     const startedAt = toDate(startedAtLocal, { timeZone }).getTime()
 
     const pointIdList = [...new Set(pointList.map((point) => point.id))]
 
-    await updatePointStartedAt({ db, pointIdList, startedAt })
+    setDoc(updatePointStartedAt({ doc, pointIdList, startedAt }))
 
     throw redirect(303, '/log')
   }

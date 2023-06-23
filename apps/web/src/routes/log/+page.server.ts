@@ -1,12 +1,13 @@
 import { error } from '@sveltejs/kit'
-import { getDb } from '$lib/db.js'
+import { getDoc } from '$lib/doc.js'
 import { mapPointListToLineList, mapLineListToSliceList } from '@stayradiated/pomo-core'
-import { retrieveStreamList, retrievePointList, getUserTimeZone } from "@stayradiated/pomo-db"
+import { retrieveStreamList, retrievePointList, getUserTimeZone } from "@stayradiated/pomo-doc"
 import type { PageServerLoad, Actions } from './$types';
 import type { Slice } from '@stayradiated/pomo-core';
 import { redirect } from '@sveltejs/kit';
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
+import { cloneList } from '$lib/clone.js'
 
 type FilterSlicesByValueOptions = {
   sliceList: Slice[],
@@ -43,14 +44,17 @@ const load = (async ({ request }) => {
   const filterStreamId = url.searchParams.get('stream') ?? undefined
   const filterValue = url.searchParams.get('value') ?? undefined
 
-  const db = getDb()
+  const doc = await getDoc()
+  if (doc instanceof Error) {
+    throw error(500, doc.message)
+  }
 
-  const timeZone = await getUserTimeZone({ db })
+  const timeZone = getUserTimeZone({ doc })
 
-  const streamList = await retrieveStreamList({ db })
+  const streamList = retrieveStreamList({ doc })
 
-  const pointList = await retrievePointList({
-    db,
+  const pointList = retrievePointList({
+    doc,
     since: new Date('2023-06-17').getTime(),
     filter: {}
   })
@@ -77,9 +81,9 @@ const load = (async ({ request }) => {
   filteredSliceList.reverse()
 
   return {
-    pointList,
+    pointList: cloneList(pointList),
     sliceList: filteredSliceList,
-    streamList,
+    streamList: cloneList(streamList),
     filterStreamId,
     filterValue,
     timeZone,

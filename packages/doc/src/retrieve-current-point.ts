@@ -1,8 +1,8 @@
-import type { Point } from '@stayradiated/pomo-core'
-import type { AutomergeDoc } from './types.js'
+import { filter } from '@vangware/iterables'
+import type { Doc, YPoint, Point } from './types.js'
 
 type RetrieveCurrentPointOptions = {
-  doc: AutomergeDoc
+  doc: Doc
   streamId: string
   currentTime: number
 }
@@ -12,13 +12,20 @@ const retrieveCurrentPoint = (
 ): Point | undefined => {
   const { doc, streamId, currentTime } = options
 
-  const currentPoint = Object.values(doc.point)
-    .filter((point) => {
-      return point.streamId === streamId && point.startedAt <= currentTime
-    })
+  const pointMap = doc.getMap('point')
+
+  const filterCurrent = filter((point: YPoint) => {
+    return (
+      point.get('streamId') === streamId &&
+      point.get('startedAt')! <= currentTime
+    )
+  })
+
+  const currentPoint = [...filterCurrent(pointMap.values())]
     .sort((a, b) => {
-      return b.startedAt - a.startedAt
+      return b.get('startedAt')! - a.get('startedAt')!
     })[0]
+    ?.toJSON() as Point | undefined
 
   return currentPoint
 }

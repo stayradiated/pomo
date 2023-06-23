@@ -1,27 +1,24 @@
 import type { Point, Stream } from "@stayradiated/pomo-core";
-import type { KyselyDb } from "@stayradiated/pomo-db"
-import { retrieveCurrentPoint } from "@stayradiated/pomo-db"
+import type { AutomergeDoc } from "@stayradiated/pomo-doc"
+import { retrieveCurrentPoint } from "@stayradiated/pomo-doc"
 
 type GetCurrentPointsOptions = {
-  db: KyselyDb,
+  doc: AutomergeDoc,
   streamList: Stream[],
   currentTime: number,
 }
 
-const getCurrentPoints = async (options: GetCurrentPointsOptions): Promise<Map<string, Point>> => {
-  const { db, streamList, currentTime } = options
+const getCurrentPoints = (options: GetCurrentPointsOptions): Map<string, Point> => {
+  const { doc, streamList, currentTime } = options
 
   const output = new Map<string, Point>()
 
   for (const stream of streamList) {
-    const currentPoint = await retrieveCurrentPoint({
-      db,
+    const currentPoint = retrieveCurrentPoint({
+      doc,
       streamId: stream.id,
       currentTime,
     })
-    if (currentPoint instanceof Error) {
-      throw currentPoint
-    }
     if (currentPoint) {
       output.set(stream.id, currentPoint)
     }

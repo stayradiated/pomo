@@ -1,58 +1,80 @@
-import Automerge from '@automerge/automerge'
 import { describe, test, expect } from 'vitest'
 import { upsertStream } from './upsert-stream.js'
 import { createDoc } from './create-doc.js'
+import { createDocWithData } from './create-doc-with-data.js'
 
 describe('upsertStream', () => {
   test('insert new stream', () => {
-    let doc = createDoc()
-    doc = upsertStream({
+    const doc = createDoc()
+
+    const streamId = upsertStream({
       doc,
       name: 'test',
     })
 
-    const keys = Object.keys(doc.stream)
-    expect(keys.length).toBe(1)
+    const streamMap = doc.getMap('stream')
 
-    const streamId = keys[0]!
-    expect(streamId).toBeTypeOf('string')
-
-    const stream = doc.stream[streamId]!
-    expect(stream).toBeTypeOf('object')
-
-    expect(stream.id).toBeTypeOf('string')
-    expect(stream.name).toBe('test')
-    expect(stream.createdAt).toBeTypeOf('number')
-    expect(stream.updatedAt).toBe(null)
-
-    Automerge.free(doc)
+    expect(streamMap.toJSON()).toStrictEqual({
+      [streamId]: {
+        id: streamId,
+        name: 'test',
+        createdAt: expect.any(Number),
+        updatedAt: null,
+      },
+    })
   })
 
-  test('update existing stream', () => {
-    let doc = createDoc()
-    doc = upsertStream({
-      doc,
-      name: 'test',
+  test('with existing streams', () => {
+    const doc = createDocWithData({
+      point: {},
+      user: {},
+      stream: {
+        'stream-1': {
+          id: 'stream-1',
+          name: 'hello',
+          createdAt: 1_620_000_000_000,
+          updatedAt: 1_620_000_000_000,
+        },
+      },
     })
-    doc = upsertStream({
-      doc,
-      name: 'test',
+
+    const streamId = upsertStream({ doc, name: 'world' })
+
+    const streamMap = doc.getMap('stream')
+
+    expect(streamMap.toJSON()).toStrictEqual({
+      'stream-1': {
+        id: 'stream-1',
+        name: 'hello',
+        createdAt: 1_620_000_000_000,
+        updatedAt: 1_620_000_000_000,
+      },
+      [streamId]: {
+        id: streamId,
+        name: 'world',
+        createdAt: expect.any(Number),
+        updatedAt: null,
+      },
     })
+  })
 
-    const keys = Object.keys(doc.stream)
-    expect(keys.length).toBe(1)
+  test('do not insert same stream name twice', () => {
+    const doc = createDoc()
 
-    const streamId = keys[0]!
-    expect(streamId).toBeTypeOf('string')
+    const streamIdA = upsertStream({ doc, name: 'test' })
+    const streamIdB = upsertStream({ doc, name: 'test' })
 
-    const stream = doc.stream[streamId]!
-    expect(stream).toBeTypeOf('object')
+    expect(streamIdA).toBe(streamIdB)
 
-    expect(stream.id).toBeTypeOf('string')
-    expect(stream.name).toBe('test')
-    expect(stream.createdAt).toBeTypeOf('number')
-    expect(stream.updatedAt).toBeTypeOf('number')
+    const streamMap = doc.getMap('stream')
 
-    Automerge.free(doc)
+    expect(streamMap.toJSON()).toStrictEqual({
+      [streamIdA]: {
+        id: streamIdA,
+        name: 'test',
+        createdAt: expect.any(Number),
+        updatedAt: expect.any(Number),
+      },
+    })
   })
 })
