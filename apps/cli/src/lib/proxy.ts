@@ -12,12 +12,10 @@ const proxyFn = <T extends (options: any) => any>(fn: T): FnWithoutDoc<T> => {
       return doc
     }
 
-    console.time(fn.name)
     const result = fn({
       ...input,
       doc,
     })
-    console.timeEnd(fn.name)
 
     return result
   }
@@ -26,7 +24,10 @@ const proxyFn = <T extends (options: any) => any>(fn: T): FnWithoutDoc<T> => {
 const proxy = {
   getPointStartedAtByRef: proxyFn(pomoDoc.getPointStartedAtByRef),
   getStreamIdByName: proxyFn(pomoDoc.getStreamIdByName),
+  getStreamNameById: proxyFn(pomoDoc.getStreamNameById),
   getUserTimeZone: proxyFn(pomoDoc.getUserTimeZone),
+
+  retrieveAllPointList: proxyFn(pomoDoc.retrieveAllPointList),
   retrieveCurrentPoint: proxyFn(pomoDoc.retrieveCurrentPoint),
   retrievePointList: proxyFn(pomoDoc.retrievePointList),
   retrieveStreamList: proxyFn(pomoDoc.retrieveStreamList),
@@ -34,6 +35,7 @@ const proxy = {
   upsertStream: proxyFn(pomoDoc.upsertStream),
   updatePointValue: proxyFn(pomoDoc.updatePointValue),
   upsertPoint: proxyFn(pomoDoc.upsertPoint),
+  setUserTimeZone: proxyFn(pomoDoc.setUserTimeZone),
 }
 
 export { proxy }

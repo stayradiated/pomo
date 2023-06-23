@@ -3,7 +3,7 @@ import http from 'node:http'
 import { spawn } from 'node:child_process'
 import { fetch } from 'undici'
 import { z } from 'zod'
-import { type client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
 
 const CLIENT_ID = '41535'
 const CLIENT_SECRET = '8037af8638f3f1d10e77d1fce824070cf64f2101'
@@ -263,7 +263,6 @@ const getAllActivities = (
 }
 
 type Options = {
-  trpc: ReturnType<typeof client.getTrpcClient>
   initialSession?: Session
 }
 
@@ -272,16 +271,13 @@ type Result = {
 }
 
 const pullStravaActivities = async (options: Options): Promise<Result> => {
-  const { trpc, initialSession } = options
+  const { initialSession } = options
   const session = await refreshSession(initialSession)
 
-  await trpc.upsertStream.mutate({ name: 'Strava' })
-  const streamId = await trpc.getStreamIdByName.query({ name: 'Strava' })
-  if (streamId === undefined) {
+  const streamId = await proxy.upsertStream({ name: 'Strava' })
+  if (streamId instanceof Error) {
     throw new TypeError('Stream not found')
   }
-
-  console.log({ streamId })
 
   for await (const activity of getAllActivities(session.accessToken)) {
     const startDate = new Date(activity.start_date)
@@ -292,17 +288,23 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
 
     console.log(activity.name, startDate, stopDate, durationMin)
 
-    await trpc.upsertPoint.mutate({
+    const upsertStartResult = await proxy.upsertPoint({
       streamId,
       value: activity.name,
       startedAt: startDate.getTime(),
     })
+    if (upsertStartResult instanceof Error) {
+      throw upsertStartResult
+    }
 
-    await trpc.upsertPoint.mutate({
+    const upsertStopResult = await proxy.upsertPoint({
       streamId,
       value: '',
       startedAt: stopDate.getTime(),
     })
+    if (upsertStopResult instanceof Error) {
+      throw upsertStartResult
+    }
   }
 
   return { session }

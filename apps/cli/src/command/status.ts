@@ -2,20 +2,19 @@ import { CliCommand } from 'cilly'
 import * as chrono from 'chrono-node'
 import { intervalToDuration, formatDuration } from 'date-fns'
 import { mapPointListToLineList, stripComments } from '@stayradiated/pomo-core'
-import { client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
 
 type HandlerOptions = {
-  trpc: ReturnType<typeof client.getTrpcClient>
-  filter: { streamId?: string }
+  where: { streamId?: string }
   currentTime: Date
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { trpc, currentTime, filter } = options
+  const { currentTime, where } = options
 
-  const pointList = await trpc.retrievePointList.query({
+  const pointList = await proxy.retrievePointList({
     since: currentTime.getTime(),
-    filter,
+    where,
   })
   if (pointList instanceof Error) {
     return pointList
@@ -27,7 +26,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   }
 
   for (const line of lineList) {
-    const streamName = await trpc.getStreamNameById.query({ id: line.streamId })
+    const streamName = await proxy.getStreamNameById({ id: line.streamId })
     if (streamName === undefined) {
       return new Error(`Stream not found: ${line.streamId}`)
     }
@@ -76,8 +75,6 @@ const statusCmd = new CliCommand('status')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const trpc = client.getTrpcClient()
-
     const currentTime = options['from']
       ? chrono.parseDate(options['from'])
       : new Date()
@@ -86,13 +83,16 @@ const statusCmd = new CliCommand('status')
       throw currentTime
     }
 
-    const filterStreamId = options['stream']
-      ? await trpc.getStreamIdByName.query({ name: options['stream'] })
+    const whereStreamId = options['stream']
+      ? await proxy.getStreamIdByName({ name: options['stream'] })
       : undefined
 
+    if (whereStreamId instanceof Error) {
+      throw whereStreamId
+    }
+
     return handler({
-      trpc,
-      filter: { streamId: filterStreamId },
+      where: { streamId: whereStreamId },
       currentTime,
     })
   })

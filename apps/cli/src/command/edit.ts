@@ -13,34 +13,37 @@ import { formatInTimeZone } from 'date-fns-tz'
 import { proxy } from '#src/lib/proxy.js'
 import { saveDoc } from '#src/lib/doc.js'
 
-  const getCurrentText = async (currentTime: number, timeZone: string): Promise<string|Error> => {
-    let output = `${formatInTimeZone(
-      currentTime,
-      timeZone,
-      'yyyy-MM-dd HH:mm:ss zzz',
-    )}\n\n`
+const getCurrentText = async (
+  currentTime: number,
+  timeZone: string,
+): Promise<string | Error> => {
+  let output = `${formatInTimeZone(
+    currentTime,
+    timeZone,
+    'yyyy-MM-dd HH:mm:ss zzz',
+  )}\n\n`
 
-    const streamList = await proxy.retrieveStreamList({})
-    if (streamList instanceof Error) {
-      return streamList
-    }
-
-    for (const stream of streamList) {
-      output += `# ${stream.name}\n\n`
-
-      const currentPoint = await proxy.retrieveCurrentPoint({
-        streamId: stream.id,
-        currentTime,
-      })
-      if (currentPoint instanceof Error) {
-        return currentPoint
-      }
-
-      output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
-    }
-
-    return output
+  const streamList = await proxy.retrieveStreamList({})
+  if (streamList instanceof Error) {
+    return streamList
   }
+
+  for (const stream of streamList) {
+    output += `# ${stream.name}\n\n`
+
+    const currentPoint = await proxy.retrieveCurrentPoint({
+      streamId: stream.id,
+      currentTime,
+    })
+    if (currentPoint instanceof Error) {
+      return currentPoint
+    }
+
+    output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
+  }
+
+  return output
+}
 
 // # edit current streams
 //
@@ -59,7 +62,7 @@ type EditOptions = {
   timeZone: string
 }
 
-const handler = async (options: EditOptions): Promise<void|Error> => {
+const handler = async (options: EditOptions): Promise<void | Error> => {
   const { currentTime, timeZone } = options
 
   const pleaseEditThisText = await getCurrentText(currentTime, timeZone)
@@ -103,6 +106,7 @@ const handler = async (options: EditOptions): Promise<void|Error> => {
     if (streamId instanceof Error) {
       return streamId
     }
+
     if (streamId === undefined) {
       throw new TypeError(`Could not find stream with name "${streamName}"`)
     }
@@ -124,9 +128,10 @@ const handler = async (options: EditOptions): Promise<void|Error> => {
         )}] ${streamName} → ${stripComments(value)}`,
       )
 
-      const result = (currentPoint?.startedAt === currentTime) 
-        ? await proxy.updatePointValue({ pointId: currentPoint.id, value })
-        : await proxy.upsertPoint({ streamId, value, startedAt: currentTime })
+      const result =
+        currentPoint?.startedAt === currentTime
+          ? await proxy.updatePointValue({ pointId: currentPoint.id, value })
+          : await proxy.upsertPoint({ streamId, value, startedAt: currentTime })
 
       if (result instanceof Error) {
         return result
@@ -192,6 +197,7 @@ const editCmd = new CliCommand('edit')
     if (currentTime instanceof Error) {
       throw currentTime
     }
+
     if (currentTime === undefined) {
       throw new TypeError('Could not figure out current time')
     }

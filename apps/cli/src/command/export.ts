@@ -1,16 +1,18 @@
 import { CliCommand } from 'cilly'
-import { client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
 
-type HandlerOptions = {
-  trpc: ReturnType<(typeof client)['getTrpcClient']>
-}
+type HandlerOptions = Record<string, unknown>
 
-const handler = async (options: HandlerOptions) => {
-  const { trpc } = options
+const handler = async (_options: HandlerOptions): Promise<void | Error> => {
+  const streamList = await proxy.retrieveStreamList({})
+  if (streamList instanceof Error) {
+    return streamList
+  }
 
-  const streamList = await trpc.retrieveStreamList.query()
-
-  const pointList = await trpc.retrieveAllPointList.query()
+  const pointList = await proxy.retrieveAllPointList({})
+  if (pointList instanceof Error) {
+    return pointList
+  }
 
   for (const stream of streamList) {
     console.log(JSON.stringify(stream))
@@ -24,9 +26,10 @@ const handler = async (options: HandlerOptions) => {
 const exportCmd = new CliCommand('export')
   .withDescription('Export all the things')
   .withHandler(async () => {
-    const trpc = client.getTrpcClient()
-
-    await handler({ trpc })
+    const result = await handler({})
+    if (result instanceof Error) {
+      throw result
+    }
   })
 
 export { exportCmd }

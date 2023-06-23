@@ -27,20 +27,14 @@ const getDoc: GetDocFn = async (): Promise<Doc | Error> => {
   const exists = await errorBoundary(async () => fs.stat(inputFilePath))
   if (exists instanceof Error && 'code' in exists) {
     if (exists.code === 'ENOENT') {
-      console.log('Creating new doc')
       return pomoDoc.createDoc()
     }
 
     return exists
   }
 
-  console.time('readFile')
   const byteArray = await fs.readFile(inputFilePath)
-  console.timeEnd('readFile')
-
-  console.time('loadDoc')
   const doc = pomoDoc.loadDoc(byteArray)
-  console.timeEnd('loadDoc')
 
   ref.doc = doc
 

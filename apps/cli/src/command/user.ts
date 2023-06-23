@@ -1,7 +1,7 @@
 import { CliCommand } from 'cilly'
 import { z } from 'zod'
 import { isValidTimeZone } from '@stayradiated/pomo-core'
-import { client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
 
 const $Key = z.literal('timezone')
 
@@ -21,15 +21,17 @@ const setCmd = new CliCommand('set')
     const key = $Key.parse(args['key'].toLowerCase())
     const value = args['value']
 
-    const trpc = client.getTrpcClient()
-
     switch (key) {
       case 'timezone': {
         if (!isValidTimeZone(value)) {
           throw new Error(`Invalid time zone: ${value}`)
         }
 
-        await trpc.setUserTimeZone.mutate({ timeZone: value })
+        const result = await proxy.setUserTimeZone({ timeZone: value })
+        if (result instanceof Error) {
+          throw result
+        }
+
         break
       }
     }
@@ -44,12 +46,10 @@ const getCmd = new CliCommand('get')
   .withHandler(async (args, _options, _extra) => {
     const key = $Key.parse(args['key'].toLowerCase())
 
-    const trpc = client.getTrpcClient()
-
     switch (key) {
       case 'timezone': {
-        const timeZone = await trpc.getUserTimeZone.query()
-        console.log(timeZone)
+        const timeZone = await proxy.getUserTimeZone({})
+        console.info(timeZone)
         break
       }
     }

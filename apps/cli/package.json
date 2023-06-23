@@ -24,7 +24,6 @@
   "dependencies": {
     "@stayradiated/error-boundary": "4.1.0",
     "@stayradiated/pomo-core": "workspace:*",
-    "@stayradiated/pomo-daemon": "workspace:*",
     "@stayradiated/pomo-db": "workspace:*",
     "@stayradiated/pomo-doc": "workspace:*",
     "@stayradiated/pomo-markdown": "workspace:*",

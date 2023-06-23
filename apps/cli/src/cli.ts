@@ -6,7 +6,6 @@ import { statusCmd } from './command/status.js'
 import { summaryCmd } from './command/summary.js'
 import { pullStravaCmd } from './command/pull-strava.js'
 import { yjsCmd } from './command/yjs.js'
-import { daemonCmd } from './command/daemon.js'
 import { exportCmd } from './command/export.js'
 
 export const cli = new CliCommand('pomo')
@@ -21,7 +20,6 @@ export const cli = new CliCommand('pomo')
     exportCmd,
 
     yjsCmd,
-    daemonCmd,
   )
   .withHandler(() => {
     cli.help()

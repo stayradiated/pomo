@@ -6,11 +6,10 @@ import {
   mapPointListToLineList,
   durationLocale,
 } from '@stayradiated/pomo-core'
-import { client } from '@stayradiated/pomo-daemon'
+import { proxy } from '#src/lib/proxy.js'
 
 type HandlerOptions = {
-  trpc: ReturnType<(typeof client)['getTrpcClient']>
-  filter: {
+  where: {
     streamId: string | undefined
     value: string | undefined
   }
@@ -18,21 +17,24 @@ type HandlerOptions = {
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { trpc, filter, currentTime } = options
+  const { where, currentTime } = options
 
-  const pointList = await trpc.retrievePointList.query({
+  const pointList = await proxy.retrievePointList({
     since: startOfDay(currentTime).getTime(),
-    filter: {
-      streamId: filter.streamId,
+    where: {
+      streamId: where.streamId,
     },
   })
+  if (pointList instanceof Error) {
+    return pointList
+  }
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
     return lineList
   }
 
-  const filterValue = filter.value
+  const filterValue = where.value
   const filteredLineList =
     typeof filterValue === 'string'
       ? lineList.filter((line) => line.value.startsWith(filterValue))
@@ -54,7 +56,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
 
   for (const entry of totalDuration.entries()) {
     const [streamId, values] = entry
-    const name = await trpc.getStreamNameById.query({ id: streamId })
+    const name = await proxy.getStreamNameById({ id: streamId })
 
     for (const [value, durationMs] of values.entries()) {
       const duration = formatDuration(
@@ -108,8 +110,6 @@ const summaryCmd = new CliCommand('summary')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const trpc = client.getTrpcClient()
-
     const currentTime = options['from']
       ? chrono.parseDate(options['from'])
       : new Date()
@@ -118,15 +118,21 @@ const summaryCmd = new CliCommand('summary')
       throw currentTime
     }
 
-    const filterStreamId = options['stream']
-      ? await trpc.getStreamIdByName.query({ name: options['stream'] })
+    const whereStreamId = options['stream']
+      ? await proxy.getStreamIdByName({ name: options['stream'] })
       : undefined
+    if (whereStreamId instanceof Error) {
+      throw whereStreamId
+    }
 
-    return handler({
-      trpc,
-      filter: { streamId: filterStreamId, value: options['value'] },
+    const result = await handler({
+      where: { streamId: whereStreamId, value: options['value'] },
       currentTime,
     })
+
+    if (result instanceof Error) {
+      throw result
+    }
   })
 
 export { summaryCmd }
