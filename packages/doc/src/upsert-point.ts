@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import * as Y from 'yjs'
-import { find } from '@vangware/iterables'
+import { find } from './utils/find.js'
 import type { Doc, YPoint } from './types.js'
 
 type UpsertPointOptions = {
@@ -15,13 +15,12 @@ const upsertPoint = (options: UpsertPointOptions): string => {
 
   const pointMap = doc.getMap('point')
 
-  const findPoint = find(
+  const existingPoint = find(
+    pointMap.values(),
     (point: YPoint) =>
       point.get('streamId') === streamId &&
       point.get('startedAt') === startedAt,
   )
-
-  const existingPoint = findPoint(pointMap.values())
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingPoint) {

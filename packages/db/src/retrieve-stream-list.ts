@@ -1,11 +1,13 @@
-import type { KyselyDb } from './db.js'
 import type { Stream } from '@stayradiated/pomo-core'
+import type { KyselyDb } from './db.js'
 
 type RetrieveOptions = {
   db: KyselyDb
 }
 
-const retrieveStreamList = async (options: RetrieveOptions): Promise<Stream[]> => {
+const retrieveStreamList = async (
+  options: RetrieveOptions,
+): Promise<Stream[]> => {
   const { db } = options
   const streamList = await db
     .selectFrom('Stream')

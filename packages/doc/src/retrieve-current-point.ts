@@ -1,5 +1,4 @@
-import { filter } from '@vangware/iterables'
-import type { Doc, YPoint, Point } from './types.js'
+import type { Doc, Point } from './types.js'
 
 type RetrieveCurrentPointOptions = {
   doc: Doc
@@ -14,14 +13,14 @@ const retrieveCurrentPoint = (
 
   const pointMap = doc.getMap('point')
 
-  const filterCurrent = filter((point: YPoint) => {
-    return (
-      point.get('streamId') === streamId &&
-      point.get('startedAt')! <= currentTime
-    )
-  })
+  const currentPoint = [...pointMap.values()]
+    .filter((point) => {
+      return (
+        point.get('streamId') === streamId &&
+        point.get('startedAt')! <= currentTime
+      )
+    })
 
-  const currentPoint = [...filterCurrent(pointMap.values())]
     .sort((a, b) => {
       return b.get('startedAt')! - a.get('startedAt')!
     })[0]

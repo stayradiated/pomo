@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { head } from '@vangware/iterables'
+import { head } from './utils/head.js'
 import { setUserTimeZone } from './set-user-time-zone.js'
 import { createDoc } from './create-doc.js'
 import { createDocWithData } from './create-doc-with-data.js'

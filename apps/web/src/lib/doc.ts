@@ -15,14 +15,17 @@ const ref: Ref = {
   doc: undefined,
 }
 
+const getDocFilePath = (): string => {
+  const env = getEnv()
+  return path.join(env.POMO_DIR, 'state')
+}
+
 const getDoc: GetDocFn = async (): Promise<Doc | Error> => {
   if (ref.doc) {
     return ref.doc
   }
 
-  const env = getEnv()
-
-  const inputFilePath = path.join(env.POMO_DIR, 'state')
+  const inputFilePath = getDocFilePath()
 
   const exists = await errorBoundary(async () => fs.stat(inputFilePath))
   if (exists instanceof Error && 'code' in exists) {
@@ -47,8 +50,8 @@ const saveDoc = async () => {
     throw new Error('No doc')
   }
 
+  const filePath = getDocFilePath()
   const byteArray = pomoDoc.saveDoc(doc)
-  const filePath = path.join(getEnv().POMO_DIR, 'state')
   await fs.writeFile(filePath, byteArray)
 }
 

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import * as Y from 'yjs'
-import { find } from '@vangware/iterables'
+import { find } from './utils/find.js'
 import type { Doc, YStream } from './types.js'
 
 type UpsertStreamOptions = {
@@ -13,8 +13,10 @@ const upsertStream = (options: UpsertStreamOptions): string => {
 
   const streamMap = doc.getMap('stream')
 
-  const findStream = find((stream: YStream) => stream.get('name') === name)
-  const existingStream = findStream(streamMap.values())
+  const existingStream = find(
+    streamMap.values(),
+    (stream: YStream) => stream.get('name') === name,
+  )
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingStream) {

@@ -4,7 +4,7 @@ import { once } from './once.js'
 
 const getEnv = once(() => z
   .object({
-    POMO_DIR: z.string()
+    POMO_DIR: z.string(),
   })
   .parse(process.env))
 

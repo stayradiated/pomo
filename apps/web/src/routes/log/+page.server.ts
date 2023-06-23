@@ -44,10 +44,7 @@ const load = (async ({ request }) => {
   const filterStreamId = url.searchParams.get('stream') ?? undefined
   const filterValue = url.searchParams.get('value') ?? undefined
 
-  console.log('Getting doc...')
   const doc = await getDoc()
-  console.log('Got doc!')
-
   if (doc instanceof Error) {
     throw error(500, doc.message)
   }

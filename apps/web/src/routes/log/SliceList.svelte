@@ -20,7 +20,7 @@
         format: ['hours', 'minutes'],
         locale: durationLocale,
       },
-    )
+    ) || 'now'
   }
 </script>
 

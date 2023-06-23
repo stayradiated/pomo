@@ -6,7 +6,7 @@
   "scripts": {
     "test": "vitest --watch=false",
     "tidy": "xo --fix",
-    "build": "rm -rf dist && tsc"
+    "build": "tsc"
   },
   "keywords": [],
   "author": {
@@ -17,7 +17,6 @@
   "dependencies": {
     "@stayradiated/error-boundary": "4.1.0",
     "@stayradiated/pomo-core": "workspace:*",
-    "@vangware/iterables": "3.1.0",
     "date-fns": "2.30.0",
     "yjs": "13.6.5"
   },

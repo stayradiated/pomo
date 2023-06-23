@@ -1,5 +1,5 @@
-import type { KyselyDb } from './db.js'
 import type { User } from '@stayradiated/pomo-core'
+import type { KyselyDb } from './db.js'
 
 type RetrieveOptions = {
   db: KyselyDb

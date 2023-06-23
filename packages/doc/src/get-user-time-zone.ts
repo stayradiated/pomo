@@ -1,4 +1,4 @@
-import { head } from '@vangware/iterables'
+import { head } from './utils/head.js'
 import type { Doc } from './types.js'
 
 type GetUserTimeZoneOptions = {

@@ -1,7 +1,7 @@
 import { sql } from 'kysely'
 import { errorBoundary } from '@stayradiated/error-boundary'
-import type { KyselyDb } from '#src/db.js'
 import type { Point } from '@stayradiated/pomo-core'
+import type { KyselyDb } from '#src/db.js'
 
 type RetrieveOptions = {
   db: KyselyDb
@@ -31,7 +31,14 @@ const retrievePointList = async (
             .onRef('Point.streamId', '=', 'sv2.streamId')
             .onRef('Point.startedAt', '=', 'sv2.maxStartedAt'),
       )
-      .select(['Point.id', 'Point.startedAt', 'Point.streamId', 'Point.value', 'Point.createdAt', 'Point.updatedAt'])
+      .select([
+        'Point.id',
+        'Point.startedAt',
+        'Point.streamId',
+        'Point.value',
+        'Point.createdAt',
+        'Point.updatedAt',
+      ])
       .where(({ or, cmpr }) =>
         or([
           cmpr('Point.startedAt', '>', since),

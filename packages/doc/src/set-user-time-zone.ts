@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import * as Y from 'yjs'
-import { head } from '@vangware/iterables'
+import { head } from './utils/head.js'
 import type { Doc, YUser } from './types.js'
 
 type SetUserTimeZoneOptions = {

@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "POMO_DIR=./tmp vite dev",
 		"build:vite": "vite build",
 		"build": "rm -rf dist && vite build && node ./scripts/build.mjs && cp -r ./build/client ./dist/client",
 		"preview": "vite preview",
@@ -15,6 +15,7 @@
 		"@stayradiated/pomo-core": "workspace:*",
 		"@stayradiated/pomo-doc": "workspace:*",
 		"date-fns": "2.30.0",
+		"yjs": "13.6.5",
 		"zod": "3.21.4",
 		"zod-form-data": "2.0.1"
 	},
