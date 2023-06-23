@@ -37,7 +37,7 @@ const postDiff = async (options: postDiffOptions): Promise<PostDiffResult> => {
     method: 'POST',
     body: formData,
     headers: {
-      origin: 'http://localhost:5173',
+      origin: remoteUrl
     },
   })
 
