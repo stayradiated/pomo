@@ -1,33 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { getDoc } from '$lib/doc.js'
 import { getUserTimeZone, retrieveStreamList, retrievePointList } from '@stayradiated/pomo-doc'
-import { stripComments, firstLine, startOfDayWithTimeZone, mapPointListToLineList } from '@stayradiated/pomo-core'
-import type { Line } from '@stayradiated/pomo-core'
+import { stripComments, firstLine, startOfDayWithTimeZone, mapPointListToLineList, clampLineList } from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
-
-const clampLineList = (options: {
-  lineList: Line[]
-  startDate: number
-  endDate: number
-}): Line[] => {
-  const { lineList, startDate, endDate } = options
-
-  return lineList.filter((line) => {
-    return line.startedAt < endDate && (line.stoppedAt ?? Infinity) > startDate
-  }).map((line) => {
-    const startedAtClamped = Math.max(line.startedAt, startDate)
-    const stoppedAtClamped = Math.min(line.stoppedAt ?? Infinity, endDate)
-
-    const durationMs = stoppedAtClamped - startedAtClamped
-
-    return {
-      ...line,
-      startedAt: startedAtClamped,
-      stoppedAt: stoppedAtClamped,
-      durationMs,
-    }
-  })
-}
 
 const load = (async () => {
   const doc = await getDoc()

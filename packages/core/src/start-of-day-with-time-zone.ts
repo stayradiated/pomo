@@ -6,7 +6,9 @@ type StartOfDayWithTimeZoneOptions = {
   instant: number
 }
 
-const startOfDayWithTimeZone = (options: StartOfDayWithTimeZoneOptions): Date => {
+const startOfDayWithTimeZone = (
+  options: StartOfDayWithTimeZoneOptions,
+): Date => {
   const { timeZone, instant } = options
   const instantZoned = utcToZonedTime(instant, timeZone)
   const dayStartZoned = startOfDay(instantZoned)

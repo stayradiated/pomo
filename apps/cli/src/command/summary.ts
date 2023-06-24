@@ -7,6 +7,7 @@ import {
   mapPointListToLineList,
   startOfDayWithTimeZone,
   durationLocale,
+  clampLineList,
 } from '@stayradiated/pomo-core'
 import { proxy } from '#src/lib/proxy.js'
 
@@ -33,13 +34,16 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     return pointList
   }
 
-  console.log(JSON.stringify(pointList))
-
-
-  const lineList = mapPointListToLineList(pointList)
-  if (lineList instanceof Error) {
-    return lineList
+  const extendedLineList = mapPointListToLineList(pointList)
+  if (extendedLineList instanceof Error) {
+    return extendedLineList
   }
+
+  const lineList = clampLineList({
+    lineList: extendedLineList,
+    startDate,
+    endDate,
+  })
 
   const filterValue = where.value
   const filteredLineList =
@@ -47,21 +51,21 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
       ? lineList.filter((line) => line.value.startsWith(filterValue))
       : lineList
 
-  const totalDuration = new Map<string, Map<string, number>>()
+  const streamDurationMap = new Map<string, Map<string, number>>()
 
   for (const line of filteredLineList) {
     const { streamId, value: rawValue, durationMs } = line
     const value = firstLine(stripComments(rawValue))
 
-    if (!totalDuration.has(streamId)) {
-      totalDuration.set(streamId, new Map())
+    if (!streamDurationMap.has(streamId)) {
+      streamDurationMap.set(streamId, new Map())
     }
 
-    const childMap = totalDuration.get(streamId)!
+    const childMap = streamDurationMap.get(streamId)!
     childMap.set(value, (childMap.get(value) ?? 0) + durationMs)
   }
 
-  for (const entry of totalDuration.entries()) {
+  for (const entry of streamDurationMap.entries()) {
     const [streamId, values] = entry
     const name = await proxy.getStreamNameById({ id: streamId })
 
@@ -107,7 +111,7 @@ const summaryCmd = new CliCommand('summary')
     {
       name: ['-d', '--date'],
       description: 'Show points from a certain time',
-          defaultValue: 'today',
+      defaultValue: 'today',
       args: [
         {
           name: 'datetime',
@@ -119,7 +123,7 @@ const summaryCmd = new CliCommand('summary')
     {
       name: ['-p', '--span'],
       description: 'How many days to show',
-          defaultValue: 1,
+      defaultValue: 1,
       args: [
         {
           name: 'days',
@@ -145,7 +149,10 @@ const summaryCmd = new CliCommand('summary')
       timeZone,
     }).getTime()
 
-    const endDate = dateFns.addDays(startDate, options['span']).getTime()
+    const endDate = Math.min(
+      dateFns.addDays(startDate, options['span']).getTime(),
+      Date.now(),
+    )
 
     const whereStreamId = options['stream']
       ? await proxy.getStreamIdByName({ name: options['stream'] })
@@ -153,6 +160,7 @@ const summaryCmd = new CliCommand('summary')
     if (whereStreamId instanceof Error) {
       throw whereStreamId
     }
+
     if (options['stream'] && !whereStreamId) {
       throw new Error(`Stream not found: ${options['stream']}`)
     }
