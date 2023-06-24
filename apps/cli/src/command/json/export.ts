@@ -2,6 +2,7 @@ import {
   getUserRecord,
   getStreamRecord,
   getPointRecord,
+  getLabelRecord,
 } from '@stayradiated/pomo-doc'
 import type { JsonDoc } from './schema.js'
 import { getDoc } from '#src/lib/doc.js'
@@ -15,11 +16,13 @@ const exportAsJson = async (): Promise<void | Error> => {
   const userRecord = getUserRecord({ doc })
   const streamRecord = getStreamRecord({ doc })
   const pointRecord = getPointRecord({ doc })
+  const labelRecord = getLabelRecord({ doc })
 
   const jsonDoc: JsonDoc = {
     user: userRecord,
     stream: streamRecord,
     point: pointRecord,
+    label: labelRecord,
   }
 
   console.log(JSON.stringify(jsonDoc))

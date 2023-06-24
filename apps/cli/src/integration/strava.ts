@@ -291,8 +291,8 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
 
     const upsertStartResult = await proxy.upsertPoint({
       streamId,
-      value: activity.name,
       startedAt: startDate.getTime(),
+      value: activity.name,
     })
     if (upsertStartResult instanceof Error) {
       throw upsertStartResult

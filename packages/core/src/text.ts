@@ -3,6 +3,8 @@ const stripComments = (input: string): string => {
     input
       // Strip html comments from string javas
       .replace(/<!--[\s\S]*?-->/g, '')
+      // Strip javascript comments from string
+      .replace(/\/\/.*/g, '')
       .trim()
   )
 }

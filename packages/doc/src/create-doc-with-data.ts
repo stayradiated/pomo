@@ -1,11 +1,11 @@
 import * as Y from 'yjs'
-import type { Doc, JsonDoc, YUser, YStream, YPoint } from './types.js'
+import type { Doc, JsonDoc, YUser, YStream, YPoint, YLabel } from './types.js'
 
-const createDocWithData = (data: JsonDoc): Doc => {
+const createDocWithData = (data: Partial<JsonDoc>): Doc => {
   const doc = new Y.Doc() as Doc
 
   const userMap = doc.getMap('user')
-  for (const [key, value] of Object.entries(data.user)) {
+  for (const [key, value] of Object.entries(data.user ?? {})) {
     const user = new Y.Map() as YUser
     user.set('id', value.id)
     user.set('timeZone', value.timeZone)
@@ -16,7 +16,7 @@ const createDocWithData = (data: JsonDoc): Doc => {
   }
 
   const streamMap = doc.getMap('stream')
-  for (const [key, value] of Object.entries(data.stream)) {
+  for (const [key, value] of Object.entries(data.stream ?? {})) {
     const stream = new Y.Map() as YStream
     stream.set('id', value.id)
     stream.set('name', value.name)
@@ -27,16 +27,29 @@ const createDocWithData = (data: JsonDoc): Doc => {
   }
 
   const pointMap = doc.getMap('point')
-  for (const [key, value] of Object.entries(data.point)) {
+  for (const [key, value] of Object.entries(data.point ?? {})) {
     const point = new Y.Map() as YPoint
     point.set('id', value.id)
     point.set('streamId', value.streamId)
     point.set('value', value.value)
+    point.set('labelIdList', Y.Array.from(value.labelIdList))
     point.set('startedAt', value.startedAt)
     point.set('createdAt', value.createdAt)
     point.set('updatedAt', value.updatedAt)
 
     pointMap.set(key, point)
+  }
+
+  const labelMap = doc.getMap('label')
+  for (const [key, value] of Object.entries(data.label ?? {})) {
+    const label = new Y.Map() as YLabel
+    label.set('id', value.id)
+    label.set('streamId', value.streamId)
+    label.set('name', value.name)
+    label.set('createdAt', value.createdAt)
+    label.set('updatedAt', value.updatedAt)
+
+    labelMap.set(key, label)
   }
 
   return doc

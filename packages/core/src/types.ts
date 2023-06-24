@@ -15,6 +15,7 @@ type Stream = {
 type Point = {
   id: string
   streamId: string
+  labelIdList: string[]
   value: string
   startedAt: number
   createdAt: number
@@ -30,4 +31,12 @@ type Line = {
   durationMs: number
 }
 
-export type { User, Stream, Point, Line }
+type Label = {
+  id: string
+  streamId: string
+  name: string
+  createdAt: number
+  updatedAt: number | null
+}
+
+export type { User, Stream, Point, Line, Label }
