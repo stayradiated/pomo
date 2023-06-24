@@ -2,37 +2,36 @@ import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
 import * as dateFns from 'date-fns'
 import {
-  stripComments,
-  firstLine,
   mapPointListToLineList,
   startOfDayWithTimeZone,
   durationLocale,
   clampLineList,
 } from '@stayradiated/pomo-core'
-import { proxy } from '#src/lib/proxy.js'
+import { getLabelIdByName, getLabelNameById, getStreamIdByName, getStreamNameById, retrievePointList, getUserTimeZone } from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
+  doc: Doc,
   where: {
     streamId: string | undefined
-    value: string | undefined
+    labelId: string | undefined
   }
   startDate: number
   endDate: number
 }
 
-const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { where, startDate, endDate } = options
+const handler = (options: HandlerOptions): void | Error => {
+  const { doc, where, startDate, endDate } = options
 
-  const pointList = await proxy.retrievePointList({
+  const pointList = retrievePointList({
+    doc,
     startDate,
     endDate,
     where: {
       streamId: where.streamId,
     },
   })
-  if (pointList instanceof Error) {
-    return pointList
-  }
 
   const extendedLineList = mapPointListToLineList(pointList)
   if (extendedLineList instanceof Error) {
@@ -45,31 +44,36 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     endDate,
   })
 
-  const filterValue = where.value
+  const filterLabelId = where.labelId
   const filteredLineList =
-    typeof filterValue === 'string'
-      ? lineList.filter((line) => line.value.startsWith(filterValue))
+    typeof filterLabelId === 'string'
+      ? lineList.filter((line) => line.labelIdList.includes(filterLabelId))
       : lineList
 
+  // streamId → labelId → durationMs
   const streamDurationMap = new Map<string, Map<string, number>>()
 
   for (const line of filteredLineList) {
-    const { streamId, value: rawValue, durationMs } = line
-    const value = firstLine(stripComments(rawValue))
+    const { streamId, labelIdList, durationMs } = line
 
     if (!streamDurationMap.has(streamId)) {
       streamDurationMap.set(streamId, new Map())
     }
 
     const childMap = streamDurationMap.get(streamId)!
-    childMap.set(value, (childMap.get(value) ?? 0) + durationMs)
+
+    for (const labelId of labelIdList) {
+      childMap.set(labelId, (childMap.get(labelId) ?? 0) + durationMs)
+    }
   }
 
   for (const entry of streamDurationMap.entries()) {
-    const [streamId, values] = entry
-    const name = await proxy.getStreamNameById({ id: streamId })
+    const [streamId, labelDurationMap] = entry
+    const name = getStreamNameById({ doc, id: streamId })
 
-    for (const [value, durationMs] of values.entries()) {
+    for (const [labelId, durationMs] of labelDurationMap.entries()) {
+      const labelName = getLabelNameById({ doc, id: labelId })
+
       const duration = dateFns.formatDuration(
         dateFns.intervalToDuration({ start: 0, end: durationMs }),
         {
@@ -81,7 +85,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
       console.log(
         JSON.stringify({
           stream: name,
-          value,
+          label: labelName,
           duration,
         }),
       )
@@ -102,10 +106,10 @@ const summaryCmd = new CliCommand('summary')
       ],
     },
     {
-      name: ['-v', '--value'],
-      description: 'Filter points by a Point value ',
+      name: ['-v', '--label'],
+      description: 'Filter points by a Label ',
       args: [
-        { name: 'value', description: 'Value to filter by', required: true },
+        { name: 'label', description: 'Label to filter by', required: true },
       ],
     },
     {
@@ -134,10 +138,12 @@ const summaryCmd = new CliCommand('summary')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const timeZone = await proxy.getUserTimeZone({})
-    if (timeZone instanceof Error) {
-      throw timeZone
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw doc
     }
+
+    const timeZone = getUserTimeZone({ doc })
 
     const startDate = startOfDayWithTimeZone({
       instant: chrono
@@ -155,18 +161,22 @@ const summaryCmd = new CliCommand('summary')
     )
 
     const whereStreamId = options['stream']
-      ? await proxy.getStreamIdByName({ name: options['stream'] })
+      ? getStreamIdByName({ doc, name: options['stream'] })
       : undefined
-    if (whereStreamId instanceof Error) {
-      throw whereStreamId
-    }
-
     if (options['stream'] && !whereStreamId) {
       throw new Error(`Stream not found: ${options['stream']}`)
     }
 
-    const result = await handler({
-      where: { streamId: whereStreamId, value: options['value'] },
+    const whereLabelId = options['label'] && whereStreamId
+      ? getLabelIdByName({ doc, name: options['label'], streamId: whereStreamId })
+      : undefined
+    if (options['label'] && !whereLabelId) {
+      throw new Error(`Label not found: ${options['label']}`)
+    }
+
+    const result = handler({
+      doc,
+      where: { streamId: whereStreamId, labelId: whereLabelId },
       startDate,
       endDate,
     })
