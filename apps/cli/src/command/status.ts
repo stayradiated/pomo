@@ -1,19 +1,19 @@
 import { CliCommand } from 'cilly'
-import * as chrono from 'chrono-node'
-import { intervalToDuration, formatDuration } from 'date-fns'
+import * as dateFns from 'date-fns'
 import { mapPointListToLineList, stripComments } from '@stayradiated/pomo-core'
 import { proxy } from '#src/lib/proxy.js'
 
 type HandlerOptions = {
   where: { streamId?: string }
-  currentTime: Date
+  currentTime: number
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
   const { currentTime, where } = options
 
   const pointList = await proxy.retrievePointList({
-    since: currentTime.getTime(),
+    startDate: currentTime,
+    endDate: currentTime,
     where,
   })
   if (pointList instanceof Error) {
@@ -31,7 +31,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
       return new Error(`Stream not found: ${line.streamId}`)
     }
 
-    const elapsed = intervalToDuration({
+    const elapsed = dateFns.intervalToDuration({
       start: line.startedAt,
       end: currentTime,
     })
@@ -41,7 +41,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
         stream: streamName,
         value: stripComments(line.value),
         elapsed:
-          formatDuration(elapsed, {
+          dateFns.formatDuration(elapsed, {
             format:
               elapsed.hours || elapsed.minutes
                 ? ['hours', 'minutes']
@@ -54,35 +54,12 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
 
 const statusCmd = new CliCommand('status')
   .withDescription('Show current status')
-  .withOptions(
-    {
-      name: ['-s', '--stream'],
-      description: 'Filter points by a Stream ',
-      args: [
-        { name: 'name', description: 'Name of the stream', required: true },
-      ],
-    },
-    {
-      name: ['-f', '--from'],
-      description: 'Show points from a certain time',
-      args: [
-        {
-          name: 'datetime',
-          description: 'Date/time to show points from',
-          required: true,
-        },
-      ],
-    },
-  )
+  .withOptions({
+    name: ['-s', '--stream'],
+    description: 'Filter points by a Stream ',
+    args: [{ name: 'name', description: 'Name of the stream', required: true }],
+  })
   .withHandler(async (_args, options, _extra) => {
-    const currentTime = options['from']
-      ? chrono.parseDate(options['from'])
-      : new Date()
-
-    if (currentTime instanceof Error) {
-      throw currentTime
-    }
-
     const whereStreamId = options['stream']
       ? await proxy.getStreamIdByName({ name: options['stream'] })
       : undefined
@@ -93,7 +70,7 @@ const statusCmd = new CliCommand('status')
 
     return handler({
       where: { streamId: whereStreamId },
-      currentTime,
+      currentTime: Date.now(),
     })
   })
 

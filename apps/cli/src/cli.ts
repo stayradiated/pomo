@@ -24,7 +24,7 @@ export const cli = new CliCommand('pomo')
     syncCmd,
   )
   .withHandler(() => {
-    cli.help()
+    editCmd.process(process.argv)
   })
 
 cli.process(process.argv)

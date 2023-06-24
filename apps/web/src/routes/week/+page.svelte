@@ -1,12 +1,16 @@
 <script lang="ts">
   import type { PageData } from "./types";
+
   import StreamDuration from './StreamDuration.svelte';
+  import Column from './Column.svelte';
 
   export let data: PageData;
-  const { streamList, streamDurationMap, streamStartedAtMap, streamStoppedAtMap } = data;
+  const { streamList, lineList, streamDurationMap, streamStartedAtMap, streamStoppedAtMap } = data;
 </script>
 
 <h2>This Week</h2>
+
+<Column lineList={lineList} />
 
 {#each streamList as stream}
   {#if streamDurationMap.has(stream.id)}

@@ -1,7 +1,7 @@
 import * as chrono from 'chrono-node'
 import { Text, Box, Newline, render } from 'ink'
 import React from 'react'
-import { format, intervalToDuration, formatDuration } from 'date-fns'
+import * as dateFns from 'date-fns'
 import {
   mapPointListToLineList,
   mapLineListToSliceList,
@@ -83,7 +83,7 @@ const SliceList = (props: SliceListProps) => {
             </Box>
 
             <Box flexBasis={5} flexShrink={0}>
-              <Text color="green">{format(startedAt, 'HH:mm')}</Text>
+              <Text color="green">{dateFns.format(startedAt, 'HH:mm')}</Text>
             </Box>
 
             {streamList.map((stream, index) => {
@@ -94,8 +94,8 @@ const SliceList = (props: SliceListProps) => {
                 return <Box key={index} flexBasis={basis} />
               }
 
-              const duration = formatDuration(
-                intervalToDuration({ start: 0, end: line.durationMs }),
+              const duration = dateFns.formatDuration(
+                dateFns.intervalToDuration({ start: 0, end: line.durationMs }),
                 {
                   format: ['hours', 'minutes'],
                   locale: durationLocale,
@@ -128,7 +128,7 @@ const MultiDaySliceList = (props: SliceListProps) => {
       const startedAt = utcToZonedTime(startedAtUTC, timeZone)
 
       // Format as Friday 02 June 2023
-      const day = format(startedAt, 'EEEE dd MMMM yyyy')
+      const day = dateFns.format(startedAt, 'EEEE dd MMMM yyyy')
       const list: Slice[] = acc.get(day) ?? []
       list.push(slice)
       acc.set(day, list)
@@ -157,7 +157,8 @@ const MultiDaySliceList = (props: SliceListProps) => {
 }
 
 type HandlerOptions = {
-  since: Date
+  startDate: number
+  endDate: number
   where: {
     streamId: string | undefined
   }
@@ -165,10 +166,11 @@ type HandlerOptions = {
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { since, where, timeZone } = options
+  const { startDate, endDate, where, timeZone } = options
 
   const pointList = await proxy.retrievePointList({
-    since: since.getTime(),
+    startDate,
+    endDate,
     where,
   })
   if (pointList instanceof Error) {
@@ -215,12 +217,25 @@ const logCmd = new CliCommand('log')
       ],
     },
     {
-      name: ['-f', '--from'],
+      name: ['-d', '--date'],
       description: 'Show points from a certain time',
+      defaultValue: 'today',
       args: [
         {
           name: 'datetime',
           description: 'Date/time to show points from',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: ['-p', '--span'],
+      description: 'How many days to show',
+      defaultValue: 1,
+      args: [
+        {
+          name: 'days',
+          description: 'Number of days',
           required: true,
         },
       ],
@@ -232,12 +247,19 @@ const logCmd = new CliCommand('log')
       throw timeZone
     }
 
-    const since = options['from']
-      ? chrono.parseDate(options['from'], {
+    console.log(options)
+
+    const startDate = startOfDayWithTimeZone({
+      instant: chrono
+        .parseDate(options['date'], {
           instant: new Date(),
           timezone: timeZone,
         })
-      : startOfDayWithTimeZone(Date.now(), timeZone)
+        .getTime(),
+      timeZone,
+    }).getTime()
+
+    const endDate = dateFns.addDays(startDate, options['span']).getTime()
 
     const whereStreamId = options['stream']
       ? await proxy.getStreamIdByName({ name: options['stream'] })
@@ -248,9 +270,10 @@ const logCmd = new CliCommand('log')
     }
 
     const result = await handler({
-      where: { streamId: whereStreamId },
-      since,
+      startDate,
+      endDate,
       timeZone,
+      where: { streamId: whereStreamId },
     })
     if (result instanceof Error) {
       throw result

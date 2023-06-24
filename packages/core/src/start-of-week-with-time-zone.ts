@@ -9,8 +9,8 @@ type StartOfWeekWithTimeZoneOptions = {
 
 const startOfWeekWithTimeZone = (options: StartOfWeekWithTimeZoneOptions): Date => {
   const { timeZone, instant, weekStartsOn = 0 } = options
-  const inputZoned = utcToZonedTime(instant, timeZone)
-  const dayStartZoned = startOfWeek(inputZoned, { weekStartsOn })
+  const instantZoned = utcToZonedTime(instant, timeZone)
+  const dayStartZoned = startOfWeek(instantZoned, { weekStartsOn })
   const dayStart = zonedTimeToUtc(dayStartZoned, timeZone)
   return dayStart
 }

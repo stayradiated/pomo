@@ -1,10 +1,11 @@
 import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
-import { startOfDay, intervalToDuration, formatDuration } from 'date-fns'
+import * as dateFns from 'date-fns'
 import {
   stripComments,
   firstLine,
   mapPointListToLineList,
+  startOfDayWithTimeZone,
   durationLocale,
 } from '@stayradiated/pomo-core'
 import { proxy } from '#src/lib/proxy.js'
@@ -14,14 +15,16 @@ type HandlerOptions = {
     streamId: string | undefined
     value: string | undefined
   }
-  currentTime: Date
+  startDate: number
+  endDate: number
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { where, currentTime } = options
+  const { where, startDate, endDate } = options
 
   const pointList = await proxy.retrievePointList({
-    since: startOfDay(currentTime).getTime(),
+    startDate,
+    endDate,
     where: {
       streamId: where.streamId,
     },
@@ -29,6 +32,9 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   if (pointList instanceof Error) {
     return pointList
   }
+
+  console.log(JSON.stringify(pointList))
+
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
@@ -60,10 +66,10 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     const name = await proxy.getStreamNameById({ id: streamId })
 
     for (const [value, durationMs] of values.entries()) {
-      const duration = formatDuration(
-        intervalToDuration({ start: 0, end: durationMs }),
+      const duration = dateFns.formatDuration(
+        dateFns.intervalToDuration({ start: 0, end: durationMs }),
         {
-          format: ['hours', 'minutes'],
+          format: ['days', 'hours', 'minutes'],
           locale: durationLocale,
         },
       )
@@ -99,8 +105,9 @@ const summaryCmd = new CliCommand('summary')
       ],
     },
     {
-      name: ['-f', '--from'],
+      name: ['-d', '--date'],
       description: 'Show points from a certain time',
+          defaultValue: 'today',
       args: [
         {
           name: 'datetime',
@@ -109,15 +116,36 @@ const summaryCmd = new CliCommand('summary')
         },
       ],
     },
+    {
+      name: ['-p', '--span'],
+      description: 'How many days to show',
+          defaultValue: 1,
+      args: [
+        {
+          name: 'days',
+          description: 'Number of days',
+          required: true,
+        },
+      ],
+    },
   )
   .withHandler(async (_args, options, _extra) => {
-    const currentTime = options['from']
-      ? chrono.parseDate(options['from'])
-      : new Date()
-
-    if (currentTime instanceof Error) {
-      throw currentTime
+    const timeZone = await proxy.getUserTimeZone({})
+    if (timeZone instanceof Error) {
+      throw timeZone
     }
+
+    const startDate = startOfDayWithTimeZone({
+      instant: chrono
+        .parseDate(options['date'], {
+          instant: new Date(),
+          timezone: timeZone,
+        })
+        .getTime(),
+      timeZone,
+    }).getTime()
+
+    const endDate = dateFns.addDays(startDate, options['span']).getTime()
 
     const whereStreamId = options['stream']
       ? await proxy.getStreamIdByName({ name: options['stream'] })
@@ -125,10 +153,14 @@ const summaryCmd = new CliCommand('summary')
     if (whereStreamId instanceof Error) {
       throw whereStreamId
     }
+    if (options['stream'] && !whereStreamId) {
+      throw new Error(`Stream not found: ${options['stream']}`)
+    }
 
     const result = await handler({
       where: { streamId: whereStreamId, value: options['value'] },
-      currentTime,
+      startDate,
+      endDate,
     })
 
     if (result instanceof Error) {

@@ -1,7 +1,33 @@
 import type { PageServerLoad } from './$types';
 import { getDoc } from '$lib/doc.js'
 import { getUserTimeZone, retrieveStreamList, retrievePointList } from '@stayradiated/pomo-doc'
-import { stripComments, firstLine, startOfWeekWithTimeZone, mapPointListToLineList } from '@stayradiated/pomo-core'
+import { stripComments, firstLine, startOfDayWithTimeZone, mapPointListToLineList } from '@stayradiated/pomo-core'
+import type { Line } from '@stayradiated/pomo-core'
+import * as dateFns from 'date-fns'
+
+const clampLineList = (options: {
+  lineList: Line[]
+  startDate: number
+  endDate: number
+}): Line[] => {
+  const { lineList, startDate, endDate } = options
+
+  return lineList.filter((line) => {
+    return line.startedAt < endDate && (line.stoppedAt ?? Infinity) > startDate
+  }).map((line) => {
+    const startedAtClamped = Math.max(line.startedAt, startDate)
+    const stoppedAtClamped = Math.min(line.stoppedAt ?? Infinity, endDate)
+
+    const durationMs = stoppedAtClamped - startedAtClamped
+
+    return {
+      ...line,
+      startedAt: startedAtClamped,
+      stoppedAt: stoppedAtClamped,
+      durationMs,
+    }
+  })
+}
 
 const load = (async () => {
   const doc = await getDoc()
@@ -10,22 +36,30 @@ const load = (async () => {
   }
 
   const timeZone = getUserTimeZone({ doc })
-  const since = startOfWeekWithTimeZone({ instant: Date.now(), timeZone }).getTime()
+  const startDate = startOfDayWithTimeZone({ instant: new Date('2023-06-20').getTime(), timeZone }).getTime()
+  const endDate = dateFns.addDays(startDate, 1).getTime()
 
   const streamList = retrieveStreamList({ doc })
 
   const pointList = retrievePointList({
     doc,
-    since,
+    startDate,
+    endDate,
     where: {
       streamId: 'ab78502d-6bf9-46b7-8d02-14acd02f275a'
     }
   })
 
-  const lineList = mapPointListToLineList(pointList)
-  if (lineList instanceof Error) {
-    throw lineList
+  const extendedLineList = mapPointListToLineList(pointList)
+  if (extendedLineList instanceof Error) {
+    throw extendedLineList
   }
+
+  const lineList = clampLineList({
+    lineList: extendedLineList,
+    startDate,
+    endDate
+  })
 
   const streamStartedAtMap = new Map<string, number>()
   const streamStoppedAtMap = new Map<string, number>()
@@ -51,6 +85,8 @@ const load = (async () => {
 
   return {
     streamList,
+    lineList,
+
     streamDurationMap,
     streamStartedAtMap,
     streamStoppedAtMap
