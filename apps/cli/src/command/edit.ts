@@ -23,7 +23,7 @@ const getCurrentText = async (
     'yyyy-MM-dd HH:mm:ss zzz',
   )}\n\n`
 
-  const streamList = await proxy.retrieveStreamList({})
+  const streamList = await proxy.getStreamList({})
   if (streamList instanceof Error) {
     return streamList
   }

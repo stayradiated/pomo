@@ -187,7 +187,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     return sliceList
   }
 
-  const streamList = await proxy.retrieveStreamList({})
+  const streamList = await proxy.getStreamList({})
   if (streamList instanceof Error) {
     return streamList
   }

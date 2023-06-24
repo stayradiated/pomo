@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageData } from "./types";
+  import type { PageData } from "./$types.js";
 
   import StreamDuration from './StreamDuration.svelte';
   import Column from './Column.svelte';

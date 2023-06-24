@@ -1,10 +1,10 @@
 import type { Doc, Stream } from './types.js'
 
-type RetrieveOptions = {
+type GetOptions = {
   doc: Doc
 }
 
-const retrieveStreamList = (options: RetrieveOptions): Stream[] => {
+const getStreamList = (options: GetOptions): Stream[] => {
   const { doc } = options
 
   const streamMap = doc.getMap('stream')
@@ -13,4 +13,4 @@ const retrieveStreamList = (options: RetrieveOptions): Stream[] => {
   return streamList
 }
 
-export { retrieveStreamList }
+export { getStreamList }

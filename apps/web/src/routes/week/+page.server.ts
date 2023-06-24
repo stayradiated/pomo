@@ -1,6 +1,6 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { getDoc } from '$lib/doc.js'
-import { getUserTimeZone, retrieveStreamList, retrievePointList } from '@stayradiated/pomo-doc'
+import { getUserTimeZone, getStreamList, retrievePointList } from '@stayradiated/pomo-doc'
 import { stripComments, firstLine, startOfDayWithTimeZone, mapPointListToLineList, clampLineList } from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 
@@ -14,7 +14,7 @@ const load = (async () => {
   const startDate = startOfDayWithTimeZone({ instant: new Date('2023-06-20').getTime(), timeZone }).getTime()
   const endDate = dateFns.addDays(startDate, 1).getTime()
 
-  const streamList = retrieveStreamList({ doc })
+  const streamList = getStreamList({ doc })
 
   const pointList = retrievePointList({
     doc,

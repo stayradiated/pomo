@@ -27,10 +27,10 @@ const proxy = {
   getStreamNameById: proxyFn(pomoDoc.getStreamNameById),
   getUserTimeZone: proxyFn(pomoDoc.getUserTimeZone),
 
-  retrieveAllPointList: proxyFn(pomoDoc.retrieveAllPointList),
+  getPointList: proxyFn(pomoDoc.getPointList),
   retrieveCurrentPoint: proxyFn(pomoDoc.retrieveCurrentPoint),
   retrievePointList: proxyFn(pomoDoc.retrievePointList),
-  retrieveStreamList: proxyFn(pomoDoc.retrieveStreamList),
+  getStreamList: proxyFn(pomoDoc.getStreamList),
 
   upsertStream: proxyFn(pomoDoc.upsertStream),
   updatePointValue: proxyFn(pomoDoc.updatePointValue),

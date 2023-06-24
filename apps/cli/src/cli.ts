@@ -5,8 +5,7 @@ import { userCmd } from './command/user.js'
 import { statusCmd } from './command/status.js'
 import { summaryCmd } from './command/summary.js'
 import { pullStravaCmd } from './command/pull-strava.js'
-import { yjsCmd } from './command/yjs.js'
-import { exportCmd } from './command/export.js'
+import { jsonCmd } from './command/json/index.js'
 import { syncCmd } from './command/sync.js'
 
 export const cli = new CliCommand('pomo')
@@ -18,9 +17,7 @@ export const cli = new CliCommand('pomo')
     statusCmd,
     summaryCmd,
     pullStravaCmd,
-    exportCmd,
-
-    yjsCmd,
+    jsonCmd,
     syncCmd,
   )
   .withHandler(() => {

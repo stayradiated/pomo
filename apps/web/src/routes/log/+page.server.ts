@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import { getDoc } from '$lib/doc.js'
 import { mapPointListToLineList, mapLineListToSliceList } from '@stayradiated/pomo-core'
-import { retrieveStreamList, retrievePointList, getUserTimeZone } from "@stayradiated/pomo-doc"
+import { getStreamList, retrievePointList, getUserTimeZone } from "@stayradiated/pomo-doc"
 import type { PageServerLoad, Actions } from './$types';
 import type { Slice } from '@stayradiated/pomo-core';
 import { redirect } from '@sveltejs/kit';
@@ -51,11 +51,12 @@ const load = (async ({ request }) => {
 
   const timeZone = getUserTimeZone({ doc })
 
-  const streamList = retrieveStreamList({ doc })
+  const streamList = getStreamList({ doc })
 
   const pointList = retrievePointList({
     doc,
-    since: new Date('2023-06-17').getTime(),
+    startDate: new Date('2023-06-17').getTime(),
+    endDate: Date.now(),
     where: {}
   })
   if (pointList instanceof Error) {

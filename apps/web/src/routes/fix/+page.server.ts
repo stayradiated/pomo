@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error } from '@sveltejs/kit'
-import { getPointStartedAtByRef, getPointById, retrieveStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-doc'
+import { getPointStartedAtByRef, getPointById, getStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc }  from '$lib/doc';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { toDate, formatInTimeZone } from 'date-fns-tz'
@@ -27,7 +27,7 @@ const load = (async ({ request }) => {
     throw error(500, `Point ${ref} does not exist`)
   }
 
-  const streamList = retrieveStreamList({ doc })
+  const streamList = getStreamList({ doc })
   const pointMap = getCurrentPoints({ doc, streamList, currentTime: startedAt})
   const pointList = [...pointMap.values()].filter((point) => {
     return point.startedAt >= startedAt

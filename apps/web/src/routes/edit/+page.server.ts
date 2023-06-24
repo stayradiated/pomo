@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types';
-import { retrieveStreamList, upsertPoint, updatePointValue, getUserTimeZone } from "@stayradiated/pomo-doc"
-import { getDoc, saveDoc } from '$lib/doc.js'
+import { getStreamList, upsertPoint, updatePointValue, getUserTimeZone } from "@stayradiated/pomo-doc"
+import { getDoc } from '$lib/doc.js'
 import { redirect } from '@sveltejs/kit';
 import { getCurrentPoints } from "$lib/get-current-points";
 import { zfd } from 'zod-form-data'
@@ -16,7 +16,7 @@ const load = (async () => {
     throw error(500, doc.message)
   }
 
-  const streamList = retrieveStreamList({ doc })
+  const streamList = getStreamList({ doc })
   const currentPoints = getCurrentPoints({ doc, streamList, currentTime })
 
   const timeZone = getUserTimeZone({ doc })
@@ -50,7 +50,7 @@ const actions = {
     const timeZone = getUserTimeZone({ doc })
     const startedAt = toDate(startedAtLocal, { timeZone }).getTime()
 
-    const streamList = retrieveStreamList({ doc })
+    const streamList = getStreamList({ doc })
     const currentPoints = getCurrentPoints({ doc, streamList, currentTime: startedAt })
     for (const streamValue of streamValueList) {
       const { id: streamId, value: valueRaw } = streamValue

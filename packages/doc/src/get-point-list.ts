@@ -1,10 +1,10 @@
 import type { Doc, Point } from './types.js'
 
-type RetrieveOptions = {
+type GetPointListOptions = {
   doc: Doc
 }
 
-const retrieveAllPointList = (options: RetrieveOptions): Point[] => {
+const getPointList = (options: GetPointListOptions): Point[] => {
   const { doc } = options
 
   const pointMap = doc.getMap('point')
@@ -13,4 +13,4 @@ const retrieveAllPointList = (options: RetrieveOptions): Point[] => {
   return pointList
 }
 
-export { retrieveAllPointList }
+export { getPointList }
