@@ -17,6 +17,7 @@ const mapPointsToLine = <T extends Point>(
     id: startPoint.id,
     streamId: startPoint.streamId,
     value: startPoint.value,
+    labelIdList: startPoint.labelIdList,
     startedAt,
     stoppedAt,
     durationMs,

@@ -26,6 +26,7 @@ type Line = {
   id: string
   streamId: string
   value: string
+  labelIdList: string[]
   startedAt: number
   stoppedAt: number | null
   durationMs: number

@@ -1,5 +1,5 @@
 import { CliCommand } from 'cilly'
-import { logCmd } from './command/log.js'
+import { logCmd } from './command/log/index.js'
 import { editCmd } from './command/edit.js'
 import { userCmd } from './command/user.js'
 import { statusCmd } from './command/status.js'
