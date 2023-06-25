@@ -6,7 +6,7 @@ export * from './retrieve-current-point.js'
 export * from './retrieve-point-list.js'
 export * from './set-user-time-zone.js'
 export * from './update-point-started-at.js'
-export * from './update-point-value.js'
+export * from './update-point.js'
 export * from './upsert-stream.js'
 
 export * from './get-stream-id-by-name.js'

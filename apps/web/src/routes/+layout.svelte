@@ -1,5 +1,5 @@
 <script>
-  import "./water.css"
+  import './water.css'
 </script>
 
 <header>
@@ -8,13 +8,13 @@
   <nav>
     <ul>
       <li>
-        <a href='/edit'>Add</a>
+        <a href="/edit">Add</a>
       </li>
       <li>
-        <a href='/log'>Log</a>
+        <a href="/log">Log</a>
       </li>
       <li>
-        <a href='/week'>Week</a>
+        <a href="/week">Week</a>
       </li>
     </ul>
   </nav>

@@ -1,14 +1,16 @@
-import type { Point, Stream } from "@stayradiated/pomo-core";
-import type { Doc } from "@stayradiated/pomo-doc"
-import { retrieveCurrentPoint } from "@stayradiated/pomo-doc"
+import type { Point, Stream } from '@stayradiated/pomo-core'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { retrieveCurrentPoint } from '@stayradiated/pomo-doc'
 
 type GetCurrentPointsOptions = {
-  doc: Doc,
-  streamList: Stream[],
-  currentTime: number,
+  doc: Doc
+  streamList: Stream[]
+  currentTime: number
 }
 
-const getCurrentPoints = (options: GetCurrentPointsOptions): Map<string, Point> => {
+const getCurrentPoints = (
+  options: GetCurrentPointsOptions,
+): Map<string, Point> => {
   const { doc, streamList, currentTime } = options
 
   const output = new Map<string, Point>()

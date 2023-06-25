@@ -10,34 +10,39 @@ import {
 import { parse } from '@stayradiated/pomo-markdown'
 import { stripComments } from '@stayradiated/pomo-core'
 import { formatInTimeZone } from 'date-fns-tz'
-import { proxy } from '#src/lib/proxy.js'
-import { saveDoc } from '#src/lib/doc.js'
+import {
+  getUserTimeZone,
+  getPointStartedAtByRef,
+  getStreamList,
+  retrieveCurrentPoint,
+  updatePoint,
+  upsertPoint,
+  upsertStream,
+  getStreamIdByName,
+} from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { getDoc, saveDoc } from '#src/lib/doc.js'
 
-const getCurrentText = async (
+const getCurrentText = (
+  doc: Doc,
   currentTime: number,
   timeZone: string,
-): Promise<string | Error> => {
+): string => {
   let output = `${formatInTimeZone(
     currentTime,
     timeZone,
     'yyyy-MM-dd HH:mm:ss zzz',
   )}\n\n`
 
-  const streamList = await proxy.getStreamList({})
-  if (streamList instanceof Error) {
-    return streamList
-  }
-
+  const streamList = getStreamList({ doc })
   for (const stream of streamList) {
     output += `# ${stream.name}\n\n`
 
-    const currentPoint = await proxy.retrieveCurrentPoint({
+    const currentPoint = retrieveCurrentPoint({
+      doc,
       streamId: stream.id,
       currentTime,
     })
-    if (currentPoint instanceof Error) {
-      return currentPoint
-    }
 
     output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
   }
@@ -58,17 +63,15 @@ const getCurrentText = async (
 // Each stream is defined by a header, which is a markdown header (e.g. `#` or `##`).
 
 type EditOptions = {
+  doc: Doc
   currentTime: number
   timeZone: string
 }
 
 const handler = async (options: EditOptions): Promise<void | Error> => {
-  const { currentTime, timeZone } = options
+  const { doc, currentTime, timeZone } = options
 
-  const pleaseEditThisText = await getCurrentText(currentTime, timeZone)
-  if (pleaseEditThisText instanceof Error) {
-    return pleaseEditThisText
-  }
+  const pleaseEditThisText = getCurrentText(doc, currentTime, timeZone)
 
   const editor = new ExternalEditor(pleaseEditThisText, {
     postfix: '.md',
@@ -95,29 +98,21 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
 
   const streamNameList = Object.keys(userInput)
   for (const streamName of streamNameList) {
-    const result = await proxy.upsertStream({ name: streamName })
-    if (result instanceof Error) {
-      return result
-    }
+    upsertStream({ doc, name: streamName })
   }
 
   for (const [streamName, value] of Object.entries(userInput)) {
-    const streamId = await proxy.getStreamIdByName({ name: streamName })
-    if (streamId instanceof Error) {
-      return streamId
-    }
+    const streamId = getStreamIdByName({ doc, name: streamName })
 
     if (streamId === undefined) {
       throw new TypeError(`Could not find stream with name "${streamName}"`)
     }
 
-    const currentPoint = await proxy.retrieveCurrentPoint({
+    const currentPoint = retrieveCurrentPoint({
+      doc,
       streamId,
       currentTime,
     })
-    if (currentPoint instanceof Error) {
-      return currentPoint
-    }
 
     if (currentPoint?.value !== value) {
       console.log(
@@ -130,8 +125,8 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
 
       const result =
         currentPoint?.startedAt === currentTime
-          ? await proxy.updatePointValue({ pointId: currentPoint.id, value })
-          : await proxy.upsertPoint({ streamId, value, startedAt: currentTime })
+          ? updatePoint({ doc, pointId: currentPoint.id, value })
+          : upsertPoint({ doc, streamId, value, startedAt: currentTime })
 
       if (result instanceof Error) {
         return result
@@ -178,13 +173,15 @@ const editCmd = new CliCommand('edit')
     },
   )
   .withHandler(async (_args, options, _extra) => {
-    const timeZone = await proxy.getUserTimeZone({})
-    if (timeZone instanceof Error) {
-      throw timeZone
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw doc
     }
 
+    const timeZone = getUserTimeZone({ doc })
+
     const currentTime = options['ref']
-      ? await proxy.getPointStartedAtByRef({ ref: options['ref'] })
+      ? getPointStartedAtByRef({ doc, ref: options['ref'] })
       : options['at']
       ? chrono
           .parseDate(options['at'], {
@@ -193,16 +190,11 @@ const editCmd = new CliCommand('edit')
           })
           .getTime()
       : Date.now()
-
-    if (currentTime instanceof Error) {
-      throw currentTime
-    }
-
     if (currentTime === undefined) {
       throw new TypeError('Could not figure out current time')
     }
 
-    const result = await handler({ currentTime, timeZone })
+    const result = await handler({ doc, currentTime, timeZone })
     if (result instanceof Error) {
       throw result
     }

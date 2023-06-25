@@ -7,12 +7,19 @@ import {
   durationLocale,
   clampLineList,
 } from '@stayradiated/pomo-core'
-import { getLabelIdByName, getLabelNameById, getStreamIdByName, getStreamNameById, retrievePointList, getUserTimeZone } from '@stayradiated/pomo-doc'
+import {
+  getLabelIdByName,
+  getLabelNameById,
+  getStreamIdByName,
+  getStreamNameById,
+  retrievePointList,
+  getUserTimeZone,
+} from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
 import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
-  doc: Doc,
+  doc: Doc
   where: {
     streamId: string | undefined
     labelId: string | undefined
@@ -50,7 +57,7 @@ const handler = (options: HandlerOptions): void | Error => {
       ? lineList.filter((line) => line.labelIdList.includes(filterLabelId))
       : lineList
 
-  // streamId → labelId → durationMs
+  // StreamId → labelId → durationMs
   const streamDurationMap = new Map<string, Map<string, number>>()
 
   for (const line of filteredLineList) {
@@ -167,9 +174,14 @@ const summaryCmd = new CliCommand('summary')
       throw new Error(`Stream not found: ${options['stream']}`)
     }
 
-    const whereLabelId = options['label'] && whereStreamId
-      ? getLabelIdByName({ doc, name: options['label'], streamId: whereStreamId })
-      : undefined
+    const whereLabelId =
+      options['label'] && whereStreamId
+        ? getLabelIdByName({
+            doc,
+            name: options['label'],
+            streamId: whereStreamId,
+          })
+        : undefined
     if (options['label'] && !whereLabelId) {
       throw new Error(`Label not found: ${options['label']}`)
     }

@@ -1,13 +1,18 @@
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types'
 import { error } from '@sveltejs/kit'
-import { getPointStartedAtByRef, getPointById, getStreamList, getUserTimeZone, updatePointStartedAt } from '@stayradiated/pomo-doc'
-import { getDoc, saveDoc }  from '$lib/doc';
-import { getCurrentPoints } from "$lib/get-current-points";
+import {
+  getPointStartedAtByRef,
+  getPointById,
+  getStreamList,
+  getUserTimeZone,
+  updatePointStartedAt,
+} from '@stayradiated/pomo-doc'
+import { getDoc, saveDoc } from '$lib/doc'
+import { getCurrentPoints } from '$lib/get-current-points'
 import { toDate, formatInTimeZone } from 'date-fns-tz'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
-import { redirect } from '@sveltejs/kit';
-import { cloneList } from '$lib/clone.js'
+import { redirect } from '@sveltejs/kit'
 
 const load = (async ({ request }) => {
   const url = new URL(request.url)
@@ -28,25 +33,29 @@ const load = (async ({ request }) => {
   }
 
   const streamList = getStreamList({ doc })
-  const pointMap = getCurrentPoints({ doc, streamList, currentTime: startedAt})
+  const pointMap = getCurrentPoints({ doc, streamList, currentTime: startedAt })
   const pointList = [...pointMap.values()].filter((point) => {
     return point.startedAt >= startedAt
   })
 
   const timeZone = getUserTimeZone({ doc })
-  const startedAtLocal = formatInTimeZone(startedAt, timeZone, 'yyyy-MM-dd HH:mm')
+  const startedAtLocal = formatInTimeZone(
+    startedAt,
+    timeZone,
+    'yyyy-MM-dd HH:mm',
+  )
 
   return {
     startedAtLocal,
-    streamList: cloneList(streamList),
-    pointList: cloneList(pointList),
+    streamList,
+    pointList,
   }
 }) satisfies PageServerLoad
 
 const $schema = zfd.formData({
   startedAtLocal: zfd.text(),
-  pointId: zfd.repeatable(z.array(zfd.text()).min(1))
-});
+  pointId: zfd.repeatable(z.array(zfd.text()).min(1)),
+})
 
 const actions = {
   default: async ({ request }) => {
@@ -77,7 +86,7 @@ const actions = {
     await saveDoc()
 
     throw redirect(303, '/log')
-  }
+  },
 } satisfies Actions
 
 export { load, actions }

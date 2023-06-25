@@ -1,25 +1,23 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
+  import type { PageData } from './$types'
+  import PointInput from './PointInput.svelte'
 
-  export let data: PageData;
-  const { startedAtLocal, streamList, currentPoints} = data
-
-  const rowList = streamList.map((stream) => {
-    const pointValue = currentPoints.get(stream.id)?.value ?? ''
-    return { stream, pointValue }
-  })
+  export let data: PageData
+  const { startedAtLocal, streamList, currentPoints, streamLabelRecord } = data
 </script>
 
 <main>
   <form method="POST">
     <input type="datetime-local" name="startedAtLocal" value={startedAtLocal} />
 
-    {#each rowList as row, index}
-      <div class="stream-control">
-        <label for="edit-stream-{index}">{row.stream.name}</label>
-        <input name="stream[{index}].id" value={row.stream.id} type="hidden" />
-        <textarea name="stream[{index}].value" id="edit-stream-{index}" value={row.pointValue} />
-      </div>
+    {#each streamList as stream, streamIndex}
+      {@const point = currentPoints.get(stream.id)}
+      <PointInput
+        {stream}
+        {streamIndex}
+        defaultPoint={point}
+        labelRecord={streamLabelRecord[stream.id] ?? {}}
+      />
     {/each}
 
     <button>Save</button>
@@ -30,23 +28,6 @@
   form {
     display: flex;
     flex-direction: column;
-  }
-
-  .stream-control {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 1rem;
-  }
-
-  label {
-    font-weight: bold;
-    line-height: 2rem;
-  }
-
-  textarea {
-    min-height: 8vh;
-    font-size: 18px;
   }
 
   button {

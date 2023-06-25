@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Stream, Slice } from '@stayradiated/pomo-core';
+  import type { Stream, Slice, Label } from '@stayradiated/pomo-core'
   import { format } from 'date-fns'
   import { utcToZonedTime } from 'date-fns-tz'
 
@@ -8,6 +8,7 @@
   export let streamList: Stream[]
   export let sliceList: Slice[]
   export let timeZone: string
+  export let labelRecord: Record<string, Label>
 
   const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
     (acc, slice) => {
@@ -29,11 +30,7 @@
 {#each Array.from(sliceListByDay.entries()) as [day, sliceList]}
   <div class="container">
     <h2>{day}</h2>
-    <SliceList
-      streamList={streamList}
-      sliceList={sliceList}
-      timeZone={timeZone}
-    />
+    <SliceList {streamList} {sliceList} {timeZone} {labelRecord} />
   </div>
 {/each}
 

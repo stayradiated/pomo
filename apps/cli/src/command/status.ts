@@ -1,24 +1,30 @@
 import { CliCommand } from 'cilly'
 import * as dateFns from 'date-fns'
-import { mapPointListToLineList, stripComments } from '@stayradiated/pomo-core'
-import { proxy } from '#src/lib/proxy.js'
+import { mapPointListToLineList } from '@stayradiated/pomo-core'
+import {
+  retrievePointList,
+  getStreamIdByName,
+  getStreamNameById,
+  getLabelNameById,
+} from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
+  doc: Doc
   where: { streamId?: string }
   currentTime: number
 }
 
 const handler = async (options: HandlerOptions): Promise<void | Error> => {
-  const { currentTime, where } = options
+  const { doc, currentTime, where } = options
 
-  const pointList = await proxy.retrievePointList({
+  const pointList = retrievePointList({
+    doc,
     startDate: currentTime,
     endDate: currentTime,
     where,
   })
-  if (pointList instanceof Error) {
-    return pointList
-  }
 
   const lineList = mapPointListToLineList(pointList)
   if (lineList instanceof Error) {
@@ -26,7 +32,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   }
 
   for (const line of lineList) {
-    const streamName = await proxy.getStreamNameById({ id: line.streamId })
+    const streamName = getStreamNameById({ doc, id: line.streamId })
     if (streamName === undefined) {
       return new Error(`Stream not found: ${line.streamId}`)
     }
@@ -39,7 +45,9 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     console.log(
       JSON.stringify({
         stream: streamName,
-        value: stripComments(line.value),
+        labels: line.labelIdList.map((labelId) =>
+          getLabelNameById({ doc, id: labelId }),
+        ),
         elapsed:
           dateFns.formatDuration(elapsed, {
             format:
@@ -60,15 +68,21 @@ const statusCmd = new CliCommand('status')
     args: [{ name: 'name', description: 'Name of the stream', required: true }],
   })
   .withHandler(async (_args, options, _extra) => {
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw doc
+    }
+
     const whereStreamId = options['stream']
-      ? await proxy.getStreamIdByName({ name: options['stream'] })
+      ? getStreamIdByName({ doc, name: options['stream'] })
       : undefined
 
-    if (whereStreamId instanceof Error) {
-      throw whereStreamId
+    if (options['stream'] && !whereStreamId) {
+      throw new Error(`Could not find stream with id ${options['stream']}`)
     }
 
     return handler({
+      doc,
       where: { streamId: whereStreamId },
       currentTime: Date.now(),
     })

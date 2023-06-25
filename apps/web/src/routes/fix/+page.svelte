@@ -18,7 +18,6 @@
   {/each}
 </ul>
 
-
 <form method="POST">
   {#each pointList as point}
     <input type="hidden" name="pointId" value={point.id} />

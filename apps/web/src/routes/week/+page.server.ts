@@ -1,7 +1,17 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types.js'
 import { getDoc } from '$lib/doc.js'
-import { getUserTimeZone, getStreamList, retrievePointList } from '@stayradiated/pomo-doc'
-import { stripComments, firstLine, startOfDayWithTimeZone, mapPointListToLineList, clampLineList } from '@stayradiated/pomo-core'
+import {
+  getUserTimeZone,
+  getStreamList,
+  retrievePointList,
+} from '@stayradiated/pomo-doc'
+import {
+  stripComments,
+  firstLine,
+  startOfDayWithTimeZone,
+  mapPointListToLineList,
+  clampLineList,
+} from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 
 const load = (async () => {
@@ -11,7 +21,10 @@ const load = (async () => {
   }
 
   const timeZone = getUserTimeZone({ doc })
-  const startDate = startOfDayWithTimeZone({ instant: new Date('2023-06-20').getTime(), timeZone }).getTime()
+  const startDate = startOfDayWithTimeZone({
+    instant: new Date('2023-06-20').getTime(),
+    timeZone,
+  }).getTime()
   const endDate = dateFns.addDays(startDate, 1).getTime()
 
   const streamList = getStreamList({ doc })
@@ -21,8 +34,8 @@ const load = (async () => {
     startDate,
     endDate,
     where: {
-      streamId: 'ab78502d-6bf9-46b7-8d02-14acd02f275a'
-    }
+      streamId: 'ab78502d-6bf9-46b7-8d02-14acd02f275a',
+    },
   })
 
   const extendedLineList = mapPointListToLineList(pointList)
@@ -33,7 +46,7 @@ const load = (async () => {
   const lineList = clampLineList({
     lineList: extendedLineList,
     startDate,
-    endDate
+    endDate,
   })
 
   const streamStartedAtMap = new Map<string, number>()
@@ -64,8 +77,8 @@ const load = (async () => {
 
     streamDurationMap,
     streamStartedAtMap,
-    streamStoppedAtMap
+    streamStoppedAtMap,
   }
-}) satisfies PageServerLoad;
+}) satisfies PageServerLoad
 
 export { load }

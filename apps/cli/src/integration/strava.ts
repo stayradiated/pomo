@@ -3,8 +3,8 @@ import http from 'node:http'
 import { spawn } from 'node:child_process'
 import { fetch } from 'undici'
 import { z } from 'zod'
-import { proxy } from '#src/lib/proxy.js'
-import { saveDoc } from '#src/lib/doc.js'
+import { upsertStream, upsertPoint } from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
 
 const CLIENT_ID = '41535'
 const CLIENT_SECRET = '8037af8638f3f1d10e77d1fce824070cf64f2101'
@@ -264,6 +264,7 @@ const getAllActivities = (
 }
 
 type Options = {
+  doc: Doc
   initialSession?: Session
 }
 
@@ -272,43 +273,34 @@ type Result = {
 }
 
 const pullStravaActivities = async (options: Options): Promise<Result> => {
-  const { initialSession } = options
+  const { doc, initialSession } = options
   const session = await refreshSession(initialSession)
 
-  const streamId = await proxy.upsertStream({ name: 'Strava' })
-  if (streamId instanceof Error) {
-    throw new TypeError('Stream not found')
-  }
+  const streamId = upsertStream({ doc, name: 'Strava' })
 
   for await (const activity of getAllActivities(session.accessToken)) {
     const startDate = new Date(activity.start_date)
     const stopDate = new Date(
       startDate.getTime() + activity.elapsed_time * 1000,
     )
-    const durationMin = activity.elapsed_time / 60
 
+    const durationMin = activity.elapsed_time / 60
     console.log(activity.name, startDate, stopDate, durationMin)
 
-    const upsertStartResult = await proxy.upsertPoint({
+    upsertPoint({
+      doc,
       streamId,
       startedAt: startDate.getTime(),
       value: activity.name,
     })
-    if (upsertStartResult instanceof Error) {
-      throw upsertStartResult
-    }
 
-    const upsertStopResult = await proxy.upsertPoint({
+    upsertPoint({
+      doc,
       streamId,
       value: '',
       startedAt: stopDate.getTime(),
     })
-    if (upsertStopResult instanceof Error) {
-      throw upsertStartResult
-    }
   }
-
-  await saveDoc()
 
   return { session }
 }

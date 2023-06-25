@@ -1,7 +1,8 @@
 import { CliCommand } from 'cilly'
 import { z } from 'zod'
 import { isValidTimeZone } from '@stayradiated/pomo-core'
-import { proxy } from '#src/lib/proxy.js'
+import { getUserTimeZone, setUserTimeZone } from '@stayradiated/pomo-doc'
+import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const $Key = z.literal('timezone')
 
@@ -21,20 +22,23 @@ const setCmd = new CliCommand('set')
     const key = $Key.parse(args['key'].toLowerCase())
     const value = args['value']
 
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw doc
+    }
+
     switch (key) {
       case 'timezone': {
         if (!isValidTimeZone(value)) {
           throw new Error(`Invalid time zone: ${value}`)
         }
 
-        const result = await proxy.setUserTimeZone({ timeZone: value })
-        if (result instanceof Error) {
-          throw result
-        }
-
+        setUserTimeZone({ doc, timeZone: value })
         break
       }
     }
+
+    saveDoc()
   })
 
 const getCmd = new CliCommand('get')
@@ -46,9 +50,14 @@ const getCmd = new CliCommand('get')
   .withHandler(async (args, _options, _extra) => {
     const key = $Key.parse(args['key'].toLowerCase())
 
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      throw doc
+    }
+
     switch (key) {
       case 'timezone': {
-        const timeZone = await proxy.getUserTimeZone({})
+        const timeZone = getUserTimeZone({ doc })
         console.info(timeZone)
         break
       }

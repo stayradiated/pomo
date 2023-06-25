@@ -1,15 +1,18 @@
 <script lang="ts">
-  import type { Stream } from '@stayradiated/pomo-core';
-  import * as dateFns from 'date-fns';
+  import type { Stream } from '@stayradiated/pomo-core'
+  import * as dateFns from 'date-fns'
 
-  import { formatDuration } from './utils.js';
+  import { formatDuration } from './utils.js'
 
-  export let stream: Stream;
-  export let durationMap: Map<string, number>;
-  export let streamStartedAt: number | undefined;
-  export let streamStoppedAt: number | undefined;
+  export let stream: Stream
+  export let durationMap: Map<string, number>
+  export let streamStartedAt: number | undefined
+  export let streamStoppedAt: number | undefined
 
-  const totalDuration = Array.from(durationMap.values()).reduce((a, b) => a + b, 0);
+  const totalDuration = Array.from(durationMap.values()).reduce(
+    (a, b) => a + b,
+    0,
+  )
 </script>
 
 <div>
@@ -22,7 +25,15 @@
     {/each}
   </ul>
 
-  <p>Started: {streamStartedAt ? dateFns.format(streamStartedAt, 'PPPPpp') : 'N/A'}</p>
-  <p>Stopped: {streamStoppedAt ? dateFns.format(streamStoppedAt, 'PPPPpp') : 'N/A'}</p>
+  <p>
+    Started: {streamStartedAt
+      ? dateFns.format(streamStartedAt, 'PPPPpp')
+      : 'N/A'}
+  </p>
+  <p>
+    Stopped: {streamStoppedAt
+      ? dateFns.format(streamStoppedAt, 'PPPPpp')
+      : 'N/A'}
+  </p>
   <p>Total: {formatDuration(totalDuration)}</p>
 </div>
