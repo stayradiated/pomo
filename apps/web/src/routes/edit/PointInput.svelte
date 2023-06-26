@@ -71,6 +71,13 @@
     bind:filterText
     bind:value
     {items}
+    --border="1px solid transparent"
+    --border-hover="1px solid var(--selection)"
+    --list-background="var(--background)"
+    --item-hover-bg="var(--selection)"
+    --multi-item-bg="var(--background)"
+    --multi-item-outline="var(--focus) 1px solid"
+    --multi-item-clear-icon-color="var(--links)"
   >
     <div slot="item" let:item>
       {item.created ? 'Add new: ' : ''}

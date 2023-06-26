@@ -41,7 +41,7 @@
     "zod": "3.21.4"
   },
   "devDependencies": {
-    "@types/react": "18.2.13",
+    "@types/react": "18.2.14",
     "live-tsc": "1.6.2",
     "react-devtools-core": "4.27.8",
     "typescript": "5.1.3",
