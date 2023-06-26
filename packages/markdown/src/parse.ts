@@ -5,15 +5,19 @@ import { visit, SKIP, CONTINUE } from 'unist-util-visit'
 import { source } from 'unist-util-source'
 import { toString } from 'mdast-util-to-string'
 
-type Output = Record<string, string>
+type ParsedItem = {
+  heading: string
+  labels: string[]
+  text: string
+}
 
-const parse = (input: string): Output => {
+const parse = (input: string): ParsedItem[] => {
   const file = unified()
     .use(remarkParse)
     .use(function () {
       const compiler: CompilerFunction = (tree) => {
-        let currentHeading: string | undefined
-        const record: Record<string, string> = {}
+        let currentItem: ParsedItem
+        const output = [] as ParsedItem[]
 
         visit(tree, (node) => {
           if (node.type === 'root') {
@@ -21,33 +25,46 @@ const parse = (input: string): Output => {
           }
 
           if (node.type === 'heading') {
-            currentHeading = toString(node)
+            currentItem = {
+              heading: toString(node),
+              labels: [],
+              text: '',
+            }
+            output.push(currentItem)
             return SKIP
           }
 
-          if (typeof currentHeading === 'string') {
+          if (node.type === 'blockquote') {
+            const text = toString(node).trim()
+            const labels = text.split(/[,\n]/).map((label) => label.trim())
+            if (currentItem) {
+              currentItem.labels.push(...labels)
+            }
+            return SKIP
+          }
+
+          if (currentItem) {
             const content = source(node, input) ?? ''
-            record[currentHeading] = record[currentHeading]
-              ? `${record[currentHeading]}\n\n${content}`
+            currentItem.text = currentItem.text
+              ? `${currentItem.text}\n\n${content}`
               : content
           }
 
           return SKIP
         })
 
-        // Trim each value
-        for (const [key, value] of Object.entries(record)) {
-          record[key] = value.trim()
-        }
-
-        return record
+        return output.map((item) => ({
+          ...item,
+          text: item.text.trim(),
+        }))
       }
 
       Object.assign(this, { Compiler: compiler })
     })
     .processSync(input)
 
-  return file.result as Output
+  return file.result as ParsedItem[]
 }
 
 export { parse }
+export type { ParsedItem }

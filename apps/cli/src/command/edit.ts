@@ -14,11 +14,12 @@ import {
   getUserTimeZone,
   getPointStartedAtByRef,
   getStreamList,
+  getLabelNameById,
   retrieveCurrentPoint,
   updatePoint,
   upsertPoint,
   upsertStream,
-  getStreamIdByName,
+  upsertLabel,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
@@ -44,7 +45,19 @@ const getCurrentText = (
       currentTime,
     })
 
-    output += currentPoint ? currentPoint.value + '\n\n' : '\n\n'
+    if (currentPoint) {
+      const labelNames = currentPoint.labelIdList.map((labelId) => {
+        return getLabelNameById({ doc, id: labelId })
+      })
+      if (labelNames.length) {
+        output += `> ${labelNames.join(', ')}\n\n`
+      }
+      if (currentPoint.value.length) {
+        output += `${currentPoint.value}\n\n`
+      }
+    } else {
+      output += '\n\n'
+    }
   }
 
   return output
@@ -96,17 +109,14 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
 
   const userInput = parse(editor.text)
 
-  const streamNameList = Object.keys(userInput)
-  for (const streamName of streamNameList) {
-    upsertStream({ doc, name: streamName })
-  }
+  for (const item of userInput) {
+    const streamName = item.heading
+    const streamId = upsertStream({ doc, name: streamName })
 
-  for (const [streamName, value] of Object.entries(userInput)) {
-    const streamId = getStreamIdByName({ doc, name: streamName })
-
-    if (streamId === undefined) {
-      throw new TypeError(`Could not find stream with name "${streamName}"`)
-    }
+    const labelIdList = item.labels.map((label) =>
+      upsertLabel({ doc, streamId, name: label }),
+    )
+    const value = item.text
 
     const currentPoint = retrieveCurrentPoint({
       doc,
@@ -114,19 +124,31 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
       currentTime,
     })
 
-    if (currentPoint?.value !== value) {
+    const hasSameValue = (currentPoint?.value ?? '') === value
+    const hasSameLabelIdList =
+      JSON.stringify(currentPoint?.labelIdList ?? []) === JSON.stringify(labelIdList)
+
+    if (!hasSameValue || !hasSameLabelIdList) {
       console.log(
         `[${formatInTimeZone(
           currentTime,
           timeZone,
           'HH:mm',
-        )}] ${streamName} → ${stripComments(value)}`,
+        )}] ${streamName} → [${item.labels.join(', ')}] ${stripComments(
+          value,
+        )}`,
       )
 
       const result =
         currentPoint?.startedAt === currentTime
-          ? updatePoint({ doc, pointId: currentPoint.id, value })
-          : upsertPoint({ doc, streamId, value, startedAt: currentTime })
+          ? updatePoint({ doc, pointId: currentPoint.id, value, labelIdList })
+          : upsertPoint({
+              doc,
+              streamId,
+              value,
+              labelIdList,
+              startedAt: currentTime,
+            })
 
       if (result instanceof Error) {
         return result
