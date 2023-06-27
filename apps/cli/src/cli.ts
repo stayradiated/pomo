@@ -9,6 +9,7 @@ import { jsonCmd } from './command/json/index.js'
 import { syncCmd } from './command/sync.js'
 import { extractLabelsCmd } from './command/extract-labels.js'
 import { migrateCmd } from './command/migrate.js'
+import { labelCmd } from './command/label/index.js'
 
 export const cli = new CliCommand('pomo')
   .withDescription('Get your program to your users easily')
@@ -21,6 +22,7 @@ export const cli = new CliCommand('pomo')
     pullStravaCmd,
     jsonCmd,
     syncCmd,
+    labelCmd,
 
     extractLabelsCmd,
     migrateCmd,

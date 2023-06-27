@@ -49,10 +49,11 @@ const getCurrentText = (
       const labelNames = currentPoint.labelIdList.map((labelId) => {
         return getLabelNameById({ doc, id: labelId })
       })
-      if (labelNames.length) {
+      if (labelNames.length > 0) {
         output += `> ${labelNames.join(', ')}\n\n`
       }
-      if (currentPoint.value.length) {
+
+      if (currentPoint.value.length > 0) {
         output += `${currentPoint.value}\n\n`
       }
     } else {
@@ -126,7 +127,8 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
 
     const hasSameValue = (currentPoint?.value ?? '') === value
     const hasSameLabelIdList =
-      JSON.stringify(currentPoint?.labelIdList ?? []) === JSON.stringify(labelIdList)
+      JSON.stringify(currentPoint?.labelIdList ?? []) ===
+      JSON.stringify(labelIdList)
 
     if (!hasSameValue || !hasSameLabelIdList) {
       console.log(

@@ -7,7 +7,7 @@
     "test": "vitest --watch=false",
     "tidy": "xo --fix",
     "build": "rm -rf dist && tsc",
-    "build:watch": "live-tsc --watch --src ./src/ --dest ./dist",
+    "dev": "live-tsc --watch --src ./src/ --dest ./dist",
     "check": "tsc --noEmit"
   },
   "keywords": [],

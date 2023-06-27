@@ -4,8 +4,8 @@ import { Text, Newline } from 'ink'
 import { durationLocale } from '@stayradiated/pomo-core'
 import type { Slice, Stream, Label } from '@stayradiated/pomo-core'
 import { utcToZonedTime } from 'date-fns-tz'
-import { FlexTable } from './flex-table.js'
-import type { Cell, Row, Column } from './flex-table.js'
+import { FlexTable } from '#src/components/flex-table.js'
+import type { Cell, Row, Column } from '#src/components/flex-table.js'
 
 type SliceListProps = {
   streamList: Stream[]
