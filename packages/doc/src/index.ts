@@ -1,19 +1,24 @@
-export * from './get-point-by-id.js'
-export * from './get-point-started-at-by-ref.js'
 export * from './get-user-time-zone.js'
 export * from './upsert-point.js'
 export * from './retrieve-current-point.js'
 export * from './retrieve-point-list.js'
 export * from './set-user-time-zone.js'
+export * from './upsert-stream.js'
+
 export * from './update-point-started-at.js'
 export * from './update-point.js'
-export * from './upsert-stream.js'
+export * from './update-label.js'
 
 export * from './get-stream-id-by-name.js'
 export * from './get-stream-name-by-id.js'
 
 export * from './get-label-id-by-name.js'
+export * from './get-label-id-by-ref.js'
 export * from './get-label-name-by-id.js'
+
+export * from './get-label-by-id.js'
+export * from './get-point-by-id.js'
+export * from './get-point-started-at-by-ref.js'
 
 export * from './get-label-list.js'
 export * from './get-point-list.js'
@@ -37,6 +42,7 @@ export * from './merge-updates.js'
 
 export * from './upsert-point-label.js'
 export * from './upsert-label.js'
+export * from './merge-labels.js'
 
 export * from './migrate.js'
 

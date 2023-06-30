@@ -14,10 +14,19 @@ type ListLabelsOptions = {
 }
 
 const listLabels = (options: ListLabelsOptions): void | Error => {
-  const { doc } = options
-  const labelList = getLabelList({ doc })
-  const pointList = getPointList({ doc })
+  const { doc, streamId: whereStreamId } = options
+
   const streamRecord = getStreamRecord({ doc })
+  const allLabelList = getLabelList({ doc })
+  const allPointList = getPointList({ doc })
+
+  const labelList = whereStreamId
+    ? allLabelList.filter((label) => label.streamId === whereStreamId)
+    : allLabelList
+
+  const pointList = whereStreamId
+    ? allPointList.filter((point) => point.streamId === whereStreamId)
+    : allPointList
 
   const labelCountMap = new Map<string, number>()
   for (const point of pointList) {
@@ -39,9 +48,7 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
 
   for (const [streamId, streamLabelList] of lableByStreamId.entries()) {
     streamLabelList.sort((a, b) => {
-      const aCount = labelCountMap.get(a.id) ?? 0
-      const bCount = labelCountMap.get(b.id) ?? 0
-      return bCount - aCount
+      return a.name.localeCompare(b.name)
     })
 
     const stream = streamRecord[streamId]
@@ -53,7 +60,8 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
 
     children.push(
       <>
-        <Box padding={1}>
+        <Box paddingY={1}>
+          <Text># </Text>
           <Text bold underline>
             {streamName}
           </Text>

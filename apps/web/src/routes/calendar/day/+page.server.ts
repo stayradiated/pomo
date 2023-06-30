@@ -3,6 +3,7 @@ import { getDoc } from '$lib/doc.js'
 import {
   getUserTimeZone,
   getStreamList,
+  getLabelRecord,
   retrievePointList,
 } from '@stayradiated/pomo-doc'
 import {
@@ -12,9 +13,17 @@ import {
   mapPointListToLineList,
   clampLineList,
 } from '@stayradiated/pomo-core'
+import type { Line } from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 
-const load = (async () => {
+const load = (async ({ request }) => {
+  const url = new URL(request.url)
+  const requestDate = url.searchParams.get('date')
+
+  const instant = requestDate
+    ? dateFns.parse(requestDate, 'yyyy-MM-dd', new Date()).getTime()
+    : Date.now()
+
   const doc = await getDoc()
   if (doc instanceof Error) {
     throw doc
@@ -22,20 +31,19 @@ const load = (async () => {
 
   const timeZone = getUserTimeZone({ doc })
   const startDate = startOfDayWithTimeZone({
-    instant: new Date('2023-06-20').getTime(),
+    instant,
     timeZone,
   }).getTime()
   const endDate = dateFns.addDays(startDate, 1).getTime()
 
   const streamList = getStreamList({ doc })
+  const labelRecord = getLabelRecord({ doc })
 
   const pointList = retrievePointList({
     doc,
     startDate,
     endDate,
-    where: {
-      streamId: 'ab78502d-6bf9-46b7-8d02-14acd02f275a',
-    },
+    where: {},
   })
 
   const extendedLineList = mapPointListToLineList(pointList)
@@ -49,35 +57,27 @@ const load = (async () => {
     endDate,
   })
 
-  const streamStartedAtMap = new Map<string, number>()
-  const streamStoppedAtMap = new Map<string, number>()
-  const streamDurationMap = new Map<string, Map<string, number>>()
+  const streamListListMap = new Map<string, Line[]>()
 
   for (const line of lineList) {
-    const { streamId, value: rawValue, durationMs } = line
-    const value = firstLine(stripComments(rawValue))
+    const { streamId } = line
 
-    if (!streamStartedAtMap.has(streamId)) {
-      streamStartedAtMap.set(streamId, line.startedAt)
+    if (!streamListListMap.has(streamId)) {
+      streamListListMap.set(streamId, [])
     }
 
-    streamStoppedAtMap.set(streamId, line.stoppedAt || Date.now())
-
-    if (!streamDurationMap.has(streamId)) {
-      streamDurationMap.set(streamId, new Map())
-    }
-
-    const childMap = streamDurationMap.get(streamId)!
-    childMap.set(value, (childMap.get(value) ?? 0) + durationMs)
+    const streamList = streamListListMap.get(streamId)!
+    streamList.push(line)
   }
 
   return {
     streamList,
-    lineList,
+    streamListListMap,
 
-    streamDurationMap,
-    streamStartedAtMap,
-    streamStoppedAtMap,
+    labelRecord,
+
+    instant,
+    timeZone,
   }
 }) satisfies PageServerLoad
 

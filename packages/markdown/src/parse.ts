@@ -40,6 +40,7 @@ const parse = (input: string): ParsedItem[] => {
             if (currentItem) {
               currentItem.labels.push(...labels)
             }
+
             return SKIP
           }
 

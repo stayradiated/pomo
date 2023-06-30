@@ -17,14 +17,19 @@ const listCmd = new CliCommand('list')
     ],
   })
   .withHandler(async (_args, options) => {
-    const { name } = options
+    const { stream: streamName } = options
 
     const doc = await getDoc()
     if (doc instanceof Error) {
       throw doc
     }
 
-    const streamId = getStreamIdByName({ doc, name })
+    const streamId = streamName
+      ? getStreamIdByName({ doc, name: streamName })
+      : undefined
+    if (streamName && !streamId) {
+      throw new Error(`Stream not found: ${streamName}`)
+    }
 
     const result = listLabels({ doc, streamId })
 

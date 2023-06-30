@@ -14,7 +14,7 @@
         <a href="/log">Log</a>
       </li>
       <li>
-        <a href="/week">Week</a>
+        <a href="/calendar/day">Calendar</a>
       </li>
     </ul>
   </nav>

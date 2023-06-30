@@ -14,7 +14,7 @@ const LabelTable = (props: LabelTableProps) => {
   const columns: Column[] = [
     {
       name: 'id',
-      color: 'white',
+      color: 'magenta',
       flexShrink: 0,
     },
     {

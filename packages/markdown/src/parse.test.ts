@@ -11,11 +11,13 @@ test('should handle empty item', () => {
 
 `)
 
-  expect(result).toStrictEqual([{
-    heading: 'empty',
-    labels: [],
-    text: ''
-  }])
+  expect(result).toStrictEqual([
+    {
+      heading: 'empty',
+      labels: [],
+      text: '',
+    },
+  ])
 })
 
 test('should preserve markdown formatted text', () => {
@@ -26,12 +28,14 @@ test('should preserve markdown formatted text', () => {
 - [ ] badger
 `)
 
-  expect(result).toStrictEqual([{
-    heading: 'animals',
-    labels: [],
-    text: `- [x] anteater
+  expect(result).toStrictEqual([
+    {
+      heading: 'animals',
+      labels: [],
+      text: `- [x] anteater
 - [ ] badger`,
-  }])
+    },
+  ])
 })
 
 test('should extract labels', () => {
@@ -43,11 +47,13 @@ test('should extract labels', () => {
 must feed the animals
 `)
 
-  expect(result).toStrictEqual([{
-    heading: 'animals',
-    labels: ['anteater', 'badger'],
-    text: 'must feed the animals',
-  }])
+  expect(result).toStrictEqual([
+    {
+      heading: 'animals',
+      labels: ['anteater', 'badger'],
+      text: 'must feed the animals',
+    },
+  ])
 })
 
 test('should extract labels (multiline)', () => {
@@ -60,9 +66,11 @@ test('should extract labels (multiline)', () => {
 must feed the animals
 `)
 
-  expect(result).toStrictEqual([{
-    heading: 'animals',
-    labels: ['anteater', 'jaguar', 'badger', 'lion'],
-    text: 'must feed the animals',
-  }])
+  expect(result).toStrictEqual([
+    {
+      heading: 'animals',
+      labels: ['anteater', 'jaguar', 'badger', 'lion'],
+      text: 'must feed the animals',
+    },
+  ])
 })
