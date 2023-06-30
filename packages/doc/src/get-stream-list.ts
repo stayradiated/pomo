@@ -10,6 +10,10 @@ const getStreamList = (options: GetOptions): Stream[] => {
   const streamMap = doc.getMap('stream')
   const streamList = Object.values(streamMap.toJSON()) as Stream[]
 
+  streamList.sort((a, b) => {
+    return a.index - b.index
+  })
+
   return streamList
 }
 

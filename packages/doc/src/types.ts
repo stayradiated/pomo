@@ -1,12 +1,18 @@
-import type { User, Point, Stream, Label } from '@stayradiated/pomo-core'
 import type { TypedMap, TypedDoc, TypedArray } from 'yjs-types'
+import type { z } from 'zod'
+import {
+  type $User,
+  type $Stream,
+  type $Point,
+  type $Label,
+  type $JsonDoc,
+} from './schema.js'
 
-export type JsonDoc = {
-  label: Record<string, Label>
-  point: Record<string, Point>
-  stream: Record<string, Stream>
-  user: Record<string, User>
-}
+export type User = z.infer<typeof $User>
+export type Stream = z.infer<typeof $Stream>
+export type Point = z.infer<typeof $Point>
+export type Label = z.infer<typeof $Label>
+export type JsonDoc = z.infer<typeof $JsonDoc>
 
 export type YLabel = TypedMap<Label>
 export type YPoint = TypedMap<
@@ -23,5 +29,3 @@ export type Doc = TypedDoc<{
   stream: TypedMap<Record<string, YStream>>
   user: TypedMap<Record<string, YUser>>
 }>
-
-export type { User, Stream, Point, Label } from '@stayradiated/pomo-core'

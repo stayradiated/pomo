@@ -47,6 +47,7 @@ const handler = (options: HandlerOptions): void | Error => {
 
   const lineList = clampLineList({
     lineList: extendedLineList,
+    currentTime: Date.now(),
     startDate,
     endDate,
   })
@@ -76,10 +77,10 @@ const handler = (options: HandlerOptions): void | Error => {
 
   for (const entry of streamDurationMap.entries()) {
     const [streamId, labelDurationMap] = entry
-    const name = getStreamNameById({ doc, id: streamId })
+    const name = getStreamNameById({ doc, streamId })
 
     for (const [labelId, durationMs] of labelDurationMap.entries()) {
-      const labelName = getLabelNameById({ doc, id: labelId })
+      const labelName = getLabelNameById({ doc, labelId })
 
       const duration = dateFns.formatDuration(
         dateFns.intervalToDuration({ start: 0, end: durationMs }),

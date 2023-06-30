@@ -69,7 +69,7 @@ const actions = {
 
     // verify that each point exists
     const pointList = userPointIdList.map((pointId) => {
-      const point = getPointById({ doc, id: pointId })
+      const point = getPointById({ doc, pointId })
       if (typeof point === 'undefined') {
         throw error(400, `Point ${pointId} does not exist`)
       }

@@ -8,8 +8,10 @@ export * from './upsert-stream.js'
 export * from './update-point-started-at.js'
 export * from './update-point.js'
 export * from './update-label.js'
+export * from './update-stream.js'
 
 export * from './get-stream-id-by-name.js'
+export * from './get-stream-id-by-ref.js'
 export * from './get-stream-name-by-id.js'
 
 export * from './get-label-id-by-name.js'
@@ -45,5 +47,7 @@ export * from './upsert-label.js'
 export * from './merge-labels.js'
 
 export * from './migrate.js'
+export * from './validate.js'
 
 export * from './types.js'
+export * from './schema.js'

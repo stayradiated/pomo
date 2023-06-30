@@ -32,6 +32,7 @@ describe('upsertStream', () => {
         'stream-1': {
           id: 'stream-1',
           name: 'hello',
+          index: 0,
           createdAt: 1_620_000_000_000,
           updatedAt: 1_620_000_000_000,
         },
@@ -46,6 +47,7 @@ describe('upsertStream', () => {
       'stream-1': {
         id: 'stream-1',
         name: 'hello',
+        index: 0,
         createdAt: 1_620_000_000_000,
         updatedAt: 1_620_000_000_000,
       },

@@ -53,26 +53,27 @@ const load = (async ({ request }) => {
 
   const lineList = clampLineList({
     lineList: extendedLineList,
+    currentTime: Date.now(),
     startDate,
     endDate,
   })
 
-  const streamListListMap = new Map<string, Line[]>()
+  const streamLineListMap = new Map<string, Line[]>()
 
   for (const line of lineList) {
     const { streamId } = line
 
-    if (!streamListListMap.has(streamId)) {
-      streamListListMap.set(streamId, [])
+    if (!streamLineListMap.has(streamId)) {
+      streamLineListMap.set(streamId, [])
     }
 
-    const streamList = streamListListMap.get(streamId)!
+    const streamList = streamLineListMap.get(streamId)!
     streamList.push(line)
   }
 
   return {
     streamList,
-    streamListListMap,
+    streamLineListMap,
 
     labelRecord,
 

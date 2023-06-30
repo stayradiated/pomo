@@ -2,17 +2,17 @@ import type { Doc } from './types.js'
 
 type GetLabelNameByIdOptions = {
   doc: Doc
-  id: string
+  labelId: string
 }
 
 const getLabelNameById = (
   options: GetLabelNameByIdOptions,
 ): string | undefined => {
-  const { doc, id } = options
+  const { doc, labelId } = options
 
   const labelMap = doc.getMap('label')
 
-  const label = labelMap.get(id)
+  const label = labelMap.get(labelId)
   if (!label) {
     return undefined
   }

@@ -7,10 +7,11 @@ type UpsertLabelOptions = {
   doc: Doc
   name: string
   streamId: string
+  color?: string | undefined
 }
 
 const upsertLabel = (options: UpsertLabelOptions): string => {
-  const { doc, name, streamId } = options
+  const { doc, name, streamId, color } = options
 
   const labelMap = doc.getMap('label')
 
@@ -22,8 +23,11 @@ const upsertLabel = (options: UpsertLabelOptions): string => {
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingLabel) {
-      existingLabel.set('name', name)
-      existingLabel.set('updatedAt', Date.now())
+      if (color !== undefined) {
+        existingLabel.set('name', name)
+        existingLabel.set('updatedAt', Date.now())
+      }
+
       return existingLabel.get('id')!
     }
 
@@ -32,6 +36,7 @@ const upsertLabel = (options: UpsertLabelOptions): string => {
     label.set('id', labelId)
     label.set('streamId', streamId)
     label.set('name', name)
+    label.set('color', color ?? null)
     label.set('createdAt', Date.now())
     label.set('updatedAt', null)
     labelMap.set(labelId, label)

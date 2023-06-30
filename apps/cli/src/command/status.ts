@@ -32,7 +32,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   }
 
   for (const line of lineList) {
-    const streamName = getStreamNameById({ doc, id: line.streamId })
+    const streamName = getStreamNameById({ doc, streamId: line.streamId })
     if (streamName === undefined) {
       return new Error(`Stream not found: ${line.streamId}`)
     }
@@ -46,7 +46,7 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
       JSON.stringify({
         stream: streamName,
         labels: line.labelIdList.map((labelId) =>
-          getLabelNameById({ doc, id: labelId }),
+          getLabelNameById({ doc, labelId }),
         ),
         elapsed:
           dateFns.formatDuration(elapsed, {

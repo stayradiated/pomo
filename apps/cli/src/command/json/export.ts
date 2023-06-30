@@ -4,7 +4,7 @@ import {
   getPointRecord,
   getLabelRecord,
 } from '@stayradiated/pomo-doc'
-import type { JsonDoc } from './schema.js'
+import type { JsonDoc } from '@stayradiated/pomo-doc'
 import { getDoc } from '#src/lib/doc.js'
 
 const exportAsJson = async (): Promise<void | Error> => {

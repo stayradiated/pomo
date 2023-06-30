@@ -15,6 +15,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@stayradiated/pomo-doc": "workspace:*",
     "@stayradiated/error-boundary": "4.1.0",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",

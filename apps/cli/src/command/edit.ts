@@ -47,7 +47,7 @@ const getCurrentText = (
 
     if (currentPoint) {
       const labelNames = currentPoint.labelIdList.map((labelId) => {
-        return getLabelNameById({ doc, id: labelId })
+        return getLabelNameById({ doc, labelId })
       })
       if (labelNames.length > 0) {
         output += `> ${labelNames.join(', ')}\n\n`

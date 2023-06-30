@@ -3,12 +3,11 @@
   import * as dateFns from 'date-fns'
   import { utcToZonedTime } from 'date-fns-tz'
 
-  import StreamDuration from './StreamDuration.svelte'
   import Column from './Column.svelte'
   import Paper from './Paper.svelte'
 
   export let data: PageData
-  const { instant, timeZone, streamList, labelRecord, streamListListMap } = data
+  const { instant, timeZone, streamList, labelRecord, streamLineListMap } = data
 
   const zonedInstant = utcToZonedTime(instant, timeZone)
   const title = dateFns.format(zonedInstant, 'PPPP')
@@ -25,8 +24,6 @@
     dateFns.addDays(zonedInstant, 1),
     'yyyy-MM-dd',
   )
-
-  console.log({ zonedInstant, title, previousDate, nextDate })
 </script>
 
 <a data-sveltekit-reload href="?date={previousDate}">&lt;</a>
@@ -38,8 +35,8 @@
 <div class="container">
   <Paper />
   <div class="inner">
-    {#each [...streamListListMap.values()] as lineList}
-      <Column {lineList} {labelRecord} />
+    {#each streamList as stream}
+      <Column lineList={streamLineListMap.get(stream.id) ?? []} {labelRecord} />
     {/each}
   </div>
 </div>

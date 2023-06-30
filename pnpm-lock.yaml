@@ -157,6 +157,9 @@ importers:
       '@stayradiated/error-boundary':
         specifier: 4.1.0
         version: 4.1.0
+      '@stayradiated/pomo-doc':
+        specifier: workspace:*
+        version: link:../doc
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -182,15 +185,15 @@ importers:
       '@stayradiated/error-boundary':
         specifier: 4.1.0
         version: 4.1.0
-      '@stayradiated/pomo-core':
-        specifier: workspace:*
-        version: link:../core
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
       yjs:
         specifier: 13.6.6
         version: 13.6.6
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4
     devDependencies:
       '@types/node':
         specifier: 20.3.2

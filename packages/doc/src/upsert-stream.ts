@@ -6,10 +6,11 @@ import type { Doc, YStream } from './types.js'
 type UpsertStreamOptions = {
   doc: Doc
   name: string
+  index?: number
 }
 
 const upsertStream = (options: UpsertStreamOptions): string => {
-  const { doc, name } = options
+  const { doc, name, index } = options
 
   const streamMap = doc.getMap('stream')
 
@@ -20,8 +21,11 @@ const upsertStream = (options: UpsertStreamOptions): string => {
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingStream) {
-      existingStream.set('name', name)
-      existingStream.set('updatedAt', Date.now())
+      if (typeof index === 'number') {
+        existingStream.set('index', index)
+        existingStream.set('updatedAt', Date.now())
+      }
+
       return existingStream.get('id')!
     }
 
@@ -29,6 +33,7 @@ const upsertStream = (options: UpsertStreamOptions): string => {
     const stream = new Y.Map() as YStream
     stream.set('id', streamId)
     stream.set('name', name)
+    stream.set('index', index ?? 0)
     stream.set('createdAt', Date.now())
     stream.set('updatedAt', null)
     streamMap.set(streamId, stream)

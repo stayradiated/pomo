@@ -1,6 +1,9 @@
 import * as fs from 'node:fs/promises'
-import { createDocWithData, encodeStateAsUpdate } from '@stayradiated/pomo-doc'
-import { $JsonDoc } from './schema.js'
+import {
+  createDocWithData,
+  encodeStateAsUpdate,
+  $JsonDoc,
+} from '@stayradiated/pomo-doc'
 
 type ImportFromJsonOptions = {
   srcFilePath: string

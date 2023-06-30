@@ -2,14 +2,14 @@ import type { Doc, Point } from './types.js'
 
 type GetPointByIdOptions = {
   doc: Doc
-  id: string
+  pointId: string
 }
 
 const getPointById = (options: GetPointByIdOptions): Point | undefined => {
-  const { doc, id } = options
+  const { doc, pointId } = options
 
   const pointMap = doc.getMap('point')
-  const point = pointMap.get(id)
+  const point = pointMap.get(pointId)
   if (!point) {
     return undefined
   }
