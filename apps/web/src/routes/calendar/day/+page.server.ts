@@ -7,8 +7,6 @@ import {
   retrievePointList,
 } from '@stayradiated/pomo-doc'
 import {
-  stripComments,
-  firstLine,
   startOfDayWithTimeZone,
   mapPointListToLineList,
   clampLineList,
@@ -16,8 +14,7 @@ import {
 import type { Line } from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 
-const load = (async ({ request }) => {
-  const url = new URL(request.url)
+const load = (async ({ url }) => {
   const requestDate = url.searchParams.get('date')
 
   const instant = requestDate

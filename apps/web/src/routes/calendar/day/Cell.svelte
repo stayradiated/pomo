@@ -8,21 +8,21 @@
   export let line: Line
   export let labelRecord: Record<string, Label>
 
-  const height = line.durationMs / 1000 / 60
+  $: height = line.durationMs / 1000 / 60
 
-  const labelList = line.labelIdList
+  $: labelList = line.labelIdList
     .map((labelId) => {
       return labelRecord[labelId]
     })
     .filter(Boolean)
 
-  const labelNameList = labelList.map((label) => {
+  $: labelNameList = labelList.map((label) => {
     return label.name
   })
 
-  const color = labelList[0]?.color
-  const colorBg = color ?? 'inherit'
-  const colorFg = color
+  $: color = labelList[0]?.color
+  $: colorBg = color ?? 'inherit'
+  $: colorFg = color
     ? getColorContrast(color) >= 0.5
       ? 'black'
       : 'white'

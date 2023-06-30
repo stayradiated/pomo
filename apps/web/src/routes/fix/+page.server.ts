@@ -14,8 +14,7 @@ import { zfd } from 'zod-form-data'
 import { z } from 'zod'
 import { redirect } from '@sveltejs/kit'
 
-const load = (async ({ request }) => {
-  const url = new URL(request.url)
+const load = (async ({ url }) => {
   const ref = url.searchParams.get('ref') ?? undefined
 
   if (!ref) {

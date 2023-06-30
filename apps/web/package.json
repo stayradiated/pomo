@@ -9,12 +9,13 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "tidy": "prettier --write --plugin-search-dir=. ./src"
+		"tidy": "prettier --write --plugin-search-dir=. ./src"
 	},
 	"dependencies": {
 		"@stayradiated/error-boundary": "4.1.0",
 		"@stayradiated/pomo-core": "workspace:*",
 		"@stayradiated/pomo-doc": "workspace:*",
+		"@svelte-put/shortcut": "2.0.0",
 		"date-fns": "2.30.0",
 		"pollen": "0.0.5",
 		"prettier": "2.8.8",
@@ -35,13 +36,13 @@
 		"vite": "4.3.9"
 	},
 	"type": "module",
-  "prettier": {
-    "arrowParens": "always",
-    "bracketSpacing": true,
-    "semi": false,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "all",
-    "useTabs": false
-  }
+	"prettier": {
+		"arrowParens": "always",
+		"bracketSpacing": true,
+		"semi": false,
+		"singleQuote": true,
+		"tabWidth": 2,
+		"trailingComma": "all",
+		"useTabs": false
+	}
 }

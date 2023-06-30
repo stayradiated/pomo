@@ -3,26 +3,18 @@
   import MultiDaySliceList from './MultiDaySliceList.svelte'
 
   export let data: PageData
-  const {
-    labelRecord,
-    filterStreamId,
-    filterLabelId,
-    streamList,
-    sliceList,
-    timeZone,
-  } = data
 
-  let selectedStreamId = filterStreamId
-  let selectedLabelId = filterLabelId
+  let selectedStreamId = data.filterStreamId
+  let selectedLabelId = data.filterLabelId
 
-  $: streamLabelList = Object.values(labelRecord)
+  $: streamLabelList = Object.values(data.labelRecord)
     .filter((label) => label.streamId === selectedStreamId)
     .sort((a, b) => a.name.localeCompare(b.name))
 </script>
 
-<form method="POST">
+<form method="GET">
   <select name="stream" placeholder="Stream" bind:value={selectedStreamId}>
-    {#each streamList as stream}
+    {#each data.streamList as stream}
       <option value={stream.id}>{stream.name}</option>
     {/each}
   </select>
@@ -34,7 +26,12 @@
   </select>
 
   <button>Filter</button>
-  <a href="/log" data-sveltekit-reload class="button">Clear</a>
+  <a href="?" class="button">Clear</a>
 </form>
 
-<MultiDaySliceList {streamList} {labelRecord} {sliceList} {timeZone} />
+<MultiDaySliceList
+  streamList={data.streamList}
+  labelRecord={data.labelRecord}
+  sliceList={data.sliceList}
+  timeZone={data.timeZone}
+/>

@@ -10,21 +10,18 @@
   export let timeZone: string
   export let labelRecord: Record<string, Label>
 
-  const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
-    (acc, slice) => {
-      const { startedAt: startedAtUTC } = slice
-      const startedAt = utcToZonedTime(startedAtUTC, timeZone)
+  $: sliceListByDay = sliceList.reduce<Map<string, Slice[]>>((acc, slice) => {
+    const { startedAt: startedAtUTC } = slice
+    const startedAt = utcToZonedTime(startedAtUTC, timeZone)
 
-      // Format as Friday 02 June 2023
-      const day = format(startedAt, 'EEEE dd MMMM yyyy')
+    // Format as Friday 02 June 2023
+    const day = format(startedAt, 'EEEE dd MMMM yyyy')
 
-      const list: Slice[] = acc.get(day) ?? []
-      list.push(slice)
-      acc.set(day, list)
-      return acc
-    },
-    new Map(),
-  )
+    const list: Slice[] = acc.get(day) ?? []
+    list.push(slice)
+    acc.set(day, list)
+    return acc
+  }, new Map())
 </script>
 
 {#each Array.from(sliceListByDay.entries()) as [day, sliceList]}

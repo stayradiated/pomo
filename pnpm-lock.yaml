@@ -102,6 +102,9 @@ importers:
       '@stayradiated/pomo-doc':
         specifier: workspace:*
         version: link:../../packages/doc
+      '@svelte-put/shortcut':
+        specifier: 2.0.0
+        version: 2.0.0
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -881,6 +884,10 @@ packages:
 
   /@stayradiated/error-boundary@4.1.0:
     resolution: {integrity: sha512-DNRjLSEgKk8CWuLp9fibO4Zk5B6zE27yEVEQG3j6JovY7mWu6k9taluspipX410cDDoStuOilcpLvGWZJQ12Sw==}
+    dev: false
+
+  /@svelte-put/shortcut@2.0.0:
+    resolution: {integrity: sha512-dDyxIFlRz+W6wxwQtl2jUen0rX8ofV2VBWaJdz0QehLb0IMDzP3aWM9W4k8cAZQIGmTT0adr1+Gt7HPPUugcpQ==}
     dev: false
 
   /@sveltejs/adapter-node@1.2.4(@sveltejs/kit@1.21.0):

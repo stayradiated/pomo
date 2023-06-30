@@ -5,7 +5,7 @@ const formatDuration = (ms: number): string => {
 
   const h = hours > 0 ? `${hours}h ` : ''
   const m = minutes > 0 ? `${minutes}m ` : ''
-  const s = seconds > 0 ? `${seconds}s` : ''
+  const s = hours === 0 && minutes === 0 ? `${seconds}s` : ''
 
   return `${h}${m}${s}`
 }

@@ -10,11 +10,8 @@ import {
   retrievePointList,
   getUserTimeZone,
 } from '@stayradiated/pomo-doc'
-import type { PageServerLoad, Actions } from './$types'
+import type { PageServerLoad } from './$types'
 import type { Slice } from '@stayradiated/pomo-core'
-import { redirect } from '@sveltejs/kit'
-import { zfd } from 'zod-form-data'
-import { z } from 'zod'
 
 type FilterSlicesByValueOptions = {
   sliceList: Slice[]
@@ -51,8 +48,7 @@ const filterSlicesByValue = (options: FilterSlicesByValueOptions): Slice[] => {
   return result.output
 }
 
-const load = (async ({ request }) => {
-  const url = new URL(request.url)
+const load = (async ({ url }) => {
   const filterStreamId = url.searchParams.get('stream') ?? undefined
   const filterLabelId = url.searchParams.get('label') ?? undefined
 
@@ -111,22 +107,4 @@ const load = (async ({ request }) => {
   }
 }) satisfies PageServerLoad
 
-const $schema = zfd.formData({
-  stream: zfd.text(z.string().length(36)),
-  label: zfd.text(z.string().length(36)),
-})
-
-const actions = {
-  default: async ({ request }) => {
-    const formData = $schema.parse(await request.formData())
-    const { stream, label } = formData
-
-    const url = new URL(request.url)
-    url.searchParams.set('stream', stream)
-    url.searchParams.set('label', label)
-
-    throw redirect(303, url.toString())
-  },
-} satisfies Actions
-
-export { load, actions }
+export { load }
