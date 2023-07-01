@@ -1,7 +1,6 @@
 # by default we exclude everything from the Docker worker...
 *
 
-!/.turbo/config.json
 !/turbo.json
 !/package.json
 !/pnpm-lock.yaml

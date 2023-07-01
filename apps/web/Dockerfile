@@ -27,7 +27,6 @@ COPY --from=pruner /exports/pnpm-lock.yaml .
 RUN pnpm install
 
 FROM base AS builder
-COPY --from=pruner /app/.turbo/ .turbo/
 COPY --from=pruner /exports/full/ .
 COPY --from=installer /app/ .
 RUN turbo run build --scope=web
