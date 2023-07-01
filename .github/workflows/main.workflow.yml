@@ -22,46 +22,6 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
 
-      - 
-        # https://github.com/actions/setup-node
-        name: Setup NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.3.0'
-
-      - 
-        # https://github.com/pnpm/action-setup
-        name: Install PNPM
-        uses: pnpm/action-setup@v2.2.4
-        with:
-          version: 8.5.1
-          run_install: false
-
-      -
-        name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      -
-        # https://github.com/actions/cache
-        uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      -
-        name: Install dependencies
-        run: pnpm install
-
-      - 
-        name: Build Packages
-        run: |
-          pnpm run build
-
       -
         # https://github.com/docker/metadata-action
         name: Docker meta
@@ -99,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           file: ./apps/web/Dockerfile
-          context: ./apps/web/
+          context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

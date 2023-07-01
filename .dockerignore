@@ -1,0 +1,23 @@
+# by default we exclude everything from the Docker worker...
+*
+
+!/.turbo/config.json
+!/turbo.json
+!/package.json
+!/pnpm-lock.yaml
+!/pnpm-workspace.yaml
+
+!/apps/web/src
+!/apps/web/static
+!/apps/web/package.json
+!/apps/web/svelte.config.js
+!/apps/web/tsconfig.json
+!/apps/web/vite.config.ts
+
+!/packages/doc/src
+!/packages/doc/package.json
+!/packages/doc/tsconfig.json
+
+!/packages/core/src
+!/packages/core/package.json
+!/packages/core/tsconfig.json
