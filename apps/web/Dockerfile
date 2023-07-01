@@ -1,13 +1,15 @@
 FROM node:20.3.1-alpine AS base
 WORKDIR /app
+RUN npm install --global pnpm
+
+FROM base AS devbase
 ENV PNPM_HOME=/app/.pnpm
 ENV PATH=$PNPM_HOME:$PATH
 RUN set -e; \
-  npm install --global pnpm; \
   mkdir -p $PNPM_HOME ; \
   pnpm install --global turbo;
 
-FROM base as pruner
+FROM devbase as pruner
 COPY . .
 RUN turbo prune --scope=web --docker --out-dir /exports
 
@@ -21,17 +23,21 @@ RUN turbo prune --scope=web --docker --out-dir /exports
 #                           dependencies that are actually used by the packages
 #                           in the pruned workspace.
 
-FROM base AS installer
+FROM devbase AS installer
 COPY --from=pruner /exports/json/ .
 COPY --from=pruner /exports/pnpm-lock.yaml .
 RUN pnpm install
 
-FROM base AS builder
+FROM devbase AS builder
 COPY --from=pruner /exports/full/ .
 COPY --from=installer /app/ .
 RUN turbo run build --scope=web
  
-FROM builder as runner
+FROM base as runner
+COPY --from=pruner /exports/json/ .
+COPY --from=pruner /exports/pnpm-lock.yaml .
+RUN pnpm install --prod
+COPY --from=builder /app/apps/web/build /app/apps/web/build
 WORKDIR /app/apps/web/build
 EXPOSE 3000
 CMD node index.js
