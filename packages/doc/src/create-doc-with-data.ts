@@ -6,49 +6,26 @@ const createDocWithData = (data: Partial<JsonDoc>): Doc => {
 
   const userMap = doc.getMap('user')
   for (const [key, value] of Object.entries(data.user ?? {})) {
-    const user = new Y.Map() as YUser
-    user.set('id', value.id)
-    user.set('timeZone', value.timeZone)
-    user.set('createdAt', value.createdAt)
-    user.set('updatedAt', value.updatedAt)
-
+    const user = new Y.Map(Object.entries(value)) as YUser
     userMap.set(key, user)
   }
 
   const streamMap = doc.getMap('stream')
   for (const [key, value] of Object.entries(data.stream ?? {})) {
-    const stream = new Y.Map() as YStream
-    stream.set('id', value.id)
-    stream.set('name', value.name)
-    stream.set('createdAt', value.createdAt)
-    stream.set('updatedAt', value.updatedAt)
-
+    const stream = new Y.Map(Object.entries(value)) as YStream
     streamMap.set(key, stream)
   }
 
   const pointMap = doc.getMap('point')
   for (const [key, value] of Object.entries(data.point ?? {})) {
-    const point = new Y.Map() as YPoint
-    point.set('id', value.id)
-    point.set('streamId', value.streamId)
-    point.set('value', value.value)
+    const point = new Y.Map(Object.entries(value)) as YPoint
     point.set('labelIdList', Y.Array.from(value.labelIdList))
-    point.set('startedAt', value.startedAt)
-    point.set('createdAt', value.createdAt)
-    point.set('updatedAt', value.updatedAt)
-
     pointMap.set(key, point)
   }
 
   const labelMap = doc.getMap('label')
   for (const [key, value] of Object.entries(data.label ?? {})) {
-    const label = new Y.Map() as YLabel
-    label.set('id', value.id)
-    label.set('streamId', value.streamId)
-    label.set('name', value.name)
-    label.set('createdAt', value.createdAt)
-    label.set('updatedAt', value.updatedAt)
-
+    const label = new Y.Map(Object.entries(value)) as YLabel
     labelMap.set(key, label)
   }
 

@@ -41,7 +41,7 @@
     {#each sliceList as slice}
       <tr>
         <td
-          ><a href="/fix?ref={slice.lineList[0]?.id}"
+          ><a href="/edit?ref={slice.lineList[0]?.id}"
             >{formatTime(slice.startedAt)}</a
           ></td
         >

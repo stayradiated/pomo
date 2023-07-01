@@ -1,5 +1,6 @@
 import { CliCommand } from 'cilly'
 import { validate } from '@stayradiated/pomo-doc'
+import { ZodError } from 'zod'
 import { getDoc } from '#src/lib/doc.js'
 
 const validateCmd = new CliCommand('validate')
@@ -12,9 +13,13 @@ const validateCmd = new CliCommand('validate')
 
     const result = validate({ doc })
 
-    if (result) {
-      for (const issue of result) {
-        console.log(issue)
+    if (result instanceof Error) {
+      if (result instanceof ZodError) {
+        for (const issue of result.issues) {
+          console.error(issue)
+        }
+      } else {
+        console.error(result)
       }
     } else {
       console.log('Document is valid')

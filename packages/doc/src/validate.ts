@@ -1,4 +1,3 @@
-import type { ZodIssue } from 'zod'
 import { $JsonDoc } from './schema.js'
 import type { Doc } from './types.js'
 
@@ -6,7 +5,7 @@ type ValidateOptions = {
   doc: Doc
 }
 
-const validate = (options: ValidateOptions): void | ZodIssue[] => {
+const validate = (options: ValidateOptions): void | Error => {
   const { doc } = options
 
   const result = $JsonDoc.safeParse({
@@ -17,7 +16,57 @@ const validate = (options: ValidateOptions): void | ZodIssue[] => {
   })
 
   if (!result.success) {
-    return result.error.issues
+    return result.error
+  }
+
+  const pointMap = doc.getMap('point')
+  const labelMap = doc.getMap('label')
+  const streamMap = doc.getMap('stream')
+
+  for (const [pointId, point] of pointMap.entries()) {
+    if (pointId !== point.get('id')) {
+      return new Error(`Point ${pointId} has mismatched id ${point.get('id')}`)
+    }
+
+    // Point.streamId → stream.id
+    const streamId = point.get('streamId')!
+    if (!streamMap.has(streamId)) {
+      return new Error(
+        `Point ${pointId} references non-existent stream ${streamId}`,
+      )
+    }
+
+    // Point.labelIdList → label.id
+    const labelIdList = point.get('labelIdList')!
+    for (const labelId of labelIdList) {
+      if (!labelMap.has(labelId)) {
+        return new Error(
+          `Point ${pointId} references non-existent label ${labelId}`,
+        )
+      }
+    }
+  }
+
+  for (const [labelId, label] of labelMap.entries()) {
+    if (labelId !== label.get('id')) {
+      return new Error(`Label ${labelId} has mismatched id ${label.get('id')}`)
+    }
+
+    // Label.streamId → stream.id
+    const streamId = label.get('streamId')!
+    if (!streamMap.has(streamId)) {
+      return new Error(
+        `Label ${labelId} references non-existent stream ${streamId}`,
+      )
+    }
+  }
+
+  for (const [streamId, stream] of streamMap.entries()) {
+    if (streamId !== stream.get('id')) {
+      return new Error(
+        `Stream ${streamId} has mismatched id ${stream.get('id')}`,
+      )
+    }
   }
 
   return undefined

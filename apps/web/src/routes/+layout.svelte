@@ -8,13 +8,16 @@
   <nav>
     <ul>
       <li>
-        <a href="/edit">Add</a>
+        <a href="/add">Add</a>
       </li>
       <li>
         <a href="/log">Log</a>
       </li>
       <li>
         <a href="/calendar/day">Calendar</a>
+      </li>
+      <li>
+        <a href="/label">Labels</a>
       </li>
     </ul>
   </nav>

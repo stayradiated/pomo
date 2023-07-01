@@ -46,6 +46,8 @@ export * from './upsert-point-label.js'
 export * from './upsert-label.js'
 export * from './merge-labels.js'
 
+export * from './delete-labels.js'
+
 export * from './migrate.js'
 export * from './validate.js'
 

@@ -1,36 +1,27 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import PointInput from './PointInput.svelte'
 
   export let data: PageData
-  const { startedAtLocal, streamList, currentPoints, streamLabelRecord } = data
+  const { startedAtLocal, streamList, pointList } = data
+
+  const getStream = (id: string) => {
+    return streamList.find((stream) => stream.id === id)
+  }
 </script>
 
-<main>
-  <form method="POST">
-    <input type="datetime-local" name="startedAtLocal" value={startedAtLocal} />
+<ul>
+  {#each pointList as point}
+    <li>
+      <strong>{getStream(point.streamId)?.name}</strong>
+      <code>{point.value}</code>
+    </li>
+  {/each}
+</ul>
 
-    {#each streamList as stream, streamIndex}
-      {@const point = currentPoints.get(stream.id)}
-      <PointInput
-        {stream}
-        {streamIndex}
-        defaultPoint={point}
-        labelRecord={streamLabelRecord[stream.id] ?? {}}
-      />
-    {/each}
-
-    <button>Save</button>
-  </form>
-</main>
-
-<style>
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-
-  button {
-    line-height: 3rem;
-  }
-</style>
+<form method="POST">
+  {#each pointList as point}
+    <input type="hidden" name="pointId" value={point.id} />
+  {/each}
+  <input type="datetime-local" name="startedAtLocal" value={startedAtLocal} />
+  <button type="submit">Update</button>
+</form>
