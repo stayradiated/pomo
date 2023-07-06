@@ -5,7 +5,7 @@ type RetrieveOptions = {
   startDate: number
   endDate: number
   where: {
-    streamId?: string
+    streamIdList?: string[]
   }
 }
 
@@ -22,8 +22,8 @@ const retrievePointList = (options: RetrieveOptions): Point[] => {
         return false
       }
 
-      if (typeof where.streamId === 'string') {
-        return point.get('streamId') === where.streamId
+      if (where.streamIdList) {
+        return where.streamIdList.includes(point.get('streamId')!)
       }
 
       return true
@@ -34,10 +34,9 @@ const retrievePointList = (options: RetrieveOptions): Point[] => {
 
   const latestPointByStream: Record<string, Point> = {}
 
-  const streamIdSet =
-    typeof where.streamId === 'string'
-      ? new Set([where.streamId])
-      : new Set(streamMap.keys())
+  const streamIdSet = where.streamIdList
+    ? new Set(where.streamIdList)
+    : new Set(streamMap.keys())
 
   for (const point of pointMap.values()) {
     const pointStreamId = point.get('streamId')!

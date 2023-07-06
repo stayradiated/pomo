@@ -23,7 +23,9 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     doc,
     startDate: currentTime,
     endDate: currentTime,
-    where,
+    where: {
+      streamIdList: where.streamId ? [where.streamId] : undefined,
+    },
   })
 
   const lineList = mapPointListToLineList(pointList)

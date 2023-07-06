@@ -12,6 +12,8 @@ import { syncCmd } from './command/sync.js'
 import { userCmd } from './command/user.js'
 import { validateCmd } from './command/validate/index.js'
 import { streamCmd } from './command/stream/index.js'
+import { togglCmd } from './command/toggl/index.js'
+import { gcalCmd } from './command/gcal/index.js'
 
 export const cli = new CliCommand('pomo')
   .withDescription('Get your program to your users easily')
@@ -29,6 +31,8 @@ export const cli = new CliCommand('pomo')
     syncCmd,
     userCmd,
     validateCmd,
+    togglCmd,
+    gcalCmd,
   )
   .withHandler(() => {
     editCmd.process(process.argv)

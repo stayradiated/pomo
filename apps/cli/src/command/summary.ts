@@ -36,7 +36,7 @@ const handler = (options: HandlerOptions): void | Error => {
     startDate,
     endDate,
     where: {
-      streamId: where.streamId,
+      streamIdList: where.streamId ? [where.streamId] : undefined,
     },
   })
 

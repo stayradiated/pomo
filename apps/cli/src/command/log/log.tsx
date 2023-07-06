@@ -29,7 +29,9 @@ const renderLog = (options: HandlerOptions): void | Error => {
     doc,
     startDate,
     endDate,
-    where,
+    where: {
+      streamIdList: where.streamId ? [where.streamId] : undefined,
+    },
   })
 
   const lineList = mapPointListToLineList(pointList)
