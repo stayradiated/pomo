@@ -7,7 +7,7 @@ type UpsertStreamOptions = {
   doc: Doc
   name: string
   index?: number
-  parentId?: string | undefined
+  parentId?: string | null
 }
 
 const upsertStream = (options: UpsertStreamOptions): string => {

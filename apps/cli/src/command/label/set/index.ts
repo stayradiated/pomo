@@ -5,6 +5,7 @@ import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const $KeyValue = z.discriminatedUnion('key', [
   z.object({ key: z.literal('color'), value: z.string() }),
+  z.object({ key: z.literal('parentId'), value: z.string() }),
 ])
 
 const setCmd = new CliCommand('set')
@@ -44,6 +45,20 @@ const setCmd = new CliCommand('set')
     switch (key) {
       case 'color': {
         const error = updateLabel({ doc, labelId, color: value })
+        if (error) {
+          throw error
+        }
+
+        break
+      }
+
+      case 'parentId': {
+        const parentId = getLabelIdByRef({ doc, ref: value })
+        if (!parentId) {
+          throw new Error(`Stream "${value}" not found`)
+        }
+
+        const error = updateLabel({ doc, labelId, parentId })
         if (error) {
           throw error
         }

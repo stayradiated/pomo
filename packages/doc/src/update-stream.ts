@@ -6,7 +6,7 @@ type UpdateStreamOptions = {
   streamId: string
   name?: string
   index?: number
-  parentId?: string | undefined
+  parentId?: string | null
 }
 
 const updateStream = (options: UpdateStreamOptions): void | Error => {

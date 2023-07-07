@@ -1,39 +1,30 @@
 import { describe, test, expect } from 'vitest'
 import { mergeLabels } from './merge-labels.js'
-import { createDocWithData } from './create-doc-with-data.js'
+import { makeDoc } from './test-utils/make-doc.js'
 
 describe('mergeLabels', () => {
   test('should create a new user', async () => {
-    const doc = createDocWithData({
-      label: {
-        'label-1': {
+    const doc = makeDoc({
+      label: [
+        {
           id: 'label-1',
           name: 'Label 1',
           streamId: 'stream-1',
-          color: null,
-          createdAt: 1,
-          updatedAt: null,
         },
-        'label-2': {
+        {
           id: 'label-2',
           name: 'Label 2',
           streamId: 'stream-1',
-          color: null,
-          createdAt: 2,
-          updatedAt: null,
         },
-      },
-      point: {
-        'point-1': {
+      ],
+      point: [
+        {
           id: 'point-1',
           labelIdList: ['label-1'],
           streamId: 'stream-1',
           value: '',
-          startedAt: 3,
-          createdAt: 3,
-          updatedAt: null,
         },
-      },
+      ],
     })
 
     mergeLabels({
@@ -51,7 +42,8 @@ describe('mergeLabels', () => {
         name: 'Label 2',
         streamId: 'stream-1',
         color: null,
-        createdAt: 2,
+        parentId: null,
+        createdAt: expect.any(Number),
         updatedAt: null,
       },
     })
@@ -64,8 +56,8 @@ describe('mergeLabels', () => {
         labelIdList: ['label-2'],
         streamId: 'stream-1',
         value: '',
-        startedAt: 3,
-        createdAt: 3,
+        startedAt: expect.any(Number),
+        createdAt: expect.any(Number),
         updatedAt: expect.any(Number),
       },
     })

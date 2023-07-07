@@ -32,11 +32,15 @@ const migrate = (options: MigrateOptions): void => {
       }
     }
 
-    // Make sure every label has a color prop
     for (const label of labelMap.values()) {
       const color = label.get('color')
       if (typeof color !== 'string' && color !== null) {
         label.set('color', null)
+      }
+
+      const parentId = label.get('parentId')
+      if (typeof parentId !== 'string' && parentId !== null) {
+        label.set('parentId', null)
       }
     }
   })

@@ -5,7 +5,8 @@ type MakeLabel = {
   id: string
   streamId: string
   name?: string
-  color?: string
+  color?: string | null
+  parentId?: string | null
 }
 
 type MakePoint = {
@@ -20,7 +21,7 @@ type MakeStream = {
   id: string
   name?: string
   index?: number
-  parentId?: string | undefined
+  parentId?: string | null
 }
 
 type MakeDocOptions = {
@@ -40,7 +41,8 @@ const makeDoc = (options: MakeDocOptions) => {
     acc[label.id] = {
       ...label,
       name: label.name ?? '',
-      color: label.color ?? '',
+      color: label.color ?? null,
+      parentId: label.parentId ?? null,
       createdAt,
       updatedAt,
     }

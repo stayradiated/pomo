@@ -11,9 +11,9 @@ const $Stream = z.object({
   id: z.string(),
   name: z.string(),
   index: z.number(),
+  parentId: z.string().nullable(),
   createdAt: z.number(),
   updatedAt: z.number().nullable(),
-  parentId: z.string().nullable(),
 })
 
 const $Point = z.object({
@@ -31,6 +31,7 @@ const $Label = z.object({
   streamId: z.string(),
   name: z.string(),
   color: z.string().nullable(),
+  parentId: z.string().nullable(),
   createdAt: z.number(),
   updatedAt: z.number().nullable(),
 })
