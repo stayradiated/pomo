@@ -23,8 +23,14 @@ const upsertLabel = (options: UpsertLabelOptions): string => {
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingLabel) {
+      let hasChanged = false
+
       if (color !== undefined) {
         existingLabel.set('name', name)
+        hasChanged = true
+      }
+
+      if (hasChanged) {
         existingLabel.set('updatedAt', Date.now())
       }
 

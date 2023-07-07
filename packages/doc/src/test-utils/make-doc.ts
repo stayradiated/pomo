@@ -20,6 +20,7 @@ type MakeStream = {
   id: string
   name?: string
   index?: number
+  parentId?: string | undefined
 }
 
 type MakeDocOptions = {
@@ -63,6 +64,7 @@ const makeDoc = (options: MakeDocOptions) => {
       ...stream,
       name: stream.name ?? '',
       index: stream.index ?? 0,
+      parentId: stream.parentId ?? null,
       createdAt,
       updatedAt,
     }

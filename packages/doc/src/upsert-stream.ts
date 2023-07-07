@@ -7,10 +7,11 @@ type UpsertStreamOptions = {
   doc: Doc
   name: string
   index?: number
+  parentId?: string | undefined
 }
 
 const upsertStream = (options: UpsertStreamOptions): string => {
-  const { doc, name, index } = options
+  const { doc, name, index, parentId = null } = options
 
   const streamMap = doc.getMap('stream')
 
@@ -21,8 +22,19 @@ const upsertStream = (options: UpsertStreamOptions): string => {
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingStream) {
+      let hasChanged = false
+
       if (typeof index === 'number') {
         existingStream.set('index', index)
+        hasChanged = true
+      }
+
+      if (typeof parentId === 'string' || parentId === null) {
+        existingStream.set('parentId', parentId)
+        hasChanged = true
+      }
+
+      if (hasChanged) {
         existingStream.set('updatedAt', Date.now())
       }
 
@@ -34,6 +46,7 @@ const upsertStream = (options: UpsertStreamOptions): string => {
     stream.set('id', streamId)
     stream.set('name', name)
     stream.set('index', index ?? 0)
+    stream.set('parentId', parentId)
     stream.set('createdAt', Date.now())
     stream.set('updatedAt', null)
     streamMap.set(streamId, stream)

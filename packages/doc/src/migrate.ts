@@ -20,11 +20,15 @@ const migrate = (options: MigrateOptions): void => {
       }
     }
 
-    // Make sure every stream has an index
     for (const stream of streamMap.values()) {
       const index = stream.get('index')
       if (typeof index !== 'number') {
         stream.set('index', 0)
+      }
+
+      const parentId = stream.get('parentId')
+      if (typeof parentId !== 'string' && parentId !== null) {
+        stream.set('parentId', null)
       }
     }
 

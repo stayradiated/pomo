@@ -30,15 +30,22 @@ const upsertPoint = (options: UpsertPointOptions): string => {
 
   return Y.transact<string>(doc as Y.Doc, () => {
     if (existingPoint) {
+      let hasChanged = false
+
       if (typeof value === 'string') {
         existingPoint.set('value', value)
+        hasChanged = true
       }
 
       if (Array.isArray(labelIdList)) {
         existingPoint.get('labelIdList')!.push(labelIdList)
+        hasChanged = true
       }
 
-      existingPoint.set('updatedAt', Date.now())
+      if (hasChanged) {
+        existingPoint.set('updatedAt', Date.now())
+      }
+
       return existingPoint.get('id')!
     }
 

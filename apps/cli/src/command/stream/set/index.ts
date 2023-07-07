@@ -5,6 +5,7 @@ import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const $KeyValue = z.discriminatedUnion('key', [
   z.object({ key: z.literal('index'), value: z.coerce.number() }),
+  z.object({ key: z.literal('parentId'), value: z.string() }),
 ])
 
 const setCmd = new CliCommand('set')
@@ -44,6 +45,20 @@ const setCmd = new CliCommand('set')
     switch (key) {
       case 'index': {
         const error = updateStream({ doc, streamId, index: value })
+        if (error) {
+          throw error
+        }
+
+        break
+      }
+
+      case 'parentId': {
+        const parentId = getStreamIdByRef({ doc, ref: value })
+        if (!parentId) {
+          throw new Error(`Stream "${value}" not found`)
+        }
+
+        const error = updateStream({ doc, streamId, parentId })
         if (error) {
           throw error
         }

@@ -13,6 +13,7 @@ const $Stream = z.object({
   index: z.number(),
   createdAt: z.number(),
   updatedAt: z.number().nullable(),
+  parentId: z.string().nullable(),
 })
 
 const $Point = z.object({

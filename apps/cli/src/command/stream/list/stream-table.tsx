@@ -1,7 +1,39 @@
 import React from 'react'
+import { Box, Text } from 'ink'
 import type { Stream } from '@stayradiated/pomo-doc'
-import { FlexTable } from '#src/components/flex-table.js'
-import type { Cell, Row, Column } from '#src/components/flex-table.js'
+import type { Tree } from '@stayradiated/pomo-core'
+import { getTree } from '@stayradiated/pomo-core'
+
+type StreamTreeProps = {
+  streamTree: Tree<Stream>
+}
+
+const StreamTree = (props: StreamTreeProps) => {
+  const { streamTree } = props
+
+  const rows = streamTree.map((streamLeaf) => {
+    const { node: stream, children } = streamLeaf
+    const { id, name, index } = stream
+    const ref = stream.id.slice(0, 7)
+
+    return (
+      <Box key={id} flexDirection="column">
+        <Box>
+          <Text color="magenta">{ref}</Text>
+          <Text color="green"> {index}</Text>
+          <Text> {name}</Text>
+        </Box>
+        {children && (
+          <Box marginLeft={4}>
+            <StreamTree streamTree={children} />
+          </Box>
+        )}
+      </Box>
+    )
+  })
+
+  return <Box flexDirection="column">{rows}</Box>
+}
 
 type StreamTableProps = {
   streamList: Stream[]
@@ -10,41 +42,9 @@ type StreamTableProps = {
 const StreamTable = (props: StreamTableProps) => {
   const { streamList } = props
 
-  const columns: Column[] = [
-    {
-      name: 'id',
-      color: 'magenta',
-      flexShrink: 0,
-    },
-    {
-      name: 'Name',
-    },
-    {
-      name: 'Index',
-      color: 'green',
-      flexShrink: 0,
-    },
-  ]
+  const streamTree = getTree(streamList)
 
-  const rows: Row[] = streamList.map((stream) => {
-    const cells: Cell[] = [
-      {
-        content: stream.id.slice(0, 7),
-        width: 7,
-      },
-      {
-        content: stream.name,
-        width: stream.name.length,
-      },
-      {
-        content: stream.index,
-        width: 5,
-      },
-    ]
-    return { cells }
-  })
-
-  return <FlexTable columns={columns} rows={rows} />
+  return <StreamTree streamTree={streamTree} />
 }
 
 export { StreamTable }
