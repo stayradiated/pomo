@@ -33,9 +33,20 @@ const migrate = (options: MigrateOptions): void => {
     }
 
     for (const label of labelMap.values()) {
+      const name = label.get('name')
+      const trimmedName = typeof name === 'string' ? name.trim() : ''
+      if (trimmedName !== name) {
+        label.set('name', trimmedName)
+      }
+
       const color = label.get('color')
       if (typeof color !== 'string' && color !== null) {
         label.set('color', null)
+      }
+
+      const icon = label.get('icon')
+      if (typeof icon !== 'string' && icon !== null) {
+        label.set('icon', null)
       }
 
       const parentId = label.get('parentId')

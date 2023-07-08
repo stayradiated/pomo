@@ -1,12 +1,6 @@
 import type { TypedMap, TypedDoc, TypedArray } from 'yjs-types'
 import type { z } from 'zod'
-import {
-  type $User,
-  type $Stream,
-  type $Point,
-  type $Label,
-  type $JsonDoc,
-} from './schema.js'
+import type { $User, $Stream, $Point, $Label, $JsonDoc } from './schema.js'
 
 export type User = z.infer<typeof $User>
 export type Stream = z.infer<typeof $Stream>

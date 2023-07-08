@@ -51,7 +51,7 @@
         />
         <label for={htmlId}>
           <div style="background-color: {label.color};" class="color-swatch" />
-          <a href="./label/{label.id}">{label.name}</a>
+          <a href="./label/{label.id}">{label.icon ? label.icon + ' ' : ''}{label.name}</a>
         </label>
       </li>
     {/each}

@@ -1,4 +1,4 @@
-type Line = {
+export type Line = {
   id: string
   streamId: string
   value: string
@@ -8,11 +8,7 @@ type Line = {
   durationMs: number
 }
 
-export type { Line }
-
-export {
-  type User,
-  type Stream,
-  type Label,
-  type Point,
-} from '@stayradiated/pomo-doc'
+export type Slice = {
+  startedAt: number
+  lineList: Line[]
+}

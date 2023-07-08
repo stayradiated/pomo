@@ -47,6 +47,9 @@ importers:
       date-fns-tz:
         specifier: 2.0.0
         version: 2.0.0(date-fns@2.30.0)
+      emoji-regex:
+        specifier: 10.2.1
+        version: 10.2.1
       external-editor:
         specifier: 3.1.0
         version: 3.1.0
@@ -2092,6 +2095,10 @@ packages:
   /electron-to-chromium@1.4.427:
     resolution: {integrity: sha512-HK3r9l+Jm8dYAm1ctXEWIC+hV60zfcjS9UA5BDlYvnI5S7PU/yytjpvSrTNrSSRRkuu3tDyZhdkwIczh+0DWaw==}
     dev: true
+
+  /emoji-regex@10.2.1:
+    resolution: {integrity: sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==}
+    dev: false
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Select from 'svelte-select'
-  import type { Stream, Point, Label } from '@stayradiated/pomo-core'
+  import type { Stream, Point, Label } from '@stayradiated/pomo-doc'
 
   export let streamIndex: number
   export let stream: Stream
@@ -23,14 +23,14 @@
     const label = labelRecord[id]
     return {
       value: { type: 'connect', id: label.id },
-      label: label.name,
+      label: (label.icon ? label.icon + ' ' : '') + label.name,
     }
   })
 
   let items = Object.values(labelRecord).map(
     (label): SelectLabelItem => ({
       value: { type: 'connect', id: label.id },
-      label: label.name,
+      label: (label.icon ? label.icon + ' ' : '') + label.name,
     }),
   )
 

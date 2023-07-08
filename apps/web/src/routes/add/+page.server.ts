@@ -14,7 +14,7 @@ import { getCurrentPoints } from '$lib/get-current-points'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'
 import { toDate, formatInTimeZone } from 'date-fns-tz'
-import type { Label } from '@stayradiated/pomo-core'
+import type { Label } from '@stayradiated/pomo-doc'
 
 // TODO: move to core
 type StreamLabelRecord = Record<string, Record<string, Label>>

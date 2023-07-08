@@ -2,7 +2,7 @@ import React from 'react'
 import { render, Box, Text } from 'ink'
 import type { Doc, Label } from '@stayradiated/pomo-doc'
 import {
-  getLabelList,
+  getLabelRecord,
   getPointList,
   getStreamRecord,
 } from '@stayradiated/pomo-doc'
@@ -17,9 +17,10 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
   const { doc, streamId: whereStreamId } = options
 
   const streamRecord = getStreamRecord({ doc })
-  const allLabelList = getLabelList({ doc })
+  const labelRecord = getLabelRecord({ doc })
   const allPointList = getPointList({ doc })
 
+  const allLabelList = Object.values(labelRecord)
   const labelList = whereStreamId
     ? allLabelList.filter((label) => label.streamId === whereStreamId)
     : allLabelList
@@ -70,6 +71,7 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
           key={streamId}
           labelList={streamLabelList}
           labelCountMap={labelCountMap}
+          allLabelRecord={labelRecord}
         />
       </>,
     )

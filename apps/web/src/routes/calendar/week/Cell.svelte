@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { Line, Label } from '@stayradiated/pomo-core'
+  import type { Line } from '@stayradiated/pomo-core'
+  import type { Label } from '@stayradiated/pomo-doc'
   import { getColorContrast } from '@stayradiated/pomo-core'
   import * as dateFns from 'date-fns'
 
@@ -17,7 +18,7 @@
     .filter(Boolean)
 
   $: labelNameList = labelList.map((label) => {
-    return label.name
+    return (label.icon ? label.icon + ' ' : '') + label.name
   })
 
   $: color = labelList[0]?.color

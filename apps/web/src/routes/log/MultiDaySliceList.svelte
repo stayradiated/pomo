@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { Stream, Slice, Label } from '@stayradiated/pomo-core'
+  import type { Slice } from '@stayradiated/pomo-core'
+  import type { Stream, Label } from '@stayradiated/pomo-doc'
   import { format } from 'date-fns'
   import { utcToZonedTime } from 'date-fns-tz'
 

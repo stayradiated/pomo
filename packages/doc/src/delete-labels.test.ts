@@ -63,6 +63,7 @@ describe('deleteLabels', () => {
         id: 'label3',
         streamId: 'stream2',
         name: '',
+        icon: null,
         color: null,
         parentId: null,
         createdAt: expect.any(Number),

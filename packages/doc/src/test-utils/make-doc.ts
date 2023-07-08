@@ -5,6 +5,7 @@ type MakeLabel = {
   id: string
   streamId: string
   name?: string
+  icon?: string | null
   color?: string | null
   parentId?: string | null
 }
@@ -42,6 +43,7 @@ const makeDoc = (options: MakeDocOptions) => {
       ...label,
       name: label.name ?? '',
       color: label.color ?? null,
+      icon: label.icon ?? null,
       parentId: label.parentId ?? null,
       createdAt,
       updatedAt,

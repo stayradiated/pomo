@@ -1,4 +1,4 @@
-import type { Point } from './types.js'
+import type { Point } from '@stayradiated/pomo-doc'
 
 // List must be pre-sorted by startedAt, but list may contain different streams
 const getNextPointInStream = <T extends Point>(

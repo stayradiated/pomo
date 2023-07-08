@@ -1,5 +1,4 @@
-import type { Point, Stream } from '@stayradiated/pomo-core'
-import type { Doc } from '@stayradiated/pomo-doc'
+import type { Doc, Point, Stream } from '@stayradiated/pomo-doc'
 import { retrieveCurrentPoint } from '@stayradiated/pomo-doc'
 
 type GetCurrentPointsOptions = {

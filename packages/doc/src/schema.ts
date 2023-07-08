@@ -30,6 +30,7 @@ const $Label = z.object({
   id: z.string(),
   streamId: z.string(),
   name: z.string(),
+  icon: z.string().nullable(),
   color: z.string().nullable(),
   parentId: z.string().nullable(),
   createdAt: z.number(),

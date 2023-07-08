@@ -7,12 +7,13 @@ type UpsertLabelOptions = {
   doc: Doc
   name: string
   streamId: string
+  icon?: string | null
   color?: string | null
   parentId?: string | null
 }
 
 const upsertLabel = (options: UpsertLabelOptions): string => {
-  const { doc, name, streamId, color, parentId } = options
+  const { doc, name, icon, streamId, color, parentId } = options
 
   const labelMap = doc.getMap('label')
 
@@ -26,8 +27,13 @@ const upsertLabel = (options: UpsertLabelOptions): string => {
     if (existingLabel) {
       let hasChanged = false
 
+      if (typeof icon === 'string' || icon === null) {
+        existingLabel.set('icon', icon)
+        hasChanged = true
+      }
+
       if (typeof color === 'string' || color === null) {
-        existingLabel.set('name', name)
+        existingLabel.set('color', color)
         hasChanged = true
       }
 
@@ -48,6 +54,7 @@ const upsertLabel = (options: UpsertLabelOptions): string => {
     label.set('id', labelId)
     label.set('streamId', streamId)
     label.set('name', name)
+    label.set('icon', icon ?? null)
     label.set('color', color ?? null)
     label.set('parentId', parentId ?? null)
     label.set('createdAt', Date.now())

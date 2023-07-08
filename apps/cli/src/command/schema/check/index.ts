@@ -3,7 +3,7 @@ import { validate } from '@stayradiated/pomo-doc'
 import { ZodError } from 'zod'
 import { getDoc } from '#src/lib/doc.js'
 
-const validateCmd = new CliCommand('validate')
+const checkCmd = new CliCommand('check')
   .withDescription('Validate schema of document')
   .withHandler(async () => {
     const doc = await getDoc()
@@ -26,4 +26,4 @@ const validateCmd = new CliCommand('validate')
     }
   })
 
-export { validateCmd }
+export { checkCmd }

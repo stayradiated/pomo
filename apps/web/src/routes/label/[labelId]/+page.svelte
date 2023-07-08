@@ -12,6 +12,8 @@
 <form method="POST">
   <input type="hidden" name="color" value={hex} />
 
+  <input type="text" name="icon" value={data.label.icon} />
+
   <input type="text" name="name" value={data.label.name} />
 
   <ColorPicker bind:hex isAlpha={false} canChangeMode={false} />

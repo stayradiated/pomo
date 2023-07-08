@@ -8,10 +8,12 @@ import type { Cell, Row, Column } from '#src/components/flex-table.js'
 type LabelTableProps = {
   labelList: Label[]
   labelCountMap: Map<string, number>
+
+  allLabelRecord: Record<string, Label>
 }
 
 const LabelTable = (props: LabelTableProps) => {
-  const { labelList, labelCountMap } = props
+  const { labelList, labelCountMap, allLabelRecord } = props
 
   const columns: Column[] = [
     {
@@ -23,12 +25,19 @@ const LabelTable = (props: LabelTableProps) => {
       name: 'Name',
     },
     {
+      name: 'Parent',
+      color: 'cyan',
+    },
+    {
       name: 'Color',
     },
     {
       name: 'Count',
       color: 'green',
       flexShrink: 0,
+    },
+    {
+      name: 'Icon',
     },
   ]
 
@@ -42,6 +51,10 @@ const LabelTable = (props: LabelTableProps) => {
         : '#000000'
       : undefined
 
+    const parentLabel = typeof label.parentId === 'string'
+     ? allLabelRecord[label.parentId]
+     : undefined
+
     const cells: Cell[] = [
       {
         content: label.id.slice(0, 7),
@@ -50,6 +63,10 @@ const LabelTable = (props: LabelTableProps) => {
       {
         content: label.name,
         width: label.name.length,
+      },
+      {
+        content: parentLabel?.name ?? '',
+        width: parentLabel?.name.length ?? 0,
       },
       {
         content: (
@@ -62,6 +79,10 @@ const LabelTable = (props: LabelTableProps) => {
       {
         content: count,
         width: 5,
+      },
+      {
+        content: label.icon,
+        width: 8,
       },
     ]
     return { cells }

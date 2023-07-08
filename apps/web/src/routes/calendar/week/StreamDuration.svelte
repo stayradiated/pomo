@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Stream } from '@stayradiated/pomo-core'
+  import type { Stream } from '@stayradiated/pomo-doc'
   import * as dateFns from 'date-fns'
 
   import { formatDuration } from './utils.js'

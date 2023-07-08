@@ -7,6 +7,7 @@ import {
 } from '@stayradiated/pomo-doc'
 import type { PageServerLoad, Actions } from './$types'
 import { zfd } from 'zod-form-data'
+import { z } from 'zod'
 
 const load = (async ({ params }) => {
   const { labelId } = params
@@ -30,6 +31,7 @@ const load = (async ({ params }) => {
 
 const $schema = zfd.formData({
   name: zfd.text(),
+  icon: zfd.text(z.string().optional()),
   color: zfd.text(),
 })
 
@@ -38,14 +40,20 @@ const actions = {
     const { labelId } = params
 
     const formData = $schema.parse(await request.formData())
-    const { name, color } = formData
+    const { name, icon, color } = formData
 
     const doc = await getDoc()
     if (doc instanceof Error) {
       throw error(500, doc.message)
     }
 
-    const result = updateLabel({ doc, labelId, name, color })
+    const result = updateLabel({
+      doc,
+      labelId,
+      name,
+      icon: icon || null,
+      color,
+    })
     if (result instanceof Error) {
       throw error(500, result.message)
     }

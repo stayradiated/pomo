@@ -41,6 +41,7 @@ describe('mergeLabels', () => {
         id: 'label-2',
         name: 'Label 2',
         streamId: 'stream-1',
+        icon: null,
         color: null,
         parentId: null,
         createdAt: expect.any(Number),

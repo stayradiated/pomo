@@ -1,12 +1,7 @@
-import type { Line } from './types.js'
-
-type Slice = {
-  startedAt: number
-  lineList: Line[]
-}
+import type { Line,Slice } from './types.js'
 
 // List must be pre-sorted by startedAt, but list may contain different streams
-const mapLineListToSliceList = (lineList: Line[]): Slice[] | Error => {
+const mapLineListToSliceList = (lineList: Line[]): Slice[] => {
   const sliceList: Slice[] = []
   let previousSlice: Slice | undefined
   for (const line of lineList) {
@@ -27,4 +22,3 @@ const mapLineListToSliceList = (lineList: Line[]): Slice[] | Error => {
 }
 
 export { mapLineListToSliceList }
-export type { Slice }

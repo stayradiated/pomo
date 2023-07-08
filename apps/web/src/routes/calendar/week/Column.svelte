@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { Line, Label } from '@stayradiated/pomo-core'
+  import type { Line } from '@stayradiated/pomo-core'
+  import type { Label } from '@stayradiated/pomo-doc'
   import Cell from './Cell.svelte'
 
   export let lineList: Line[]

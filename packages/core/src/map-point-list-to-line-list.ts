@@ -1,5 +1,6 @@
 import { errorListBoundarySync } from '@stayradiated/error-boundary'
-import type { Point, Line } from './types.js'
+import type { Line } from './types.js'
+import type { Point } from '@stayradiated/pomo-doc'
 import { getNextPointInStream } from './get-next-point-in-stream.js'
 import { mapPointsToLine } from './map-points-to-line.js'
 
