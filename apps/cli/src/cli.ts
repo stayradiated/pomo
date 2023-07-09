@@ -32,7 +32,7 @@ export const cli = new CliCommand('pomo')
     schemaCmd,
     togglCmd,
     gcalCmd,
-    migrateCmd
+    migrateCmd,
   )
   .withHandler(() => {
     editCmd.process(process.argv)

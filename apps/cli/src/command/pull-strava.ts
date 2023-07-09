@@ -10,7 +10,11 @@ const pullStravaCmd = new CliCommand('pull-strava')
       throw doc
     }
 
-    await pullStravaActivities({ doc })
+    const result = await pullStravaActivities({ doc })
+    if (result instanceof Error) {
+      throw result
+    }
+
     await saveDoc()
   })
 

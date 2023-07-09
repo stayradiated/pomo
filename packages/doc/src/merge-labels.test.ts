@@ -1,9 +1,11 @@
 import { describe, test, expect } from 'vitest'
+import { assertOk } from '@stayradiated/error-boundary'
 import { mergeLabels } from './merge-labels.js'
 import { makeDoc } from './test-utils/make-doc.js'
+import { transact } from './transact.js'
 
 describe('mergeLabels', () => {
-  test('should create a new user', async () => {
+  test('should merge two labels into one', async () => {
     const doc = makeDoc({
       label: [
         {
@@ -27,12 +29,16 @@ describe('mergeLabels', () => {
       ],
     })
 
-    mergeLabels({
-      doc,
-      streamId: 'stream-1',
-      srcLabelId: 'label-1',
-      destLabelId: 'label-2',
-    })
+    assertOk(
+      transact(doc, () =>
+        mergeLabels({
+          doc,
+          streamId: 'stream-1',
+          srcLabelId: 'label-1',
+          destLabelId: 'label-2',
+        }),
+      ),
+    )
 
     const labelMap = doc.getMap('label')
 

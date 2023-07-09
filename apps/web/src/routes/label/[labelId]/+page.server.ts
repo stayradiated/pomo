@@ -4,6 +4,7 @@ import {
   getLabelRecord,
   getStreamRecord,
   updateLabel,
+  transact,
 } from '@stayradiated/pomo-doc'
 import type { PageServerLoad, Actions } from './$types'
 import { zfd } from 'zod-form-data'
@@ -47,13 +48,15 @@ const actions = {
       throw error(500, doc.message)
     }
 
-    const result = updateLabel({
-      doc,
-      labelId,
-      name,
-      icon: icon || null,
-      color,
-    })
+    const result = transact(doc, () =>
+      updateLabel({
+        doc,
+        labelId,
+        name,
+        icon: icon || null,
+        color,
+      }),
+    )
     if (result instanceof Error) {
       throw error(500, result.message)
     }

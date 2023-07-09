@@ -1,16 +1,21 @@
 import { describe, test, expect } from 'vitest'
+import { assertOk } from '@stayradiated/error-boundary'
 import { upsertStream } from './upsert-stream.js'
 import { createDoc } from './create-doc.js'
 import { makeDoc } from './test-utils/make-doc.js'
+import { transact } from './transact.js'
 
 describe('upsertStream', () => {
   test('insert new stream', () => {
     const doc = createDoc()
 
-    const streamId = upsertStream({
-      doc,
-      name: 'test',
-    })
+    const streamId = transact(doc, () =>
+      upsertStream({
+        doc,
+        name: 'test',
+      }),
+    )
+    assertOk(streamId)
 
     const streamMap = doc.getMap('stream')
 
@@ -36,7 +41,8 @@ describe('upsertStream', () => {
       ],
     })
 
-    const streamId = upsertStream({ doc, name: 'world' })
+    const streamId = transact(doc, () => upsertStream({ doc, name: 'world' }))
+    assertOk(streamId)
 
     const streamMap = doc.getMap('stream')
 
@@ -63,8 +69,11 @@ describe('upsertStream', () => {
   test('do not insert same stream name twice', () => {
     const doc = createDoc()
 
-    const streamIdA = upsertStream({ doc, name: 'test' })
-    const streamIdB = upsertStream({ doc, name: 'test' })
+    const [streamIdA, streamIdB] = transact(doc, () => [
+      upsertStream({ doc, name: 'test' }),
+      upsertStream({ doc, name: 'test' }),
+    ])
+    assertOk(streamIdA)
 
     expect(streamIdA).toBe(streamIdB)
 

@@ -1,11 +1,10 @@
 import { describe, test, expect } from 'vitest'
 import { getUserTimeZone } from './get-user-time-zone.js'
-import { setUserTimeZone } from './set-user-time-zone.js'
-import { createDoc } from './create-doc.js'
+import { makeDoc } from './test-utils/make-doc.js'
 
 describe('getUserTimeZone', () => {
   test('should default to UTC', async () => {
-    const doc = createDoc()
+    const doc = makeDoc({})
 
     const timeZone = getUserTimeZone({ doc })
 
@@ -13,8 +12,12 @@ describe('getUserTimeZone', () => {
   })
 
   test('should return the user time zone', async () => {
-    const doc = createDoc()
-    setUserTimeZone({ doc, timeZone: 'America/New_York' })
+    const doc = makeDoc({
+      user: {
+        id: 'user1',
+        timeZone: 'America/New_York',
+      },
+    })
 
     const timeZone = getUserTimeZone({ doc })
 

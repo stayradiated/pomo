@@ -45,7 +45,7 @@ const parse = (input: string): ParsedItem[] => {
           }
 
           if (currentItem) {
-            const content = source(node, input) ?? ''
+            const content = source(input, node) ?? ''
             currentItem.text = currentItem.text
               ? `${currentItem.text}\n\n${content}`
               : content

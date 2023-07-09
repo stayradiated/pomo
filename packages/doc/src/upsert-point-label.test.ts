@@ -1,6 +1,8 @@
 import { test, describe, expect } from 'vitest'
+import { assertOk } from '@stayradiated/error-boundary'
 import { createDocWithData } from './create-doc-with-data.js'
 import { upsertPointLabel } from './upsert-point-label.js'
+import { transact } from './transact.js'
 
 describe('upsertPointLabel', () => {
   test('insert a new label on a point', () => {
@@ -30,11 +32,15 @@ describe('upsertPointLabel', () => {
       },
     })
 
-    upsertPointLabel({
-      doc,
-      pointId: 'point-1',
-      labelId: 'label-1',
-    })
+    assertOk(
+      transact(doc, () =>
+        upsertPointLabel({
+          doc,
+          pointId: 'point-1',
+          labelId: 'label-1',
+        }),
+      ),
+    )
 
     const pointMap = doc.getMap('point')
 
@@ -78,11 +84,15 @@ describe('upsertPointLabel', () => {
       },
     })
 
-    upsertPointLabel({
-      doc,
-      pointId: 'point-1',
-      labelId: 'label-1',
-    })
+    assertOk(
+      transact(doc, () =>
+        upsertPointLabel({
+          doc,
+          pointId: 'point-1',
+          labelId: 'label-1',
+        }),
+      ),
+    )
 
     const pointMap = doc.getMap('point')
 

@@ -1,5 +1,5 @@
 import { CliCommand } from 'cilly'
-import { upsertStream } from '@stayradiated/pomo-doc'
+import { upsertStream, transact } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const addCmd = new CliCommand('add')
@@ -16,7 +16,10 @@ const addCmd = new CliCommand('add')
       throw doc
     }
 
-    const streamId = upsertStream({ doc, name })
+    const streamId = transact(doc, () => upsertStream({ doc, name }))
+    if (streamId instanceof Error) {
+      throw streamId
+    }
 
     console.log(`Stream "${name}" added with id "${streamId}"`)
 

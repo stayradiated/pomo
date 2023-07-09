@@ -1,7 +1,7 @@
 import type { Doc } from '@stayradiated/pomo-doc'
 import {
   getLabelRecord,
-  getStreamIdByName,
+  getStreamByName,
   getUserTimeZone,
   retrievePointList,
 } from '@stayradiated/pomo-doc'
@@ -34,9 +34,26 @@ const exportTimeEntries = (
     .endOfDay(dateFnsTz.toDate('2023-06-30', { timeZone }))
     .getTime()
 
-  const locationStreamId = getStreamIdByName({ doc, name: 'location' })!
-  const projectStreamId = getStreamIdByName({ doc, name: 'project' })!
-  const taskStreamId = getStreamIdByName({ doc, name: 'task' })!
+  const locationStream = getStreamByName({ doc, name: 'location' })
+  if (locationStream instanceof Error) {
+    return locationStream
+  }
+
+  const locationStreamId = locationStream.id
+
+  const projectStream = getStreamByName({ doc, name: 'project' })
+  if (projectStream instanceof Error) {
+    return projectStream
+  }
+
+  const projectStreamId = projectStream.id
+
+  const taskStream = getStreamByName({ doc, name: 'task' })
+  if (taskStream instanceof Error) {
+    return taskStream
+  }
+
+  const taskStreamId = taskStream.id
 
   const pointList = retrievePointList({
     doc,

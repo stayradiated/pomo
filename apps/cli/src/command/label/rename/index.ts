@@ -1,8 +1,8 @@
 import { CliCommand } from 'cilly'
 import {
-  getLabelById,
-  getLabelIdByRef,
-  getLabelIdByName,
+  getStreamByName,
+  getLabelByName,
+  NotFoundError,
 } from '@stayradiated/pomo-doc'
 import { renameLabel } from './rename-label.js'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
@@ -11,8 +11,13 @@ const renameCmd = new CliCommand('rename')
   .withDescription('Rename a label')
   .withArguments(
     {
-      name: 'ref',
-      description: 'The label ref to rename',
+      name: 'stream',
+      description: 'The name of the stream',
+      required: true,
+    },
+    {
+      name: 'label',
+      description: 'The curren tname of label',
       required: true,
     },
     {
@@ -22,33 +27,33 @@ const renameCmd = new CliCommand('rename')
     },
   )
   .withHandler(async (args) => {
-    const { ref, name } = args
+    const { label: labelName, name, stream: streamName } = args
 
     const doc = await getDoc()
     if (doc instanceof Error) {
       throw doc
     }
 
-    const labelId = getLabelIdByRef({ doc, ref })
-    if (!labelId) {
-      throw new Error(`Label not found: ${ref}`)
+    const stream = getStreamByName({ doc, name: streamName })
+    if (stream instanceof Error) {
+      throw stream
     }
 
-    const label = getLabelById({ doc, labelId })
-    if (!label) {
-      throw new Error(`Label not found: ${labelId}`)
+    const label = getLabelByName({ doc, streamId: stream.id, name: labelName })
+    if (label instanceof Error) {
+      throw label
     }
 
-    const existingLabelWithName = getLabelIdByName({
+    const existingLabelWithName = getLabelByName({
       doc,
       name,
       streamId: label.streamId,
     })
-    if (existingLabelWithName) {
-      throw new Error(`Label already exists with name: ${name}`)
+    if (!(existingLabelWithName instanceof NotFoundError)) {
+      throw new TypeError(`Label already exists with name: ${name}`)
     }
 
-    const result = renameLabel({ doc, labelId, name })
+    const result = renameLabel({ doc, labelId: label.id, name })
     if (result instanceof Error) {
       throw result
     }

@@ -11,29 +11,31 @@ type UpdatePointOptions = {
 const updatePoint = (options: UpdatePointOptions): void | Error => {
   const { doc, pointId, value, labelIdList } = options
 
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
+
   if (typeof value !== 'string' && !labelIdList) {
     return new Error('Either value or labelIdList must be provided')
   }
 
   const pointMap = doc.getMap('point')
 
-  return Y.transact(doc as Y.Doc, (): void | Error => {
-    const point = pointMap.get(pointId)
+  const point = pointMap.get(pointId)
 
-    if (!point) {
-      return new Error(`Point ${pointId} not found`)
-    }
+  if (!point) {
+    return new Error(`Point ${pointId} not found`)
+  }
 
-    if (labelIdList) {
-      point.set('labelIdList', Y.Array.from(labelIdList))
-    }
+  if (labelIdList) {
+    point.set('labelIdList', Y.Array.from(labelIdList))
+  }
 
-    if (typeof value === 'string') {
-      point.set('value', value)
-    }
+  if (typeof value === 'string') {
+    point.set('value', value)
+  }
 
-    point.set('updatedAt', Date.now())
-  })
+  point.set('updatedAt', Date.now())
 }
 
 export { updatePoint }

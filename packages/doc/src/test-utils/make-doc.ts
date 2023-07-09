@@ -1,6 +1,11 @@
 import { createDocWithData } from '../create-doc-with-data.js'
 import type { Label, Point, Stream } from '../types.js'
 
+type MakeUser = {
+  id: string
+  timeZone: string
+}
+
 type MakeLabel = {
   id: string
   streamId: string
@@ -26,17 +31,29 @@ type MakeStream = {
 }
 
 type MakeDocOptions = {
+  user?: MakeUser
   label?: MakeLabel[]
   point?: MakePoint[]
   stream?: MakeStream[]
 }
 
 const makeDoc = (options: MakeDocOptions) => {
-  const { label = [], point = [], stream = [] } = options
+  const { user, label = [], point = [], stream = [] } = options
 
   const now = Date.now()
   const createdAt = now
   const updatedAt = null
+
+  const userRecord = user
+    ? {
+        [user.id]: {
+          id: user.id,
+          timeZone: user.timeZone ?? 'UTC',
+          createdAt,
+          updatedAt,
+        },
+      }
+    : {}
 
   const labelRecord = label.reduce<Record<string, Label>>((acc, label) => {
     acc[label.id] = {
@@ -76,6 +93,7 @@ const makeDoc = (options: MakeDocOptions) => {
   }, {})
 
   return createDocWithData({
+    user: userRecord,
     label: labelRecord,
     point: pointRecord,
     stream: streamRecord,

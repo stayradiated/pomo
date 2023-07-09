@@ -30,6 +30,7 @@ const LabelTable = (props: LabelTableProps) => {
     },
     {
       name: 'Color',
+      flexShrink: 0,
     },
     {
       name: 'Count',
@@ -51,9 +52,10 @@ const LabelTable = (props: LabelTableProps) => {
         : '#000000'
       : undefined
 
-    const parentLabel = typeof label.parentId === 'string'
-     ? allLabelRecord[label.parentId]
-     : undefined
+    const parentLabel =
+      typeof label.parentId === 'string'
+        ? allLabelRecord[label.parentId]
+        : undefined
 
     const cells: Cell[] = [
       {

@@ -3,6 +3,7 @@ import { getDoc } from '$lib/doc.js'
 import {
   mapPointListToLineList,
   mapLineListToSliceList,
+  startOfDayWithTimeZone,
 } from '@stayradiated/pomo-core'
 import {
   getLabelRecord,
@@ -12,6 +13,7 @@ import {
 } from '@stayradiated/pomo-doc'
 import type { PageServerLoad } from './$types'
 import type { Slice } from '@stayradiated/pomo-core'
+import * as dateFns from 'date-fns'
 
 type FilterSlicesByValueOptions = {
   sliceList: Slice[]
@@ -64,7 +66,10 @@ const load = (async ({ url }) => {
 
   const pointList = retrievePointList({
     doc,
-    startDate: new Date('2023-06-17').getTime(),
+    startDate: startOfDayWithTimeZone({
+      instant: dateFns.subDays(Date.now(), 7).getTime(),
+      timeZone,
+    }).getTime(),
     endDate: Date.now(),
     where: {},
   })

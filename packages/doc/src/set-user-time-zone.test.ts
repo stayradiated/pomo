@@ -1,13 +1,18 @@
 import { describe, test, expect } from 'vitest'
+import { assertOk } from '@stayradiated/error-boundary'
 import { head } from './utils/head.js'
 import { setUserTimeZone } from './set-user-time-zone.js'
 import { createDoc } from './create-doc.js'
 import { createDocWithData } from './create-doc-with-data.js'
+import { transact } from './transact.js'
 
 describe('setUserTimeZone', () => {
   test('should create a new user', async () => {
     const doc = createDoc()
-    setUserTimeZone({ doc, timeZone: 'Europe/Paris' })
+
+    assertOk(
+      transact(doc, () => setUserTimeZone({ doc, timeZone: 'Europe/Paris' })),
+    )
 
     const rootUserMap = doc.getMap('user')
 
@@ -36,7 +41,11 @@ describe('setUserTimeZone', () => {
       point: {},
     })
 
-    setUserTimeZone({ doc, timeZone: 'America/New_York' })
+    assertOk(
+      transact(doc, () =>
+        setUserTimeZone({ doc, timeZone: 'America/New_York' }),
+      ),
+    )
 
     const rootUserMap = doc.getMap('user').toJSON()
 

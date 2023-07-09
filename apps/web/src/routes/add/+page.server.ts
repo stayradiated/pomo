@@ -5,6 +5,7 @@ import {
   getStreamList,
   upsertPoint,
   updatePoint,
+  transact,
   getUserTimeZone,
   upsertLabel,
 } from '@stayradiated/pomo-doc'
@@ -116,15 +117,23 @@ const actions = {
             return labelInput.id
           }
           case 'create': {
-            const labelId = upsertLabel({
-              doc,
-              name: labelInput.name,
-              streamId,
-            })
+            const labelId = transact(doc, () =>
+              upsertLabel({
+                doc,
+                name: labelInput.name,
+                streamId,
+              }),
+            )
+            if (labelId instanceof Error) {
+              throw error(500, labelId.message)
+            }
             return labelId
           }
           default: {
-            throw new Error(`Unknown label type: ${JSON.stringify(labelInput)}`)
+            throw error(
+              400,
+              `Unknown label type: ${JSON.stringify(labelInput)}`,
+            )
           }
         }
       })
@@ -136,21 +145,24 @@ const actions = {
         JSON.stringify(labelIdList)
 
       if (hasDifferentValue || hasDifferentLabel) {
-        if (currentPoint?.startedAt === startedAt) {
-          updatePoint({
-            doc,
-            pointId: currentPoint.id,
-            value,
-            labelIdList,
-          })
-        } else {
-          upsertPoint({
-            doc,
-            streamId,
-            value,
-            labelIdList,
-            startedAt,
-          })
+        const result = transact(doc, () => {
+          return currentPoint?.startedAt === startedAt
+            ? updatePoint({
+                doc,
+                pointId: currentPoint.id,
+                value,
+                labelIdList,
+              })
+            : upsertPoint({
+                doc,
+                streamId,
+                value,
+                labelIdList,
+                startedAt,
+              })
+        })
+        if (result instanceof Error) {
+          throw error(500, result.message)
         }
       }
     }

@@ -1,8 +1,9 @@
 import { CliCommand } from 'cilly'
 import {
-  getLabelIdByRef,
-  getLabelById,
+  getStreamByName,
+  getLabelByName,
   mergeLabels,
+  transact,
 } from '@stayradiated/pomo-doc'
 import { confirmDialog } from './confirm-dialog.js'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
@@ -11,46 +12,50 @@ const mergeCmd = new CliCommand('merge')
   .withDescription('Merge two labels')
   .withArguments(
     {
+      name: 'stream',
+      description: 'The stream name',
+      required: true,
+    },
+    {
       name: 'src',
-      description: 'The label ref to merge from',
+      description: 'The label name to merge from',
       required: true,
     },
     {
       name: 'dest',
-      description: 'The label ref to merge into',
+      description: 'The label name to merge into',
       required: true,
     },
   )
   .withHandler(async (args) => {
-    const { src: srcRef, dest: destRef } = args
+    const { stream: streamName, src: srcName, dest: destName } = args
 
     const doc = await getDoc()
     if (doc instanceof Error) {
       throw doc
     }
 
-    if (srcRef === destRef) {
+    if (srcName === destName) {
       throw new Error('src and dest must be different')
     }
 
-    const srcLabelId = getLabelIdByRef({ doc, ref: srcRef })
-    if (!srcLabelId) {
-      throw new Error(`Label not found: ${srcRef}`)
+    const stream = getStreamByName({ doc, name: streamName })
+    if (stream instanceof Error) {
+      throw stream
     }
 
-    const srcLabel = getLabelById({ doc, labelId: srcLabelId })
-    if (!srcLabel) {
-      throw new Error(`Label not found: ${srcLabelId}`)
+    const srcLabel = getLabelByName({ doc, streamId: stream.id, name: srcName })
+    if (srcLabel instanceof Error) {
+      throw srcLabel
     }
 
-    const destLabelId = getLabelIdByRef({ doc, ref: destRef })
-    if (!destLabelId) {
-      throw new Error(`Label not found: ${destRef}`)
-    }
-
-    const destLabel = getLabelById({ doc, labelId: destLabelId })
-    if (!destLabel) {
-      throw new Error(`Label not found: ${destLabelId}`)
+    const destLabel = getLabelByName({
+      doc,
+      streamId: stream.id,
+      name: destName,
+    })
+    if (destLabel instanceof Error) {
+      throw destLabel
     }
 
     if (srcLabel.streamId !== destLabel.streamId) {
@@ -65,12 +70,14 @@ const mergeCmd = new CliCommand('merge')
       return
     }
 
-    const result = mergeLabels({
-      doc,
-      streamId: srcLabel.streamId,
-      srcLabelId,
-      destLabelId,
-    })
+    const result = transact(doc, () =>
+      mergeLabels({
+        doc,
+        streamId: srcLabel.streamId,
+        srcLabelId: srcLabel.id,
+        destLabelId: destLabel.id,
+      }),
+    )
     if (result instanceof Error) {
       throw result
     }

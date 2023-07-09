@@ -1,4 +1,3 @@
-import * as Y from 'yjs'
 import { listOrError } from '@stayradiated/error-boundary'
 import type { Doc } from './types.js'
 
@@ -8,8 +7,14 @@ type UpdatePointStartedAtOptions = {
   startedAt: number
 }
 
-const updatePointStartedAt = (options: UpdatePointStartedAtOptions): void => {
+const updatePointStartedAt = (
+  options: UpdatePointStartedAtOptions,
+): void | Error => {
   const { doc, pointIdList, startedAt } = options
+
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
 
   const pointMap = doc.getMap('point')
 
@@ -25,16 +30,14 @@ const updatePointStartedAt = (options: UpdatePointStartedAtOptions): void => {
   )
 
   if (pointList instanceof Error) {
-    throw pointList
+    return pointList
   }
 
-  Y.transact(doc as Y.Doc, () => {
-    const now = Date.now()
-    for (const point of pointList) {
-      point.set('startedAt', startedAt)
-      point.set('updatedAt', now)
-    }
-  })
+  const now = Date.now()
+  for (const point of pointList) {
+    point.set('startedAt', startedAt)
+    point.set('updatedAt', now)
+  }
 }
 
 export { updatePointStartedAt }

@@ -8,10 +8,10 @@ import {
   clampLineList,
 } from '@stayradiated/pomo-core'
 import {
-  getLabelIdByName,
-  getLabelNameById,
-  getStreamIdByName,
-  getStreamNameById,
+  getLabelByName,
+  getLabelById,
+  getStreamByName,
+  getStreamById,
   retrievePointList,
   getUserTimeZone,
 } from '@stayradiated/pomo-doc'
@@ -77,10 +77,17 @@ const handler = (options: HandlerOptions): void | Error => {
 
   for (const entry of streamDurationMap.entries()) {
     const [streamId, labelDurationMap] = entry
-    const name = getStreamNameById({ doc, streamId })
+
+    const stream = getStreamById({ doc, streamId })
+    if (stream instanceof Error) {
+      return stream
+    }
 
     for (const [labelId, durationMs] of labelDurationMap.entries()) {
-      const labelName = getLabelNameById({ doc, labelId })
+      const label = getLabelById({ doc, labelId })
+      if (label instanceof Error) {
+        return label
+      }
 
       const duration = dateFns.formatDuration(
         dateFns.intervalToDuration({ start: 0, end: durationMs }),
@@ -92,8 +99,8 @@ const handler = (options: HandlerOptions): void | Error => {
 
       console.log(
         JSON.stringify({
-          stream: name,
-          label: labelName,
+          stream: stream.name,
+          label: label.name,
           duration,
         }),
       )
@@ -168,21 +175,34 @@ const summaryCmd = new CliCommand('summary')
       Date.now(),
     )
 
-    const whereStreamId = options['stream']
-      ? getStreamIdByName({ doc, name: options['stream'] })
-      : undefined
-    if (options['stream'] && !whereStreamId) {
-      throw new Error(`Stream not found: ${options['stream']}`)
+    let whereStreamId: string | undefined
+    if (options['stream']) {
+      const stream = getStreamByName({ doc, name: options['stream'] })
+      if (stream instanceof Error) {
+        throw stream
+      }
+
+      whereStreamId = stream.id
     }
 
-    const whereLabelId =
-      options['label'] && whereStreamId
-        ? getLabelIdByName({
-            doc,
-            name: options['label'],
-            streamId: whereStreamId,
-          })
-        : undefined
+    let whereLabelId: string | undefined
+    if (options['label']) {
+      if (!whereStreamId) {
+        throw new Error('Cannot filter by label without a stream')
+      }
+
+      const label = getLabelByName({
+        doc,
+        name: options['label'],
+        streamId: whereStreamId,
+      })
+      if (label instanceof Error) {
+        throw label
+      }
+
+      whereLabelId = label.id
+    }
+
     if (options['label'] && !whereLabelId) {
       throw new Error(`Label not found: ${options['label']}`)
     }

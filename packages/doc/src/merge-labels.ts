@@ -1,4 +1,3 @@
-import * as Y from 'yjs'
 import type { Doc } from './types.js'
 
 type MergeLabelsOptions = {
@@ -10,6 +9,10 @@ type MergeLabelsOptions = {
 
 const mergeLabels = (options: MergeLabelsOptions): void | Error => {
   const { doc, streamId, srcLabelId, destLabelId } = options
+
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
 
   if (srcLabelId === destLabelId) {
     return new Error('srcLabelId and destLabelId must be different')
@@ -40,27 +43,25 @@ const mergeLabels = (options: MergeLabelsOptions): void | Error => {
     )
   }
 
-  Y.transact(doc as Y.Doc, () => {
-    for (const point of pointMap.values()) {
-      if (point.get('streamId') !== streamId) {
-        continue
-      }
-
-      const labelIdList = point.get('labelIdList')
-      if (!labelIdList) {
-        continue
-      }
-
-      const index = labelIdList.toArray().indexOf(srcLabelId)
-      if (index >= 0) {
-        labelIdList.delete(index)
-        labelIdList.push([destLabelId])
-        point.set('updatedAt', Date.now())
-      }
+  for (const point of pointMap.values()) {
+    if (point.get('streamId') !== streamId) {
+      continue
     }
 
-    labelMap.delete(srcLabelId)
-  })
+    const labelIdList = point.get('labelIdList')
+    if (!labelIdList) {
+      continue
+    }
+
+    const index = labelIdList.toArray().indexOf(srcLabelId)
+    if (index >= 0) {
+      labelIdList.delete(index)
+      labelIdList.push([destLabelId])
+      point.set('updatedAt', Date.now())
+    }
+  }
+
+  labelMap.delete(srcLabelId)
 }
 
 export { mergeLabels }

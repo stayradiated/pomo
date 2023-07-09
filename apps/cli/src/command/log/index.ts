@@ -2,7 +2,7 @@ import * as chrono from 'chrono-node'
 import * as dateFns from 'date-fns'
 import { startOfDayWithTimeZone } from '@stayradiated/pomo-core'
 import { CliCommand } from 'cilly'
-import { getUserTimeZone, getStreamIdByName } from '@stayradiated/pomo-doc'
+import { getUserTimeZone, getStreamByName } from '@stayradiated/pomo-doc'
 import { renderLog } from './log.js'
 import { getDoc } from '#src/lib/doc.js'
 
@@ -61,12 +61,14 @@ const logCmd = new CliCommand('log')
 
     const endDate = dateFns.addDays(startDate, options['span']).getTime()
 
-    const whereStreamId = options['stream']
-      ? getStreamIdByName({ doc, name: options['stream'] })
-      : undefined
+    let whereStreamId: string | undefined
+    if (options['stream']) {
+      const stream = getStreamByName({ doc, name: options['stream'] })
+      if (stream instanceof Error) {
+        throw stream
+      }
 
-    if (options['stream'] && whereStreamId === undefined) {
-      throw new Error(`Stream not found: ${options['stream']}`)
+      whereStreamId = stream.id
     }
 
     const result = renderLog({

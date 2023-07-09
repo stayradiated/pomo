@@ -3,9 +3,9 @@ import * as dateFns from 'date-fns'
 import { mapPointListToLineList } from '@stayradiated/pomo-core'
 import {
   retrievePointList,
-  getStreamIdByName,
-  getStreamNameById,
-  getLabelNameById,
+  getStreamByName,
+  getStreamById,
+  getLabelById,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
 import { getDoc } from '#src/lib/doc.js'
@@ -34,10 +34,12 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
   }
 
   for (const line of lineList) {
-    const streamName = getStreamNameById({ doc, streamId: line.streamId })
-    if (streamName === undefined) {
-      return new Error(`Stream not found: ${line.streamId}`)
+    const stream = getStreamById({ doc, streamId: line.streamId })
+    if (stream instanceof Error) {
+      return stream
     }
+
+    const streamName = stream.name
 
     const elapsed = dateFns.intervalToDuration({
       start: line.startedAt,
@@ -47,9 +49,14 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     console.log(
       JSON.stringify({
         stream: streamName,
-        labels: line.labelIdList.map((labelId) =>
-          getLabelNameById({ doc, labelId }),
-        ),
+        labels: line.labelIdList.map((labelId) => {
+          const label = getLabelById({ doc, labelId })
+          if (label instanceof Error) {
+            return label
+          }
+
+          return label.name
+        }),
         elapsed:
           dateFns.formatDuration(elapsed, {
             format:
@@ -75,12 +82,14 @@ const statusCmd = new CliCommand('status')
       throw doc
     }
 
-    const whereStreamId = options['stream']
-      ? getStreamIdByName({ doc, name: options['stream'] })
-      : undefined
+    let whereStreamId: string | undefined
+    if (options['stream']) {
+      const stream = getStreamByName({ doc, name: options['stream'] })
+      if (stream instanceof Error) {
+        throw stream
+      }
 
-    if (options['stream'] && !whereStreamId) {
-      throw new Error(`Could not find stream with id ${options['stream']}`)
+      whereStreamId = stream.id
     }
 
     return handler({

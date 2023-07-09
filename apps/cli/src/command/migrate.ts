@@ -1,7 +1,15 @@
 import { CliCommand } from 'cilly'
-import { getDoc, saveDoc} from '#src/lib/doc.js'
-import { getLabelList, updateLabel } from '@stayradiated/pomo-doc'
-import getEmojiRegex from 'emoji-regex'
+// Import { saveDoc} from '#src/lib/doc.js'
+import {
+  getPointList,
+  getLabelRecord,
+  getStreamRecord,
+} from '@stayradiated/pomo-doc'
+import {
+  mapPointListToLineList,
+  mapLineListToVerboseSliceList,
+} from '@stayradiated/pomo-core'
+import { getDoc } from '#src/lib/doc.js'
 
 const migrateCmd = new CliCommand('migrate')
   .withDescription('Migrate schema of document')
@@ -11,38 +19,32 @@ const migrateCmd = new CliCommand('migrate')
       throw doc
     }
 
-    // const pointList = getPointList({ doc })
-    // const lineList = mapPointListToLineList(pointList)
-    // if (lineList instanceof Error) {
-    //   throw lineList
-    // }
-    //
-    // const sliceList = mapLineListToSliceList(lineList)
-    //
-    // console.log(JSON.stringify(sliceList, null, 2))
-    //
-    //
-    //
-    const labelList = getLabelList({ doc })
+    const labelRecord = getLabelRecord({ doc })
+    const streamRecord = getStreamRecord({ doc })
 
-    for (const label of labelList) {
-      const { name, icon } = label
-
-      if (icon !== null) {
-        continue
-      }
-
-      const emojiRegex = getEmojiRegex()
-      const match = emojiRegex.exec(name)
-      if (match) {
-        const emoji = match[0]
-        const index = match.index
-        const nameWithoutEmoji = name.slice(0, index) + name.slice(index + emoji.length)
-        updateLabel({ doc, labelId: label.id, name: nameWithoutEmoji, icon: emoji })
-      }
+    const pointList = getPointList({ doc })
+    const lineList = mapPointListToLineList(pointList)
+    if (lineList instanceof Error) {
+      throw lineList
     }
 
-    await saveDoc()
+    const sliceList = mapLineListToVerboseSliceList(lineList)
+
+    for (const slice of sliceList) {
+      const { lineList } = slice
+
+      lineList.map((line) => {
+        const streamName = streamRecord[line.streamId]?.name ?? ''
+        const labelNames = JSON.stringify(
+          line.labelIdList.map((labelId) => labelRecord[labelId]?.name ?? ''),
+        )
+        console.log(`${streamName} ${labelNames}`)
+      })
+
+      console.log('\n---\n')
+    }
+
+    // Await saveDoc()
   })
 
 export { migrateCmd }

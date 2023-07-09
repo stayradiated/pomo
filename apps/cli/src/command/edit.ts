@@ -12,16 +12,18 @@ import { stripComments } from '@stayradiated/pomo-core'
 import { formatInTimeZone } from 'date-fns-tz'
 import {
   getUserTimeZone,
-  getPointStartedAtByRef,
+  getPointByRef,
   getStreamList,
-  getLabelNameById,
+  getLabelById,
   retrieveCurrentPoint,
   updatePoint,
   upsertPoint,
   upsertStream,
   upsertLabel,
+  transact,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
+import { listOrError } from '@stayradiated/error-boundary'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const getCurrentText = (
@@ -47,7 +49,12 @@ const getCurrentText = (
 
     if (currentPoint) {
       const labelNames = currentPoint.labelIdList.map((labelId) => {
-        return getLabelNameById({ doc, labelId })
+        const label = getLabelById({ doc, labelId })
+        if (label instanceof Error) {
+          throw label
+        }
+
+        return label.name
       })
       if (labelNames.length > 0) {
         output += `> ${labelNames.join(', ')}\n\n`
@@ -112,11 +119,22 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
 
   for (const item of userInput) {
     const streamName = item.heading
-    const streamId = upsertStream({ doc, name: streamName })
-
-    const labelIdList = item.labels.map((label) =>
-      upsertLabel({ doc, streamId, name: label }),
+    const streamId = transact(doc, () =>
+      upsertStream({ doc, name: streamName }),
     )
+    if (streamId instanceof Error) {
+      return streamId
+    }
+
+    const labelIdList = transact(doc, () =>
+      listOrError(
+        item.labels.map((label) => upsertLabel({ doc, streamId, name: label })),
+      ),
+    )
+    if (labelIdList instanceof Error) {
+      return labelIdList
+    }
+
     const value = item.text
 
     const currentPoint = retrieveCurrentPoint({
@@ -141,7 +159,7 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
         )}`,
       )
 
-      const result =
+      const result = transact(doc, () =>
         currentPoint?.startedAt === currentTime
           ? updatePoint({ doc, pointId: currentPoint.id, value, labelIdList })
           : upsertPoint({
@@ -150,8 +168,8 @@ const handler = async (options: EditOptions): Promise<void | Error> => {
               value,
               labelIdList,
               startedAt: currentTime,
-            })
-
+            }),
+      )
       if (result instanceof Error) {
         return result
       }
@@ -204,18 +222,23 @@ const editCmd = new CliCommand('edit')
 
     const timeZone = getUserTimeZone({ doc })
 
-    const currentTime = options['ref']
-      ? getPointStartedAtByRef({ doc, ref: options['ref'] })
-      : options['at']
-      ? chrono
-          .parseDate(options['at'], {
-            instant: new Date(),
-            timezone: timeZone,
-          })
-          .getTime()
-      : Date.now()
-    if (currentTime === undefined) {
-      throw new TypeError('Could not figure out current time')
+    let currentTime: number
+    if (options['ref']) {
+      const point = getPointByRef({ doc, ref: options['ref'] })
+      if (point instanceof Error) {
+        throw point
+      }
+
+      currentTime = point.startedAt
+    } else if (options['at']) {
+      currentTime = chrono
+        .parseDate(options['at'], {
+          instant: new Date(),
+          timezone: timeZone,
+        })
+        .getTime()
+    } else {
+      currentTime = Date.now()
     }
 
     const result = await handler({ doc, currentTime, timeZone })

@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
 import { makeDoc } from './test-utils/make-doc.js'
 import { deleteLabels } from './delete-labels.js'
+import { transact } from './transact.js'
 
 describe('deleteLabels', () => {
   test('deletes labels', () => {
@@ -49,14 +50,15 @@ describe('deleteLabels', () => {
       ],
     })
 
-    const result = assertOk(
-      deleteLabels({
-        doc,
-        streamId: 'stream1',
-        labelIdList: ['label1', 'label2'],
-      }),
+    assertOk(
+      transact(doc, () =>
+        deleteLabels({
+          doc,
+          streamId: 'stream1',
+          labelIdList: ['label1', 'label2'],
+        }),
+      ),
     )
-    expect(result).toEqual(undefined)
 
     expect(doc.getMap('label').toJSON()).toEqual({
       label3: {

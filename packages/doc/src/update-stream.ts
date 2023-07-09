@@ -1,4 +1,3 @@
-import * as Y from 'yjs'
 import type { Doc } from './types.js'
 
 type UpdateStreamOptions = {
@@ -12,6 +11,10 @@ type UpdateStreamOptions = {
 const updateStream = (options: UpdateStreamOptions): void | Error => {
   const { doc, streamId, name, index, parentId } = options
 
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
+
   if (
     typeof index !== 'number' &&
     typeof name !== 'string' &&
@@ -23,27 +26,25 @@ const updateStream = (options: UpdateStreamOptions): void | Error => {
 
   const streamMap = doc.getMap('stream')
 
-  return Y.transact(doc as Y.Doc, (): void | Error => {
-    const stream = streamMap.get(streamId)
+  const stream = streamMap.get(streamId)
 
-    if (!stream) {
-      return new Error(`Stream ${streamId} not found`)
-    }
+  if (!stream) {
+    return new Error(`Stream ${streamId} not found`)
+  }
 
-    if (typeof index === 'number') {
-      stream.set('index', index)
-    }
+  if (typeof index === 'number') {
+    stream.set('index', index)
+  }
 
-    if (typeof name === 'string') {
-      stream.set('name', name)
-    }
+  if (typeof name === 'string') {
+    stream.set('name', name)
+  }
 
-    if (typeof parentId === 'string' || parentId === null) {
-      stream.set('parentId', parentId)
-    }
+  if (typeof parentId === 'string' || parentId === null) {
+    stream.set('parentId', parentId)
+  }
 
-    stream.set('updatedAt', Date.now())
-  })
+  stream.set('updatedAt', Date.now())
 }
 
 export { updateStream }

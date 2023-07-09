@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import { render, Box, Text } from 'ink'
 import type { Doc, Label } from '@stayradiated/pomo-doc'
 import {
@@ -60,7 +60,7 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
     const streamName = stream.name
 
     children.push(
-      <>
+      <Fragment key={streamId}>
         <Box paddingY={1}>
           <Text># </Text>
           <Text bold underline>
@@ -73,7 +73,7 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
           labelCountMap={labelCountMap}
           allLabelRecord={labelRecord}
         />
-      </>,
+      </Fragment>
     )
   }
 

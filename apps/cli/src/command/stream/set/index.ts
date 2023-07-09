@@ -1,11 +1,11 @@
 import { CliCommand } from 'cilly'
-import { getStreamIdByRef, updateStream } from '@stayradiated/pomo-doc'
+import { getStreamByName, updateStream, transact } from '@stayradiated/pomo-doc'
 import z from 'zod'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const $KeyValue = z.discriminatedUnion('key', [
   z.object({ key: z.literal('index'), value: z.coerce.number() }),
-  z.object({ key: z.literal('parentId'), value: z.string() }),
+  z.object({ key: z.literal('parent'), value: z.string() }),
 ])
 
 const setCmd = new CliCommand('set')
@@ -13,7 +13,7 @@ const setCmd = new CliCommand('set')
   .withArguments(
     {
       name: 'stream',
-      description: 'Stream reference',
+      description: 'Stream name',
       required: true,
     },
     {
@@ -26,7 +26,7 @@ const setCmd = new CliCommand('set')
     },
   )
   .withHandler(async (args) => {
-    const ref = args['stream']
+    const streamName = args['stream']
     const { key, value } = $KeyValue.parse({
       key: args['key'],
       value: args['value'],
@@ -37,14 +37,18 @@ const setCmd = new CliCommand('set')
       throw doc
     }
 
-    const streamId = getStreamIdByRef({ doc, ref })
-    if (!streamId) {
-      throw new Error(`Stream "${ref}" not found`)
+    const stream = getStreamByName({ doc, name: streamName })
+    if (stream instanceof Error) {
+      throw stream
     }
+
+    const streamId = stream.id
 
     switch (key) {
       case 'index': {
-        const error = updateStream({ doc, streamId, index: value })
+        const error = transact(doc, () =>
+          updateStream({ doc, streamId, index: value }),
+        )
         if (error) {
           throw error
         }
@@ -52,13 +56,15 @@ const setCmd = new CliCommand('set')
         break
       }
 
-      case 'parentId': {
-        const parentId = getStreamIdByRef({ doc, ref: value })
-        if (!parentId) {
-          throw new Error(`Stream "${value}" not found`)
+      case 'parent': {
+        const parent = getStreamByName({ doc, name: value })
+        if (parent instanceof Error) {
+          throw parent
         }
 
-        const error = updateStream({ doc, streamId, parentId })
+        const error = transact(doc, () =>
+          updateStream({ doc, streamId, parentId: parent.id }),
+        )
         if (error) {
           throw error
         }

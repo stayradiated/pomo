@@ -8,28 +8,30 @@ type SetUserTimeZoneOptions = {
   timeZone: string
 }
 
-const setUserTimeZone = (options: SetUserTimeZoneOptions) => {
+const setUserTimeZone = (options: SetUserTimeZoneOptions): void | Error => {
   const { doc, timeZone } = options
+
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
 
   const now = Date.now()
 
   const rootUserMap = doc.getMap('user')
   const user = head(rootUserMap.values())
 
-  Y.transact(doc as Y.Doc, () => {
-    if (user) {
-      user.set('timeZone', timeZone)
-      user.set('updatedAt', now)
-    } else {
-      const userId = randomUUID()
-      const user = new Y.Map() as YUser
-      user.set('id', userId)
-      user.set('timeZone', timeZone)
-      user.set('createdAt', now)
-      user.set('updatedAt', now)
-      rootUserMap.set(userId, user)
-    }
-  })
+  if (user) {
+    user.set('timeZone', timeZone)
+    user.set('updatedAt', now)
+  } else {
+    const userId = randomUUID()
+    const user = new Y.Map() as YUser
+    user.set('id', userId)
+    user.set('timeZone', timeZone)
+    user.set('createdAt', now)
+    user.set('updatedAt', now)
+    rootUserMap.set(userId, user)
+  }
 }
 
 export { setUserTimeZone }

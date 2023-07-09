@@ -1,11 +1,11 @@
 import type { PageServerLoad, Actions } from './$types'
 import { error } from '@sveltejs/kit'
 import {
-  getPointStartedAtByRef,
   getPointById,
   getStreamList,
   getUserTimeZone,
   updatePointStartedAt,
+  transact,
 } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '$lib/doc'
 import { getCurrentPoints } from '$lib/get-current-points'
@@ -15,9 +15,8 @@ import { z } from 'zod'
 import { redirect } from '@sveltejs/kit'
 
 const load = (async ({ url }) => {
-  const ref = url.searchParams.get('ref') ?? undefined
-
-  if (!ref) {
+  const pointId = url.searchParams.get('ref') ?? undefined
+  if (!pointId) {
     throw error(400, 'Missing ref')
   }
 
@@ -26,10 +25,11 @@ const load = (async ({ url }) => {
     throw error(500, doc.message)
   }
 
-  const startedAt = getPointStartedAtByRef({ doc, ref })
-  if (typeof startedAt === 'undefined') {
-    throw error(500, `Point ${ref} does not exist`)
+  const point = getPointById({ doc, pointId: pointId })
+  if (point instanceof Error) {
+    throw point
   }
+  const startedAt = point.startedAt
 
   const streamList = getStreamList({ doc })
   const pointMap = getCurrentPoints({ doc, streamList, currentTime: startedAt })
@@ -69,8 +69,8 @@ const actions = {
     // verify that each point exists
     const pointList = userPointIdList.map((pointId) => {
       const point = getPointById({ doc, pointId })
-      if (typeof point === 'undefined') {
-        throw error(400, `Point ${pointId} does not exist`)
+      if (point instanceof Error) {
+        throw error(400, point.message)
       }
       return point
     })
@@ -80,7 +80,12 @@ const actions = {
 
     const pointIdList = [...new Set(pointList.map((point) => point.id))]
 
-    updatePointStartedAt({ doc, pointIdList, startedAt })
+    const result = transact(doc, () =>
+      updatePointStartedAt({ doc, pointIdList, startedAt }),
+    )
+    if (result instanceof Error) {
+      throw error(500, result.message)
+    }
 
     await saveDoc()
 

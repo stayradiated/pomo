@@ -1,5 +1,5 @@
 import { CliCommand } from 'cilly'
-import { getStreamIdByName } from '@stayradiated/pomo-doc'
+import { getStreamByName } from '@stayradiated/pomo-doc'
 import { listLabels } from './list-labels.js'
 import { getDoc } from '#src/lib/doc.js'
 
@@ -24,14 +24,17 @@ const listCmd = new CliCommand('list')
       throw doc
     }
 
-    const streamId = streamName
-      ? getStreamIdByName({ doc, name: streamName })
-      : undefined
-    if (streamName && !streamId) {
-      throw new Error(`Stream not found: ${streamName}`)
+    let whereStreamId: string | undefined
+    if (streamName) {
+      const stream = getStreamByName({ doc, name: streamName })
+      if (stream instanceof Error) {
+        throw stream
+      }
+
+      whereStreamId = stream.id
     }
 
-    const result = listLabels({ doc, streamId })
+    const result = listLabels({ doc, streamId: whereStreamId })
 
     if (result instanceof Error) {
       throw result

@@ -1,5 +1,5 @@
-import type { Line } from './types.js'
 import type { Point } from '@stayradiated/pomo-doc'
+import type { Line } from './types.js'
 
 const mapPointsToLine = <T extends Point>(
   startPoint: T,

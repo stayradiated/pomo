@@ -4,8 +4,10 @@ import {
   getPointList,
   upsertLabel,
   upsertPointLabel,
+  transact,
 } from '@stayradiated/pomo-doc'
 import { stripComments, firstLine } from '@stayradiated/pomo-core'
+import { listOrError } from '@stayradiated/error-boundary'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const extractLabelsFromQuote = (value: string): string[] => {
@@ -59,13 +61,24 @@ const extractLabelsFromAllPoints = async (
       )}`,
     )
 
-    for (const labelName of labelNameList) {
-      const labelId = upsertLabel({
-        doc,
-        streamId: point.streamId,
-        name: labelName,
-      })
-      upsertPointLabel({ doc, pointId: point.id, labelId })
+    const result = transact(doc, () =>
+      listOrError(
+        labelNameList.map((labelName) => {
+          const labelId = upsertLabel({
+            doc,
+            streamId: point.streamId,
+            name: labelName,
+          })
+          if (labelId instanceof Error) {
+            return labelId
+          }
+
+          return upsertPointLabel({ doc, pointId: point.id, labelId })
+        }),
+      ),
+    )
+    if (result instanceof Error) {
+      return result
     }
   }
 }

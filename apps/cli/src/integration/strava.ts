@@ -3,8 +3,9 @@ import http from 'node:http'
 import { spawn } from 'node:child_process'
 import { fetch } from 'undici'
 import { z } from 'zod'
-import { upsertStream, upsertPoint } from '@stayradiated/pomo-doc'
+import { upsertStream, upsertPoint, transact } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
+import { listOrError } from '@stayradiated/error-boundary'
 
 const CLIENT_ID = '41535'
 const CLIENT_SECRET = '8037af8638f3f1d10e77d1fce824070cf64f2101'
@@ -272,11 +273,16 @@ type Result = {
   session: Session
 }
 
-const pullStravaActivities = async (options: Options): Promise<Result> => {
+const pullStravaActivities = async (
+  options: Options,
+): Promise<Result | Error> => {
   const { doc, initialSession } = options
   const session = await refreshSession(initialSession)
 
-  const streamId = upsertStream({ doc, name: 'Strava' })
+  const streamId = transact(doc, () => upsertStream({ doc, name: 'Strava' }))
+  if (streamId instanceof Error) {
+    return new Error('Could not create stream')
+  }
 
   for await (const activity of getAllActivities(session.accessToken)) {
     const startDate = new Date(activity.start_date)
@@ -287,19 +293,25 @@ const pullStravaActivities = async (options: Options): Promise<Result> => {
     const durationMin = activity.elapsed_time / 60
     console.log(activity.name, startDate, stopDate, durationMin)
 
-    upsertPoint({
-      doc,
-      streamId,
-      startedAt: startDate.getTime(),
-      value: activity.name,
-    })
-
-    upsertPoint({
-      doc,
-      streamId,
-      value: '',
-      startedAt: stopDate.getTime(),
-    })
+    const result = transact(doc, () =>
+      listOrError([
+        upsertPoint({
+          doc,
+          streamId,
+          startedAt: startDate.getTime(),
+          value: activity.name,
+        }),
+        upsertPoint({
+          doc,
+          streamId,
+          value: '',
+          startedAt: stopDate.getTime(),
+        }),
+      ]),
+    )
+    if (result instanceof Error) {
+      return result
+    }
   }
 
   return { session }

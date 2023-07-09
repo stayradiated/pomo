@@ -1,7 +1,11 @@
 import { CliCommand } from 'cilly'
 import { z } from 'zod'
 import { isValidTimeZone } from '@stayradiated/pomo-core'
-import { getUserTimeZone, setUserTimeZone } from '@stayradiated/pomo-doc'
+import {
+  getUserTimeZone,
+  setUserTimeZone,
+  transact,
+} from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const $Key = z.literal('timezone')
@@ -33,7 +37,13 @@ const setCmd = new CliCommand('set')
           throw new Error(`Invalid time zone: ${value}`)
         }
 
-        setUserTimeZone({ doc, timeZone: value })
+        const result = transact(doc, () =>
+          setUserTimeZone({ doc, timeZone: value }),
+        )
+        if (result instanceof Error) {
+          throw result
+        }
+
         break
       }
     }

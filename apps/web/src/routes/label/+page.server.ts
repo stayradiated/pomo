@@ -1,9 +1,10 @@
 import { error } from '@sveltejs/kit'
 import { getDoc, saveDoc } from '$lib/doc.js'
 import {
-  getLabelList,
+  getLabelRecord,
   getStreamList,
   deleteLabels,
+  transact,
 } from '@stayradiated/pomo-doc'
 import type { Label } from '@stayradiated/pomo-doc'
 import type { PageServerLoad, Actions } from './$types'
@@ -17,26 +18,35 @@ const load = (async () => {
   }
 
   const streamList = getStreamList({ doc })
-  const labelList = getLabelList({ doc })
+  const labelRecord = getLabelRecord({ doc })
+  const labelList = Object.values(labelRecord)
 
-  const streamLabelListMap = new Map<string, Label[]>()
+  const streamLabelListMap = new Map<string, Map<string | null, Label[]>>()
   for (const label of labelList) {
     const streamId = label.streamId
 
     if (!streamLabelListMap.has(streamId)) {
-      streamLabelListMap.set(streamId, [])
+      streamLabelListMap.set(streamId, new Map())
     }
+    const streamLabelMap = streamLabelListMap.get(streamId)!
 
-    const streamLabelList = streamLabelListMap.get(streamId)!
-    streamLabelList.push(label)
+    if (!streamLabelMap.has(label.parentId)) {
+      streamLabelMap.set(label.parentId, [])
+    }
+    const labelList = streamLabelMap.get(label.parentId)!
+
+    labelList.push(label)
   }
 
-  for (const labelList of streamLabelListMap.values()) {
-    labelList.sort((a, b) => a.name.localeCompare(b.name))
+  for (const streamLabelMap of streamLabelListMap.values()) {
+    for (const labelList of streamLabelMap.values()) {
+      labelList.sort((a, b) => a.name.localeCompare(b.name))
+    }
   }
 
   return {
     streamList,
+    labelRecord,
     streamLabelListMap,
   }
 }) satisfies PageServerLoad
@@ -60,7 +70,9 @@ const actions = {
 
     switch (action) {
       case 'delete': {
-        const result = deleteLabels({ doc, streamId, labelIdList })
+        const result = transact(doc, () =>
+          deleteLabels({ doc, streamId, labelIdList }),
+        )
         if (result instanceof Error) {
           throw error(500, result.message)
         }

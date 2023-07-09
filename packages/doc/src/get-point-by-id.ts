@@ -1,17 +1,18 @@
 import type { Doc, Point } from './types.js'
+import { NotFoundError } from './error.js'
 
 type GetPointByIdOptions = {
   doc: Doc
   pointId: string
 }
 
-const getPointById = (options: GetPointByIdOptions): Point | undefined => {
+const getPointById = (options: GetPointByIdOptions): Point | Error => {
   const { doc, pointId } = options
 
   const pointMap = doc.getMap('point')
   const point = pointMap.get(pointId)
   if (!point) {
-    return undefined
+    return new NotFoundError(`No point with id ${pointId}`)
   }
 
   return point.toJSON() as Point

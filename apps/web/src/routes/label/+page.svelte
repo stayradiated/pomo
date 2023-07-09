@@ -3,11 +3,15 @@
   import StreamLabelList from './StreamLabelList.svelte'
 
   export let data: PageData
+
+  $:({ streamList, labelRecord, streamLabelListMap } = data)
 </script>
 
 <h2>Labels</h2>
 
-{#each data.streamList as stream}
-  {@const labelList = data.streamLabelListMap.get(stream.id) ?? []}
-  <StreamLabelList {stream} {labelList} />
+{#each streamList as stream}
+  {@const labelListMap = streamLabelListMap.get(stream.id)}
+  {#if labelListMap}
+    <StreamLabelList {stream} {labelListMap} {labelRecord} />
+  {/if}
 {/each}

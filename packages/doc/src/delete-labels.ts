@@ -1,4 +1,3 @@
-import * as Y from 'yjs'
 import type { Doc } from './types.js'
 
 type DeleteLabelsOptions = {
@@ -9,6 +8,10 @@ type DeleteLabelsOptions = {
 
 const deleteLabels = (options: DeleteLabelsOptions): void | Error => {
   const { doc, streamId, labelIdList } = options
+
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
 
   const pointMap = doc.getMap('point')
   const labelMap = doc.getMap('label')
@@ -26,30 +29,28 @@ const deleteLabels = (options: DeleteLabelsOptions): void | Error => {
     }
   }
 
-  Y.transact(doc as Y.Doc, () => {
-    for (const point of pointMap.values()) {
-      if (point.get('streamId') !== streamId) {
-        continue
-      }
+  for (const point of pointMap.values()) {
+    if (point.get('streamId') !== streamId) {
+      continue
+    }
 
-      const pointLabelIdList = point.get('labelIdList')
-      if (!pointLabelIdList) {
-        continue
-      }
-
-      for (const labelId of labelIdList) {
-        const index = pointLabelIdList.toArray().indexOf(labelId)
-        if (index >= 0) {
-          pointLabelIdList.delete(index)
-          point.set('updatedAt', Date.now())
-        }
-      }
+    const pointLabelIdList = point.get('labelIdList')
+    if (!pointLabelIdList) {
+      continue
     }
 
     for (const labelId of labelIdList) {
-      labelMap.delete(labelId)
+      const index = pointLabelIdList.toArray().indexOf(labelId)
+      if (index >= 0) {
+        pointLabelIdList.delete(index)
+        point.set('updatedAt', Date.now())
+      }
     }
-  })
+  }
+
+  for (const labelId of labelIdList) {
+    labelMap.delete(labelId)
+  }
 }
 
 export { deleteLabels }

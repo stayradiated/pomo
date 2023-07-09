@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
-import { render, Box, Text, type Instance } from 'ink'
+import { render, Box, Text } from 'ink'
+import type { Instance } from 'ink'
 import type { Label } from '@stayradiated/pomo-doc'
 import { ConfirmInput } from '#src/components/confirm-input.js'
 

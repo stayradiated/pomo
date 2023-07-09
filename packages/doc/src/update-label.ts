@@ -1,4 +1,3 @@
-import * as Y from 'yjs'
 import type { Doc } from './types.js'
 
 type UpdateLabelOptions = {
@@ -12,6 +11,10 @@ type UpdateLabelOptions = {
 
 const updateLabel = (options: UpdateLabelOptions): void | Error => {
   const { doc, labelId, name, color, icon, parentId } = options
+
+  if (!doc._transaction) {
+    return new Error('Not in transaction')
+  }
 
   if (
     typeof name !== 'string' &&
@@ -27,31 +30,29 @@ const updateLabel = (options: UpdateLabelOptions): void | Error => {
 
   const labelMap = doc.getMap('label')
 
-  return Y.transact(doc as Y.Doc, (): void | Error => {
-    const label = labelMap.get(labelId)
+  const label = labelMap.get(labelId)
 
-    if (!label) {
-      return new Error(`Label ${labelId} not found`)
-    }
+  if (!label) {
+    return new Error(`Label ${labelId} not found`)
+  }
 
-    if (typeof name === 'string') {
-      label.set('name', name)
-    }
+  if (typeof name === 'string') {
+    label.set('name', name)
+  }
 
-    if (typeof color === 'string' || color === null) {
-      label.set('color', color)
-    }
+  if (typeof color === 'string' || color === null) {
+    label.set('color', color)
+  }
 
-    if (typeof icon === 'string' || icon === null) {
-      label.set('icon', icon)
-    }
+  if (typeof icon === 'string' || icon === null) {
+    label.set('icon', icon)
+  }
 
-    if (typeof parentId === 'string' || parentId === null) {
-      label.set('parentId', parentId)
-    }
+  if (typeof parentId === 'string' || parentId === null) {
+    label.set('parentId', parentId)
+  }
 
-    label.set('updatedAt', Date.now())
-  })
+  label.set('updatedAt', Date.now())
 }
 
 export { updateLabel }
