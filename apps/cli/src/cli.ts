@@ -14,25 +14,27 @@ import { streamCmd } from './command/stream/index.js'
 import { togglCmd } from './command/toggl/index.js'
 import { gcalCmd } from './command/gcal/index.js'
 import { migrateCmd } from './command/migrate.js'
+import { pointCmd } from './command/point/index.js'
 
 export const cli = new CliCommand('pomo')
   .withDescription('Get your program to your users easily')
   .withSubCommands(
     editCmd,
     extractLabelsCmd,
+    gcalCmd,
     jsonCmd,
     labelCmd,
     logCmd,
+    migrateCmd,
+    pointCmd,
     pullStravaCmd,
+    schemaCmd,
     statusCmd,
     streamCmd,
     summaryCmd,
     syncCmd,
-    userCmd,
-    schemaCmd,
     togglCmd,
-    gcalCmd,
-    migrateCmd,
+    userCmd,
   )
   .withHandler(() => {
     editCmd.process(process.argv)

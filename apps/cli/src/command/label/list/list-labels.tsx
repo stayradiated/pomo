@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React, { Fragment } from 'react'
 import { render, Box, Text } from 'ink'
 import type { Doc, Label } from '@stayradiated/pomo-doc'
 import {
@@ -73,7 +73,7 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
           labelCountMap={labelCountMap}
           allLabelRecord={labelRecord}
         />
-      </Fragment>
+      </Fragment>,
     )
   }
 

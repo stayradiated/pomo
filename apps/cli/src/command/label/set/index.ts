@@ -83,7 +83,16 @@ const setCmd = new CliCommand('set')
       }
 
       case 'parent': {
-        const parent = getLabelByName({ doc, streamId: stream.id, name: value })
+        const streamParentId = stream.parentId
+        if (!streamParentId) {
+          throw new Error(`Stream ${streamName} has no parent`)
+        }
+
+        const parent = getLabelByName({
+          doc,
+          streamId: streamParentId,
+          name: value,
+        })
         if (parent instanceof Error) {
           throw parent
         }

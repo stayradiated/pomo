@@ -43,6 +43,7 @@ export * from './upsert-stream.js'
 export * from './merge-labels.js'
 
 export * from './delete-labels.js'
+export * from './delete-points.js'
 
 /* UTILS */
 

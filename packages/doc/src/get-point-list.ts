@@ -9,6 +9,7 @@ const getPointList = (options: GetPointListOptions): Point[] => {
 
   const pointMap = doc.getMap('point')
   const pointList = Object.values(pointMap.toJSON()) as Point[]
+  pointList.sort((a, b) => a.startedAt - b.startedAt)
 
   return pointList
 }
