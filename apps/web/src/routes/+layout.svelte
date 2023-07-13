@@ -11,6 +11,9 @@
         <a href="/add">Add</a>
       </li>
       <li>
+        <a href="/quick-add">Quick Add</a>
+      </li>
+      <li>
         <a href="/log">Log</a>
       </li>
       <li>

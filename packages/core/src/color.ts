@@ -1,28 +1,31 @@
+import { colord, extend } from 'colord'
+import type { RgbColor, Plugin } from 'colord'  
+import a11yPlugin from "colord/plugins/a11y";
+
+extend([a11yPlugin as unknown as Plugin]);
+
 const getColorContrast = (hexcolor: string): number => {
-  // If a leading # is provided, remove it
-  if (hexcolor.startsWith('#')) {
-    hexcolor = hexcolor.slice(1)
-  }
-
-  // If a three-character hexcode, make six-character
-  if (hexcolor.length === 3) {
-    hexcolor = hexcolor
-      .split('')
-      .map(function (hex) {
-        return hex + hex
-      })
-      .join('')
-  }
-
-  // Convert to RGB value
-  const r = Number.parseInt(hexcolor.slice(0, 2), 16)
-  const g = Number.parseInt(hexcolor.slice(2, 4), 16)
-  const b = Number.parseInt(hexcolor.slice(4, 6), 16)
-
-  // Get YIQ ratio
-  const yiq = (r * 299 + g * 587 + b * 114) / 1000
-
-  return Math.max(0, Math.min(1, yiq / 256))
+  return colord(hexcolor).isReadable() ? 0 : 1
 }
 
-export { getColorContrast }
+type UiColor = {
+  colorBg: string
+  colorFg: string
+  colorOp: string
+}
+
+const triplet = (rgbColor: RgbColor): string => {
+  return `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`
+}
+
+const getUiColor = (colorBg: string = 'white'): UiColor => {
+  const contrast = getColorContrast(colorBg)
+
+  return {
+    colorBg: triplet(colord(colorBg).toRgb()),
+    colorFg: triplet(colord(contrast >= 0.5 ? '#000' : '#fff').toRgb()),
+    colorOp: triplet(colord(contrast >= 0.5 ? '#fff' : '#000').toRgb()),
+  }
+}
+
+export { getColorContrast, getUiColor }

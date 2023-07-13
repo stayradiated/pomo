@@ -29,7 +29,7 @@
     "@stayradiated/pomo-markdown": "workspace:*",
     "@types/better-sqlite3": "7.6.4",
     "better-sqlite3": "8.4.0",
-    "chrono-node": "2.6.3",
+    "chrono-node": "2.6.4",
     "cilly": "1.0.25",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
@@ -44,9 +44,9 @@
     "zod": "3.21.4"
   },
   "devDependencies": {
-    "@types/react": "18.2.14",
+    "@types/react": "18.2.15",
     "live-tsc": "1.6.2",
-    "react-devtools-core": "4.27.8",
+    "react-devtools-core": "4.28.0",
     "typescript": "5.1.6",
     "vitest": "0.33.0",
     "xo": "0.54.2"
