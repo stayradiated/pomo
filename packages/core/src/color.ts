@@ -1,8 +1,8 @@
 import { colord, extend } from 'colord'
-import type { RgbColor, Plugin } from 'colord'  
-import a11yPlugin from "colord/plugins/a11y";
+import type { RgbColor, Plugin } from 'colord'
+import a11yPlugin from 'colord/plugins/a11y'
 
-extend([a11yPlugin as unknown as Plugin]);
+extend([a11yPlugin as unknown as Plugin])
 
 const getColorContrast = (hexcolor: string): number => {
   return colord(hexcolor).isReadable() ? 0 : 1
@@ -18,7 +18,7 @@ const triplet = (rgbColor: RgbColor): string => {
   return `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`
 }
 
-const getUiColor = (colorBg: string = 'white'): UiColor => {
+const getUiColor = (colorBg = 'white'): UiColor => {
   const contrast = getColorContrast(colorBg)
 
   return {

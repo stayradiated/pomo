@@ -3,6 +3,17 @@ import { z } from 'zod'
 const $User = z.object({
   id: z.string(),
   timeZone: z.string(),
+
+  stravaClientId: z.string().optional(),
+  stravaClientSecret: z.string().optional(),
+  stravaSession: z
+    .object({
+      accessToken: z.string(),
+      refreshToken: z.string(),
+      expiresAt: z.number(),
+    })
+    .optional(),
+
   createdAt: z.number(),
   updatedAt: z.number().nullable(),
 })

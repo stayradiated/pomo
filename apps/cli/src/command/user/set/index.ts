@@ -2,13 +2,31 @@ import { CliCommand } from 'cilly'
 import { z } from 'zod'
 import { isValidTimeZone } from '@stayradiated/pomo-core'
 import {
-  getUserTimeZone,
   setUserTimeZone,
+  setUserStravaConfig,
   transact,
 } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
-const $Key = z.literal('timezone')
+const $StravaConfig = z
+  .string()
+  .regex(/^\d+:[a-f\d]+$/)
+  .transform((value) => {
+    const [clientId, clientSecret] = value.split(':')
+    if (clientId === undefined || clientSecret === undefined) {
+      throw new Error('Invalid strava config')
+    }
+
+    return {
+      clientId,
+      clientSecret,
+    }
+  })
+
+const $KeyValue = z.discriminatedUnion('key', [
+  z.object({ key: z.literal('timezone'), value: z.string() }),
+  z.object({ key: z.literal('strava-config'), value: $StravaConfig }),
+])
 
 const setCmd = new CliCommand('set')
   .withDescription('Set user info')
@@ -23,8 +41,10 @@ const setCmd = new CliCommand('set')
     },
   )
   .withHandler(async (args, _options, _extra) => {
-    const key = $Key.parse(args['key'].toLowerCase())
-    const value = args['value']
+    const { key, value } = $KeyValue.parse({
+      key: args['key'],
+      value: args['value'],
+    })
 
     const doc = await getDoc()
     if (doc instanceof Error) {
@@ -46,39 +66,24 @@ const setCmd = new CliCommand('set')
 
         break
       }
+
+      case 'strava-config': {
+        const result = transact(doc, () =>
+          setUserStravaConfig({ doc, stravaConfig: value }),
+        )
+        if (result instanceof Error) {
+          throw result
+        }
+
+        break
+      }
+
+      default: {
+        throw new Error(`Unknown key: ${key}`)
+      }
     }
 
     saveDoc()
   })
 
-const getCmd = new CliCommand('get')
-  .withDescription('Get user info')
-  .withArguments({
-    name: 'key',
-    required: true,
-  })
-  .withHandler(async (args, _options, _extra) => {
-    const key = $Key.parse(args['key'].toLowerCase())
-
-    const doc = await getDoc()
-    if (doc instanceof Error) {
-      throw doc
-    }
-
-    switch (key) {
-      case 'timezone': {
-        const timeZone = getUserTimeZone({ doc })
-        console.info(timeZone)
-        break
-      }
-    }
-  })
-
-const userCmd = new CliCommand('user')
-  .withDescription('Edit user info')
-  .withSubCommands(setCmd, getCmd)
-  .withHandler(() => {
-    userCmd.help()
-  })
-
-export { userCmd }
+export { setCmd }

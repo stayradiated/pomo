@@ -1,6 +1,9 @@
 /* READ ONLY */
 
 export * from './get-user-time-zone.js'
+export * from './get-user-strava-config.js'
+export * from './get-user-strava-session.js'
+
 export * from './retrieve-current-point.js'
 export * from './retrieve-point-list.js'
 
@@ -14,6 +17,7 @@ export * from './get-stream-by-ref.js'
 
 export * from './get-point-by-id.js'
 export * from './get-point-by-ref.js'
+export * from './get-point-by-started-at.js'
 
 export * from './get-label-list.js'
 export * from './get-point-list.js'
@@ -27,6 +31,8 @@ export * from './get-user-record.js'
 
 /* MUTABLE */
 
+export * from './set-user-strava-config.js'
+export * from './set-user-strava-session.js'
 export * from './set-user-time-zone.js'
 
 export * from './update-label-stream.js'

@@ -56,7 +56,7 @@ const extractLabelsFromAllPoints = async (
     const labelNameList = extractLabelsFromValue(pointValue)
 
     console.log(
-      `\n• ${pointValue.replace(/\n/g, '↳')}\n→ ${JSON.stringify(
+      `\n• ${pointValue.replaceAll('\n', '↳')}\n→ ${JSON.stringify(
         labelNameList,
       )}`,
     )
