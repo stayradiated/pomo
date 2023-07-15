@@ -1,5 +1,5 @@
 import { CliCommand } from 'cilly'
-import { migrate } from '@stayradiated/pomo-doc'
+import { migrate, transact } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const fixCmd = new CliCommand('fix')
@@ -10,7 +10,10 @@ const fixCmd = new CliCommand('fix')
       throw doc
     }
 
-    migrate({ doc })
+    const result = transact(doc, () => migrate({ doc }))
+    if (result instanceof Error) {
+      throw result
+    }
 
     await saveDoc()
   })

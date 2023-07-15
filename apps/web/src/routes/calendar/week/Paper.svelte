@@ -4,7 +4,7 @@
   export let numberOfDaysInWeek: number
   export let startOfWeek: number
 
-  const dateList = Array.from({ length: numberOfDaysInWeek }, (_, i) => {
+  $: dateList = Array.from({ length: numberOfDaysInWeek }, (_, i) => {
     const date = dateFns.addDays(startOfWeek, i)
     return {
       dayOfWeek: dateFns.format(date, 'EEE'),

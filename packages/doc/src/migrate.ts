@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import type { Doc } from './types.js'
+import type { Doc, YPoint } from './types.js'
 
 type MigrateOptions = {
   doc: Doc
@@ -16,10 +16,35 @@ const migrate = (options: MigrateOptions): void | Error => {
   const streamMap = doc.getMap('stream')
   const labelMap = doc.getMap('label')
 
-  // Make sure every point has a labelIdList
+  const streamPointStartedAtMap = new Map<string, Map<number, YPoint>>()
+
   for (const point of pointMap.values()) {
+    // Make sure every point has a labelIdList
     if (!point.get('labelIdList')) {
       point.set('labelIdList', new Y.Array())
+    }
+
+    // Make sure every point has a unique (streamId, startedAt) pair
+    const streamId = point.get('streamId')!
+    const startedAt = point.get('startedAt')!
+    const streamPointStartedAt = streamPointStartedAtMap.get(streamId)
+    if (streamPointStartedAt) {
+      if (streamPointStartedAt.has(startedAt)) {
+        const pointB = streamPointStartedAt.get(startedAt)!
+
+        const [pointToKeep, pointToDelete] =
+          Math.max(pointB.get('updatedAt')!, pointB.get('createdAt')!) >
+          Math.max(point.get('updatedAt')!, point.get('createdAt')!)
+            ? [pointB, point]
+            : [point, pointB]
+
+        streamPointStartedAt.set(startedAt, pointToKeep)
+        pointMap.delete(pointToDelete.get('id')!)
+      }
+
+      streamPointStartedAt.set(startedAt, point)
+    } else {
+      streamPointStartedAtMap.set(streamId, new Map([[startedAt, point]]))
     }
   }
 

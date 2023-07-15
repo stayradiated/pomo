@@ -37,6 +37,7 @@
   <span>{labelNameList.join(', ')}</span>
   <span>{dateFns.format(line.startedAt, 'HH:mm')}</span>
   <span>+{formatDuration(line.durationMs)}</span>
+  <span>{line.value ?? ''}</span>
 </div>
 
 <style>
