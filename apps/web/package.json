@@ -15,6 +15,7 @@
 		"@stayradiated/pomo-core": "workspace:*",
 		"@stayradiated/pomo-doc": "workspace:*",
 		"@svelte-put/shortcut": "2.0.0",
+		"chrono-node": "2.6.4",
 		"date-fns": "2.30.0",
 		"pollen": "0.0.5",
 		"prettier": "3.0.0",

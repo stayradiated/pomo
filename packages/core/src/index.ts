@@ -1,6 +1,7 @@
 export * from './clamp-line-list.js'
 export * from './color.js'
 export * from './duration-locale.js'
+export * from './extract-phone-call-info.js'
 export * from './format-duration-hms.js'
 export * from './get-next-point-in-stream.js'
 export * from './is-valid-time-zone.js'

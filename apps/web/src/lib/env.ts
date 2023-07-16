@@ -1,13 +1,14 @@
 import { z } from 'zod'
-import * as process from 'node:process'
 import { once } from './once.js'
+import * as privateEnvVars from '$env/static/private'
 
 const getEnv = once(() =>
   z
     .object({
       POMO_DIR: z.string(),
+      OPENAI_API_KEY: z.string(),
     })
-    .parse(process.env),
+    .parse(privateEnvVars),
 )
 
 export { getEnv }
