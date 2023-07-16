@@ -20,8 +20,6 @@ const $PostBody = z.object({
 const POST = async ({ request }: RequestEvent) => {
   const { content } = $PostBody.parse(await request.json())
 
-  const now = new Date()
-
   const env = getEnv()
 
   const callLog = await extractPhoneCallInfo({
@@ -61,8 +59,7 @@ const POST = async ({ request }: RequestEvent) => {
     Promise.all(
       callLog.calls.flatMap((call) => {
         const startedAt = chrono
-          .parseDate(`${call.date} ${call.time}`, {
-            instant: now,
+          .parseDate(`${call.date} at ${call.time}`, {
             timezone: timeZone,
           })
           .getTime()

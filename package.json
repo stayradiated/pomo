@@ -3,7 +3,8 @@
   "packageManager": "pnpm@8.6.2",
   "scripts": {
     "build": "turbo build --no-daemon",
-    "tidy": "turbo tidy --no-daemon"
+    "tidy": "pnpm -r run --no-bail tidy",
+    "update-all": "pnpm update --latest"
   },
   "devDependencies": {
     "turbo": "1.10.3"
