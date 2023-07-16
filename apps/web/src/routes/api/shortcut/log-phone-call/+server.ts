@@ -1,7 +1,10 @@
 import { error, text } from '@sveltejs/kit'
 import type { RequestEvent } from './$types'
 import { z } from 'zod'
-import { extractPhoneCallInfo } from '@stayradiated/pomo-core'
+import {
+  extractPhoneCallInfo,
+  formatDurationHMS,
+} from '@stayradiated/pomo-core'
 import { getEnv } from '$lib/env'
 import { getDoc, saveDoc } from '$lib/doc'
 import {
@@ -12,6 +15,7 @@ import {
   transact,
 } from '@stayradiated/pomo-doc'
 import * as chrono from 'chrono-node'
+import * as dateFnsTz from 'date-fns-tz'
 
 const $PostBody = z.object({
   content: z.string(),
@@ -55,29 +59,39 @@ const POST = async ({ request }: RequestEvent) => {
     return error(500, labelPerson.message)
   }
 
+  const lines = callLog.calls.map((call) => {
+    const startedAt = chrono
+      .parseDate(`${call.date} at ${call.time}`, {
+        timezone: timeZone,
+      })
+      .getTime()
+    const durationMilliseconds = call.durationMinutes * 60 * 1000
+    const stoppedAt = startedAt + durationMilliseconds
+
+    return {
+      startedAt,
+      stoppedAt,
+      durationMilliseconds,
+    }
+  })
+
+  console.log(lines)
+
   await transact(doc, () =>
     Promise.all(
-      callLog.calls.flatMap((call) => {
-        const startedAt = chrono
-          .parseDate(`${call.date} at ${call.time}`, {
-            timezone: timeZone,
-          })
-          .getTime()
-        const durationMilliseconds = call.durationMinutes * 60 * 1000
-        const stoppedAt = startedAt + durationMilliseconds
-
+      lines.flatMap((line) => {
         return [
           upsertPoint({
             doc,
             streamId,
-            startedAt,
+            startedAt: line.startedAt,
             labelIdList: [labelPerson],
             value: '',
           }),
           upsertPoint({
             doc,
             streamId,
-            startedAt: stoppedAt,
+            startedAt: line.stoppedAt,
             labelIdList: [],
             value: '',
           }),
@@ -89,9 +103,15 @@ const POST = async ({ request }: RequestEvent) => {
   await saveDoc()
 
   return text(
-    `${callLog.name}\n\n${callLog.calls
-      .map((call) => {
-        return `- ${call.date} ${call.time} (${call.durationMinutes} minutes)`
+    `${callLog.name}\n${lines
+      .map((line) => {
+        const date = dateFnsTz.formatInTimeZone(
+          line.startedAt,
+          timeZone,
+          'PP ppp',
+        )
+        const duration = formatDurationHMS(line.durationMilliseconds)
+        return `• ${date} (${duration})`
       })
       .join('\n')}`,
   )
