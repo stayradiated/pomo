@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { once } from './once.js'
-import * as privateEnvVars from '$env/static/private'
+import * as privateEnvVars from '$env/dynamic/private'
 
 const getEnv = once(() =>
   z
