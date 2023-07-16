@@ -59,23 +59,28 @@ const POST = async ({ request }: RequestEvent) => {
     return error(500, labelPerson.message)
   }
 
-  const lines = callLog.calls.map((call) => {
-    const now = new Date()
-    const startedAt = chrono
-      .parseDate(`${call.date} at ${call.time}`, {
-        instant: now,
-        timezone: dateFnsTz.getTimezoneOffset(timeZone, now) / 1000 / 60,
-      })
-      .getTime()
-    const durationMilliseconds = call.durationMinutes * 60 * 1000
-    const stoppedAt = startedAt + durationMilliseconds
+  const lines = callLog.calls
+    .filter((call) => {
+      // Ignore calls that are less than 1 minute long
+      return call.durationMinutes > 0
+    })
+    .map((call) => {
+      const now = new Date()
+      const startedAt = chrono
+        .parseDate(`${call.date} at ${call.time}`, {
+          instant: now,
+          timezone: dateFnsTz.getTimezoneOffset(timeZone, now) / 1000 / 60,
+        })
+        .getTime()
+      const durationMilliseconds = call.durationMinutes * 60 * 1000
+      const stoppedAt = startedAt + durationMilliseconds
 
-    return {
-      startedAt,
-      stoppedAt,
-      durationMilliseconds,
-    }
-  })
+      return {
+        startedAt,
+        stoppedAt,
+        durationMilliseconds,
+      }
+    })
 
   await transact(doc, () =>
     Promise.all(
