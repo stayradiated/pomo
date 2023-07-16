@@ -16,6 +16,7 @@ import {
 } from '@stayradiated/pomo-doc'
 import * as chrono from 'chrono-node'
 import * as dateFnsTz from 'date-fns-tz'
+import { listOrError } from '@stayradiated/error-boundary'
 
 const $PostBody = z.object({
   content: z.string(),
@@ -30,6 +31,9 @@ const POST = async ({ request }: RequestEvent) => {
     openaiApiKey: env.OPENAI_API_KEY,
     input: content,
   })
+  if (callLog instanceof Error) {
+    return error(400, callLog.message)
+  }
 
   const doc = await getDoc()
   if (doc instanceof Error) {
@@ -82,28 +86,33 @@ const POST = async ({ request }: RequestEvent) => {
       }
     })
 
-  await transact(doc, () =>
-    Promise.all(
-      lines.flatMap((line) => {
-        return [
-          upsertPoint({
-            doc,
-            streamId,
-            startedAt: line.startedAt,
-            labelIdList: [labelPerson],
-            value: '',
-          }),
-          upsertPoint({
-            doc,
-            streamId,
-            startedAt: line.stoppedAt,
-            labelIdList: [],
-            value: '',
-          }),
-        ]
-      }),
+  const upsertPointResult = listOrError(
+    await transact(doc, () =>
+      Promise.all(
+        lines.flatMap((line) => {
+          return [
+            upsertPoint({
+              doc,
+              streamId,
+              startedAt: line.startedAt,
+              labelIdList: [labelPerson],
+              value: '',
+            }),
+            upsertPoint({
+              doc,
+              streamId,
+              startedAt: line.stoppedAt,
+              labelIdList: [],
+              value: '',
+            }),
+          ]
+        }),
+      ),
     ),
   )
+  if (upsertPointResult instanceof Error) {
+    return error(400, upsertPointResult.message)
+  }
 
   await saveDoc()
 

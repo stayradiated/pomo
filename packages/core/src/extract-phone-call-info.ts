@@ -4,6 +4,7 @@ import type {
   ChatCompletionRequestMessage,
 } from 'openai'
 import { z } from 'zod'
+import { errorBoundary, errorBoundarySync } from '@stayradiated/error-boundary'
 
 const getOpenAi = (apiKey: string) => {
   const configuration = new Configuration({
@@ -48,7 +49,7 @@ type ExtractPhoneCallInfoOptions = {
 
 const extractPhoneCallInfo = async (
   options: ExtractPhoneCallInfoOptions,
-): Promise<ExtractPhoneCallInfoResult> => {
+): Promise<ExtractPhoneCallInfoResult | Error> => {
   const { openaiApiKey, input: userInput } = options
 
   const openai = getOpenAi(openaiApiKey)
@@ -145,13 +146,22 @@ Output:
     },
   ]
 
-  const rawResponse = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo-0613',
-    messages: messageList,
-    functions: functionList,
-    function_call: 'auto',
-  })
-  const response = $Response.parse(rawResponse)
+  const rawResponse = await errorBoundary(async () =>
+    openai.createChatCompletion({
+      model: 'gpt-3.5-turbo-0613',
+      messages: messageList,
+      functions: functionList,
+      function_call: 'auto',
+    }),
+  )
+  if (rawResponse instanceof Error) {
+    return rawResponse
+  }
+
+  const response = errorBoundarySync(() => $Response.parse(rawResponse))
+  if (response instanceof Error) {
+    return response
+  }
 
   const functionCallArguments =
     response.data.choices[0].message.function_call.arguments
@@ -160,9 +170,12 @@ Output:
   console.log(functionCallArguments)
   console.log('---')
 
-  const extractPhoneCallInfoResult = $ExtractPhoneCallInfoResult.parse(
-    JSON.parse(functionCallArguments),
+  const extractPhoneCallInfoResult = errorBoundarySync(() =>
+    $ExtractPhoneCallInfoResult.parse(JSON.parse(functionCallArguments)),
   )
+  if (extractPhoneCallInfoResult instanceof Error) {
+    return extractPhoneCallInfoResult
+  }
 
   return extractPhoneCallInfoResult
 }
