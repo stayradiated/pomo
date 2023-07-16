@@ -60,9 +60,11 @@ const POST = async ({ request }: RequestEvent) => {
   }
 
   const lines = callLog.calls.map((call) => {
+    const now = new Date()
     const startedAt = chrono
       .parseDate(`${call.date} at ${call.time}`, {
-        timezone: timeZone,
+        instant: now,
+        timezone: dateFnsTz.getTimezoneOffset(timeZone, now) / 1000 / 60,
       })
       .getTime()
     const durationMilliseconds = call.durationMinutes * 60 * 1000
