@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { once } from './once.js'
-import * as privateEnvVars from '$env/dynamic/private'
+import { env } from '$env/dynamic/private'
 
 const getEnv = once(() =>
   z
@@ -8,7 +8,7 @@ const getEnv = once(() =>
       POMO_DIR: z.string(),
       OPENAI_API_KEY: z.string(),
     })
-    .parse(privateEnvVars),
+    .parse(env),
 )
 
 export { getEnv }
