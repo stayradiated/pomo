@@ -77,8 +77,6 @@ const POST = async ({ request }: RequestEvent) => {
     }
   })
 
-  console.log(lines)
-
   await transact(doc, () =>
     Promise.all(
       lines.flatMap((line) => {
@@ -110,10 +108,10 @@ const POST = async ({ request }: RequestEvent) => {
         const date = dateFnsTz.formatInTimeZone(
           line.startedAt,
           timeZone,
-          'PP ppp',
+          'PP pp',
         )
-        const duration = formatDurationHMS(line.durationMilliseconds)
-        return `• ${date} (${duration})`
+        const minutes = Math.round(line.durationMilliseconds / 1000 / 60)
+        return `• ${date} (${minutes} min)`
       })
       .join('\n')}`,
   )
