@@ -18,7 +18,7 @@ const $ExtractPhoneCallInfoResult = z.object({
     z.object({
       date: z.string(),
       time: z.string(),
-      durationMinutes: z.number(),
+      durationMinutes: z.number().int().min(1),
     }),
   ),
 })
