@@ -21,29 +21,47 @@ import type { Label, Point } from '@stayradiated/pomo-doc'
 import { startOfDayWithTimeZone } from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 
-type GetInterestingLabelsOptions = {
+type GetCommonLabelsOptions = {
   pointList: Point[]
 }
 
-const getInterestingLabels = (options: GetInterestingLabelsOptions) => {
+type StreamLabelIdListMap = Map<string, string[]>
+
+const getCommonLabels = (
+  options: GetCommonLabelsOptions,
+): StreamLabelIdListMap => {
   const { pointList } = options
 
-  const labelCountMap = new Map<string, number>()
+  // streamId → labelId → count
+  const streamLabelCountMap = new Map<string, Map<string, number>>()
 
   for (const point of pointList) {
+    const streamId = point.streamId
+
+    if (!streamLabelCountMap.has(streamId)) {
+      streamLabelCountMap.set(streamId, new Map<string, number>())
+    }
+    const labelCountMap = streamLabelCountMap.get(streamId)!
+
     for (const labelId of point.labelIdList) {
       const count = labelCountMap.get(labelId) ?? 0
       labelCountMap.set(labelId, count + 1)
     }
   }
 
-  const labelIdList = Array.from(labelCountMap.entries())
-    .sort((a, b) => {
-      return b[1] - a[1]
-    })
-    .map(([labelId]) => labelId)
+  const streamLabelIdListMap: StreamLabelIdListMap = new Map()
 
-  return labelIdList.slice(0, 10)
+  for (const [streamId, labelCountMap] of streamLabelCountMap) {
+    streamLabelIdListMap.set(
+      streamId,
+      Array.from(labelCountMap.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([labelId]) => labelId),
+    )
+  }
+
+  return streamLabelIdListMap
 }
 
 const load = (async () => {
@@ -63,10 +81,7 @@ const load = (async () => {
     'yyyy-MM-dd HH:mm',
   )
 
-  const locationStream = getStreamByName({ doc, name: 'location' })
-  if (locationStream instanceof Error) {
-    throw error(500, locationStream.message)
-  }
+  const labelRecord = getLabelRecord({ doc })
 
   const recentPointList = retrievePointList({
     doc,
@@ -74,13 +89,10 @@ const load = (async () => {
       .subDays(startOfDayWithTimeZone({ instant: currentTime, timeZone }), 7)
       .getTime(),
     endDate: currentTime,
-    where: {
-      streamIdList: [locationStream.id],
-    },
+    where: {},
   })
 
-  const labelRecord = getLabelRecord({ doc })
-  const interestingLabelIds = getInterestingLabels({
+  const commonLabelMap = getCommonLabels({
     pointList: recentPointList,
   })
 
@@ -89,7 +101,7 @@ const load = (async () => {
     currentPoints,
     streamList,
     labelRecord,
-    interestingLabelIds,
+    commonLabelMap,
   }
 }) satisfies PageServerLoad
 

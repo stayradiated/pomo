@@ -3,12 +3,15 @@
   import LabelGrid from './LabelGrid.svelte'
 
   export let data: PageData
-  const { labelRecord, interestingLabelIds } = data
+  const { labelRecord, streamList, commonLabelMap } = data
 </script>
 
 <main>
-  <h2>Location</h2>
+  {#each streamList as stream}
+    {@const labelIdList = commonLabelMap.get(stream.id) ?? []}
+    <h2>{stream.name}</h2>
     <LabelGrid
       labelRecord={labelRecord}
-      labelIdList={interestingLabelIds} />
+      labelIdList={labelIdList} />
+  {/each}
 </main>

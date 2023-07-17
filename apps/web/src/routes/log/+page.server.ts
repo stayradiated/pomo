@@ -70,7 +70,7 @@ const load = (async ({ url }) => {
       instant: dateFns.subDays(Date.now(), 7).getTime(),
       timeZone,
     }).getTime(),
-    endDate: Date.now(),
+    endDate: Number.POSITIVE_INFINITY,
     where: {},
   })
   if (pointList instanceof Error) {
