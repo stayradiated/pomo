@@ -13,6 +13,8 @@ import type { Session } from './types.js'
 import { getOrRefreshSession } from './auth.js'
 import { getAllActivities } from './get-all-activities.js'
 
+const MAX_MATCHED_ACTIVITIES = 10
+
 type Options = {
   doc: Doc
   clientId: string
@@ -71,8 +73,8 @@ const pullStravaActivities = async (
       matchedActivities += 1
     }
 
-    if (!forceFetchAll && matchedActivities >= 100) {
-      console.log('Reached 100 matched activities, stopping')
+    if (!forceFetchAll && matchedActivities >= MAX_MATCHED_ACTIVITIES) {
+      console.log(`Reached ${matchedActivities} matched activities, stopping`)
       break
     }
 
