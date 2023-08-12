@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.20.4](https://github.com/stayradiated/pomo/releases/tag/v0.20.4) - 2023-08-12
+
+- [`5963d3a`](https://github.com/stayradiated/pomo/commit/5963d3a211781f7863de326e9be9bc9c515beb08) fix: and yet another conventional commit message
+
 ## [v0.20.3](https://github.com/stayradiated/pomo/releases/tag/v0.20.3) - 2023-08-12
 
 - [`c64e0f5`](https://github.com/stayradiated/pomo/commit/c64e0f5b4bc2330cec48d258ca136910cc11f88d) ci: use GH_UPLIFT name
