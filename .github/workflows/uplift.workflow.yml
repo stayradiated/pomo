@@ -23,13 +23,10 @@ jobs:
           args: none (this is a required field)
 
       - name: Tag & Release
-        run: |
-          uplift release --no-push
+        run: uplift release --no-push
 
-      - name: Push
-        run: |
-          git status
-          git log
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_UPLIFT }}
+      - name: Push changes
+          uses: ad-m/github-push-action@40bf560936a8022e68a3c00e7d2abefaf01305a6
+          with:
+            github_token: ${{ secrets.GH_UPLIFT }}
+            branch: ${{ github.ref }}
