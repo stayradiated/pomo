@@ -1,12 +1,9 @@
-name: uplift
+name: Uplift
 
 on:
   push:
     branches:
       - main
-
-permissions:
-  contents: write
 
 jobs:
   ci:
@@ -20,7 +17,6 @@ jobs:
           fetch-depth: 0
 
       - name: Tag
-        if: github.ref == 'refs/heads/main'
         uses: gembaadvantage/uplift-action@v2.0.1
         with:
           args: release
