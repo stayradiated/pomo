@@ -1,6 +1,6 @@
 {
 	"name": "web",
-	"version": "0.0.1",
+	"version": "0.20.1",
 	"private": true,
 	"scripts": {
 		"dev": "POMO_DIR=./tmp vite dev",
