@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.20.2](https://github.com/stayradiated/pomo/releases/tag/v0.20.2) - 2023-08-12
+
+- [`f8fe3cd`](https://github.com/stayradiated/pomo/commit/f8fe3cd649f86af88e937456d5950aa12f86e6f9) fix: this is another conventional commit message
+- [`29867be`](https://github.com/stayradiated/pomo/commit/29867bef1684b977093b70267940d0a21c36bf7b) ci(uplift): use custom GITHUB_TOKEN
+
 ## [v0.20.1](https://github.com/stayradiated/pomo/releases/tag/v0.20.1) - 2023-08-12
 
 - [`c7205c6`](https://github.com/stayradiated/pomo/commit/c7205c60d7de7d6e8eff8e40c9192778f0051ad7) ci(uplift): grant permission to write to repo
