@@ -23,8 +23,13 @@ jobs:
           args: none (this is a required field)
 
       - name: Tag & Release
+        run: |
+          uplift release --no-push
+
+      - name: Push
+        run: |
+          git status
+          git log
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GH_UPLIFT }}
-        run: |
-          echo GITHUB_TOKEN=$GITHUB_TOKEN
-          uplift release
