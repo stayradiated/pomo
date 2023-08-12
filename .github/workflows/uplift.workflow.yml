@@ -20,6 +20,7 @@ jobs:
         uses: gembaadvantage/uplift-action@v2.0.1
         with:
           install-only: true
+          args: none (this is a required field)
 
       - name: Tag & Release
         env:
