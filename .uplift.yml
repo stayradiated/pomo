@@ -1,0 +1,9 @@
+bumps:
+  - file: apps/cli/package.json
+    json:
+      - path: "version"
+        semver: true
+  - file: apps/web/package.json
+    json:
+      - path: "version"
+        semver: true
