@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   ci:
     timeout-minutes: 5
@@ -21,4 +24,4 @@ jobs:
         with:
           args: release
         env:
-          GITHUB_TOKEN: ${{ secrets.UPLIFT_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_UPLIFT }}
