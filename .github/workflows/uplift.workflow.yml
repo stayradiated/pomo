@@ -21,6 +21,8 @@ jobs:
         with:
           install-only: true
           args: none (this is a required field)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_UPLIFT }}
 
       - name: Tag & Release
         run: uplift release --no-push
