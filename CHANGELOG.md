@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.21.3](https://github.com/stayradiated/pomo/releases/tag/v0.21.3) - 2023-08-13
+
+- [`99cbd77`](https://github.com/stayradiated/pomo/commit/99cbd7754d398d66737d80019c8ac73d7c7a9ada) fix(mobile): update svelte config
+
 ## [v0.21.2](https://github.com/stayradiated/pomo/releases/tag/v0.21.2) - 2023-08-13
 
 - [`fcbf39b`](https://github.com/stayradiated/pomo/commit/fcbf39ba47472e26164fb82493c15204dab01e8f) fix(ci): add apps/mobile to .dockerignore
