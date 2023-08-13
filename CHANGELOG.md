@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [v0.22.1](https://github.com/stayradiated/pomo/releases/tag/v0.22.1) - 2023-08-13
 
+- [`acca806`](https://github.com/stayradiated/pomo/commit/acca8064560f57e7d24795e80042dd05f907c79a) fix(ci): reuse the correct message
+- [`9bd9147`](https://github.com/stayradiated/pomo/commit/9bd91479136a30ad3ce1d1907877305c8f561dc6) fix(ci): use github.actor
+- [`2bee09f`](https://github.com/stayradiated/pomo/commit/2bee09f0999f82b808cf40ecec8127ae17014ed0) fix(ci): use github.actor
+- [`fd8e1c4`](https://github.com/stayradiated/pomo/commit/fd8e1c4034912108de36a67e934360a86bd40c02) fix(ci): set commit author
+- [`6a74c7d`](https://github.com/stayradiated/pomo/commit/6a74c7d6be0c93658aaae9808d8d913471cc9d58) fix(ci): generate mobile changelog (using tmp file)
+- [`bcfb94c`](https://github.com/stayradiated/pomo/commit/bcfb94cc2a9f8ab26e19a6c90f659f39d3d9048f) fix(ci): generate mobile changelog
+
+## [v0.22.1](https://github.com/stayradiated/pomo/releases/tag/v0.22.1) - 2023-08-13
+
 - [`2bee09f`](https://github.com/stayradiated/pomo/commit/2bee09f0999f82b808cf40ecec8127ae17014ed0) fix(ci): use github.actor
 - [`fd8e1c4`](https://github.com/stayradiated/pomo/commit/fd8e1c4034912108de36a67e934360a86bd40c02) fix(ci): set commit author
 - [`6a74c7d`](https://github.com/stayradiated/pomo/commit/6a74c7d6be0c93658aaae9808d8d913471cc9d58) fix(ci): generate mobile changelog (using tmp file)
