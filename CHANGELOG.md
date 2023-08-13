@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.22.1](https://github.com/stayradiated/pomo/releases/tag/v0.22.1) - 2023-08-13
+
+- [`2bee09f`](https://github.com/stayradiated/pomo/commit/2bee09f0999f82b808cf40ecec8127ae17014ed0) fix(ci): use github.actor
+- [`fd8e1c4`](https://github.com/stayradiated/pomo/commit/fd8e1c4034912108de36a67e934360a86bd40c02) fix(ci): set commit author
+- [`6a74c7d`](https://github.com/stayradiated/pomo/commit/6a74c7d6be0c93658aaae9808d8d913471cc9d58) fix(ci): generate mobile changelog (using tmp file)
+- [`bcfb94c`](https://github.com/stayradiated/pomo/commit/bcfb94cc2a9f8ab26e19a6c90f659f39d3d9048f) fix(ci): generate mobile changelog
+
 ## [v0.22.0](https://github.com/stayradiated/pomo/releases/tag/v0.22.0) - 2023-08-13
 
 - [`31781fd`](https://github.com/stayradiated/pomo/commit/31781fdb83e02d2cade1d0e6159a4d6eb1453c6e) feat(mobile): experiment with service workers
