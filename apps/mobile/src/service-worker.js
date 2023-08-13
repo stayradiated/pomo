@@ -36,16 +36,25 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
 	// ignore POST requests etc
-	if (event.request.method !== 'GET') return;
+	if (event.request.method !== 'GET') {
+		return;
+	}
 
-	async function respond() {
+	const getResponse = async () => {
 		const url = new URL(event.request.url);
+		console.log(url.pathname);
+
 		const cache = await caches.open(CACHE);
 
 		// `build`/`files` can always be served from the cache
 		if (ASSETS.includes(url.pathname)) {
 			return cache.match(url.pathname);
 		}
+
+		// api requests must always be served from the network
+		// if (url.pathname.startsWith('/api')) {
+		//   return fetch(event.request)
+		// }
 
 		// for everything else, try the network first, but
 		// fall back to the cache if we're offline
@@ -60,7 +69,8 @@ self.addEventListener('fetch', (event) => {
 		} catch {
 			return cache.match(event.request);
 		}
-	}
+	};
 
-	event.respondWith(respond());
+	const response = getResponse();
+	event.respondWith(response);
 });

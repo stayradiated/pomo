@@ -15,8 +15,8 @@ bumps:
       - path: "version"
         semver: true
 
-  - file: apps/mobile/src/lib/version.ts
+  - file: apps/mobile/src/lib/constants.ts
     regex:
-      - pattern: "const VERSION = '$VERSION';"
+      - pattern: "const version = '$VERSION'"
         semver: true
         count: 1
