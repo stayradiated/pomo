@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -17,10 +17,20 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
     steps:
-      - 
+
+      -
         # https://github.com/actions/checkout
         name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      -
+        # https://github.com/gembaadvantage/uplift-action
+        name: Install Uplift
+        uses: gembaadvantage/uplift-action@v2.0.1
+        with:
+          args: release
 
       -
         # https://github.com/docker/metadata-action
