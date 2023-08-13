@@ -39,8 +39,10 @@ jobs:
 
           uplift changelog --all --diff-only --include '^.*\(mobile\)' > /tmp/CHANGELOG.md
           mv /tmp/CHANGELOG.md ./apps/mobile/static/CHANGELOG.md
+          git config --global user.email '${{github.actor}}@users.noreply.github.com'
+          git config --global user.name '${{github.actor}}'
           git add apps/mobile/static/CHANGELOG.md
-          git commit --amend --reuse-message=HEAD~1 --author='uplift-bot <uplift@gembaadvantage.com>'
+          git commit --amend --reuse-message=HEAD~1
           git push
 
       -
