@@ -40,7 +40,7 @@ jobs:
           uplift changelog --all --diff-only --include '^.*\(mobile\)' > /tmp/CHANGELOG.md
           mv /tmp/CHANGELOG.md ./apps/mobile/static/CHANGELOG.md
           git add apps/mobile/static/CHANGELOG.md
-          git commit --amend --reuse-message=HEAD~1
+          git commit --amend --reuse-message=HEAD~1 --author='uplift-bot <uplift@gembaadvantage.com>'
           git push
 
       -
