@@ -1,9 +1,22 @@
 bumps:
+
   - file: apps/cli/package.json
     json:
       - path: "version"
         semver: true
+
   - file: apps/web/package.json
     json:
       - path: "version"
         semver: true
+
+  - file: apps/mobile/package.json
+    json:
+      - path: "version"
+        semver: true
+
+  - file: apps/mobile/src/lib/version.ts
+    regex:
+      - pattern: "const VERSION = '$VERSION';"
+        semver: true
+        count: 1

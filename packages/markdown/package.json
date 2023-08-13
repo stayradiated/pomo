@@ -24,8 +24,8 @@
   "devDependencies": {
     "@types/unist": "3.0.0",
     "typescript": "5.1.6",
-    "vitest": "0.33.0",
-    "xo": "0.55.0"
+    "vitest": "0.34.1",
+    "xo": "0.56.0"
   },
   "__comment": "The following configs are managed by `@stayradiated/jsconfig`",
   "xo": {

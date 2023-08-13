@@ -4,9 +4,10 @@
   "scripts": {
     "build": "turbo build --no-daemon",
     "tidy": "pnpm -r run --no-bail tidy",
-    "update-all": "pnpm update --latest"
+    "update-all": "pnpm -r exec -- ncu -u --cache"
   },
   "devDependencies": {
-    "turbo": "1.10.3"
+    "npm-check-updates": "16.11.1",
+    "turbo": "1.10.12"
   }
 }

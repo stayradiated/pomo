@@ -9,12 +9,11 @@ permissions:
   contents: write
 
 jobs:
-  ci:
+  uplift:
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    outputs:
+      VERSION: ${{ steps.version.outputs.VERSION }}
 
     steps:
 
@@ -38,6 +37,22 @@ jobs:
         run: |
           cat ./apps/web/package.json | jq -r '"VERSION=" + .version' >> "$GITHUB_OUTPUT"
 
+  web:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: uplift
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      -
+        # https://github.com/actions/checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       -
         # https://github.com/docker/metadata-action
         name: Docker meta
@@ -46,9 +61,9 @@ jobs:
         with:
           images: stayradiated/pomo
           tags: |
-            type=semver,value=${{ steps.version.outputs.VERSION }},pattern={{version}}
-            type=semver,value=${{ steps.version.outputs.VERSION }},pattern={{major}}.{{minor}}
-            type=semver,value=${{ steps.version.outputs.VERSION }},pattern={{major}}
+            type=semver,value=${{ steps.uplift.outputs.VERSION }},pattern={{version}}
+            type=semver,value=${{ steps.uplift.outputs.VERSION }},pattern={{major}}.{{minor}}
+            type=semver,value=${{ steps.uplift.outputs.VERSION }},pattern={{major}}
 
       -
         # https://github.com/docker/setup-qemu-action
@@ -80,9 +95,80 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  mobile:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: uplift
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      -
+        # https://github.com/actions/checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      -
+        # https://github.com/docker/metadata-action
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: stayradiated/pomo-mobile
+          tags: |
+            type=semver,value=${{ steps.uplift.outputs.VERSION }},pattern={{version}}
+            type=semver,value=${{ steps.uplift.outputs.VERSION }},pattern={{major}}.{{minor}}
+            type=semver,value=${{ steps.uplift.outputs.VERSION }},pattern={{major}}
+
+      -
+        # https://github.com/docker/setup-qemu-action
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      -
+        # https://github.com/docker/setup-buildx-action
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      -
+        # https://github.com/docker/login-action
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        # https://github.com/docker/build-push-action
+        name: Build and Push Docker Image
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          file: ./apps/mobile/Dockerfile
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  release:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: uplift,web,mobile
+    steps:
+
+      -
+        # https://github.com/actions/checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - 
         # https://github.com/softprops/action-gh-release
         name: Release
         uses: softprops/action-gh-release@v0.1.15
         with:
-          tag_name: v${{ steps.version.outputs.VERSION }}
+          tag_name: v${{ steps.uplift.outputs.VERSION }}
