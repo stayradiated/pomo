@@ -13,6 +13,13 @@
 !/apps/web/tsconfig.json
 !/apps/web/vite.config.ts
 
+!/apps/mobile/src
+!/apps/mobile/static
+!/apps/mobile/package.json
+!/apps/mobile/svelte.config.js
+!/apps/mobile/tsconfig.json
+!/apps/mobile/vite.config.ts
+
 !/packages/doc/src
 !/packages/doc/package.json
 !/packages/doc/tsconfig.json
