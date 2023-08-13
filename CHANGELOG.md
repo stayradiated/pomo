@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.21.0](https://github.com/stayradiated/pomo/releases/tag/v0.21.0) - 2023-08-13
+
+- [`52c56c7`](https://github.com/stayradiated/pomo/commit/52c56c717b3054f71cee786d3a99c919be2db1c2) fix(ci): wrap needs in array
+- [`05780e1`](https://github.com/stayradiated/pomo/commit/05780e1aaea3099f3a6fce3a31aeb4c6b19e3923) feat: add mobile app
+- [`22d5807`](https://github.com/stayradiated/pomo/commit/22d580723fd7132079ba7369b45ad279af5309c5) ci(uplift): uplifted for version
+
 ## [v0.20.9](https://github.com/stayradiated/pomo/releases/tag/v0.20.9) - 2023-08-13
 
 - [`95b27bf`](https://github.com/stayradiated/pomo/commit/95b27bfb33e3f26470dcf7e4a215a949892f9aeb) fix(ci): I think this is fixed now?
