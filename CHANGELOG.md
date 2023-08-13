@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.22.0](https://github.com/stayradiated/pomo/releases/tag/v0.22.0) - 2023-08-13
+
+- [`31781fd`](https://github.com/stayradiated/pomo/commit/31781fdb83e02d2cade1d0e6159a4d6eb1453c6e) feat(mobile): experiment with service workers
+
 ## [v0.21.3](https://github.com/stayradiated/pomo/releases/tag/v0.21.3) - 2023-08-13
 
 - [`99cbd77`](https://github.com/stayradiated/pomo/commit/99cbd7754d398d66737d80019c8ac73d7c7a9ada) fix(mobile): update svelte config
