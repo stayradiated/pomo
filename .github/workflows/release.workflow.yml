@@ -29,7 +29,18 @@ jobs:
         name: Version, Changelog & Release
         uses: gembaadvantage/uplift-action@v2.0.1
         with:
-          args: release
+          install-only: true
+          args: none
+
+      -
+        name: Uplift
+        run: |
+          uplift release --no-push
+
+          uplift changelog --all --diff-only --include '^.*\(mobile\)' > ./apps/mobile/static/CHANGELOG.md
+          git add apps/mobile/static/CHANGELOG.md
+          git commit --amend --reuse-message=HEAD~1
+          git push
 
       -
         name: Get Version
