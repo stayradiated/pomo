@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.20.7](https://github.com/stayradiated/pomo/releases/tag/v0.20.7) - 2023-08-13
+
+- [`3425720`](https://github.com/stayradiated/pomo/commit/34257203c2df4894b3ed9e1d98d91c24f40da7dd) fix(ci): debug why this happens?
+
 ## [v0.20.6](https://github.com/stayradiated/pomo/releases/tag/v0.20.6) - 2023-08-13
 
 - [`ea54727`](https://github.com/stayradiated/pomo/commit/ea5472781bfeb72d0f93c4ebbc470c096d8f7476) fix(ci): generate docker tags using release version
