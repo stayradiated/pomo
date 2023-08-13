@@ -27,11 +27,16 @@ jobs:
 
       -
         # https://github.com/gembaadvantage/uplift-action
-        name: Install Uplift
+        name: Version, Changelog & Release
         uses: gembaadvantage/uplift-action@v2.0.1
         with:
           args: release
 
+      -
+        name: Get Version
+        id: version
+        run: |
+          < ./apps/web/package.json | jq -r '"version=" + .version' >> "$GITHUB_OUTPUT"
       -
         # https://github.com/docker/metadata-action
         name: Docker meta
@@ -40,9 +45,9 @@ jobs:
         with:
           images: stayradiated/pomo
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=semver,value=${{ steps.version.outputs.version }},pattern={{version}}
+            type=semver,value=${{ steps.version.outputs.version }},pattern={{major}}.{{minor}}
+            type=semver,value=${{ steps.version.outputs.version }},pattern={{major}}
 
       -
         # https://github.com/docker/setup-qemu-action
