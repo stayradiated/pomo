@@ -36,8 +36,12 @@ jobs:
         name: Get Version
         id: version
         run: |
-          < ./apps/web/package.json | jq -r '"version=" + .version'
-          < ./apps/web/package.json | jq -r '"version=" + .version' >> "$GITHUB_OUTPUT"
+          echo '---'
+          cat ./apps/web/package.json | jq -r '"version=" + .version';
+          echo '---'
+          cat ./apps/web/package.json | jq -r '"version=" + .version' >> "$GITHUB_OUTPUT"
+          echo '---'
+
       -
         # https://github.com/docker/metadata-action
         name: Docker meta
