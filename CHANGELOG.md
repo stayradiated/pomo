@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.21.2](https://github.com/stayradiated/pomo/releases/tag/v0.21.2) - 2023-08-13
+
+- [`fcbf39b`](https://github.com/stayradiated/pomo/commit/fcbf39ba47472e26164fb82493c15204dab01e8f) fix(ci): add apps/mobile to .dockerignore
+
 ## [v0.21.1](https://github.com/stayradiated/pomo/releases/tag/v0.21.1) - 2023-08-13
 
 - [`a5fe215`](https://github.com/stayradiated/pomo/commit/a5fe21557b7d82670e9dff29d266186ed3029285) fix(ci): reference version from needs.uplift
