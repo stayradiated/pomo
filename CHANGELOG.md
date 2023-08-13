@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.20.6](https://github.com/stayradiated/pomo/releases/tag/v0.20.6) - 2023-08-13
+
+- [`ea54727`](https://github.com/stayradiated/pomo/commit/ea5472781bfeb72d0f93c4ebbc470c096d8f7476) fix(ci): generate docker tags using release version
+
 ## [v0.20.5](https://github.com/stayradiated/pomo/releases/tag/v0.20.5) - 2023-08-13
 
 - [`bb3d14d`](https://github.com/stayradiated/pomo/commit/bb3d14dddc088e4ae82a8a4a30a000d1ddef815a) fix(ci): combine uplift + release workflows
