@@ -36,11 +36,7 @@ jobs:
         name: Get Version
         id: version
         run: |
-          echo '---'
-          cat ./apps/web/package.json | jq -r '"version=" + .version';
-          echo '---'
-          cat ./apps/web/package.json | jq -r '"version=" + .version' >> "$GITHUB_OUTPUT"
-          echo '---'
+          cat ./apps/web/package.json | jq -r '"VERSION=" + .version' >> "$GITHUB_OUTPUT"
 
       -
         # https://github.com/docker/metadata-action
@@ -50,9 +46,9 @@ jobs:
         with:
           images: stayradiated/pomo
           tags: |
-            type=semver,value=${{ steps.version.outputs.version }},pattern={{version}}
-            type=semver,value=${{ steps.version.outputs.version }},pattern={{major}}.{{minor}}
-            type=semver,value=${{ steps.version.outputs.version }},pattern={{major}}
+            type=semver,value=${{ steps.version.outputs.VERSION }},pattern={{version}}
+            type=semver,value=${{ steps.version.outputs.VERSION }},pattern={{major}}.{{minor}}
+            type=semver,value=${{ steps.version.outputs.VERSION }},pattern={{major}}
 
       -
         # https://github.com/docker/setup-qemu-action
@@ -88,3 +84,5 @@ jobs:
         # https://github.com/softprops/action-gh-release
         name: Release
         uses: softprops/action-gh-release@v0.1.15
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
