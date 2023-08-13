@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.20.8](https://github.com/stayradiated/pomo/releases/tag/v0.20.8) - 2023-08-13
+
+- [`30f64a6`](https://github.com/stayradiated/pomo/commit/30f64a670b5b673fdd69d835bd2291032465f025) fix(ci): still not sure
+
 ## [v0.20.7](https://github.com/stayradiated/pomo/releases/tag/v0.20.7) - 2023-08-13
 
 - [`3425720`](https://github.com/stayradiated/pomo/commit/34257203c2df4894b3ed9e1d98d91c24f40da7dd) fix(ci): debug why this happens?
