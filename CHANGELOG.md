@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.20.5](https://github.com/stayradiated/pomo/releases/tag/v0.20.5) - 2023-08-13
+
+- [`bb3d14d`](https://github.com/stayradiated/pomo/commit/bb3d14dddc088e4ae82a8a4a30a000d1ddef815a) fix(ci): combine uplift + release workflows
+- [`89b114f`](https://github.com/stayradiated/pomo/commit/89b114fc64b453b790e1ae92f0a3bfd9082cceda) fix(ci): I do not understand what is happening here
+- [`44fc50d`](https://github.com/stayradiated/pomo/commit/44fc50d099200b1fc583b1ffc8764c33c89877b9) fix(ci): pass GITHUB_TOKEN env when installing uplift
+- [`4c80dc1`](https://github.com/stayradiated/pomo/commit/4c80dc1220555f850818dfc209066fd013f34704) fix(ci): try using latest version of github-push-action
+- [`a72ef35`](https://github.com/stayradiated/pomo/commit/a72ef358cd83568097a998de9272a3c691c14a09) fix(ci): fix syntax error in yaml
+- [`c97fa74`](https://github.com/stayradiated/pomo/commit/c97fa74faf5435a7c9cab4043717f29035523ff5) fix(ci): use a custom action just to push to git 🤷
+- [`16a24fe`](https://github.com/stayradiated/pomo/commit/16a24fed8ce84548de4f13d93f755b64f71f7c3c) fix(ci): git push separately
+- [`f13771b`](https://github.com/stayradiated/pomo/commit/f13771bd028670edc5e1626f156d1f98ab21945b) fix(ci): must specify args when calling uplift action
+- [`7a4dd2e`](https://github.com/stayradiated/pomo/commit/7a4dd2ef6aa0da5409c43a813837b2d791f7f11f) fix: really struggling here
+
 ## [v0.20.4](https://github.com/stayradiated/pomo/releases/tag/v0.20.4) - 2023-08-12
 
 - [`5963d3a`](https://github.com/stayradiated/pomo/commit/5963d3a211781f7863de326e9be9bc9c515beb08) fix: and yet another conventional commit message
