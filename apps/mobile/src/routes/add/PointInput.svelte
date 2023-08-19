@@ -35,8 +35,6 @@
   )
 
   const handleFilter = (event: CustomEvent<any>) => {
-    console.log(event)
-
     if (value?.find((i) => i.label === filterText)) return
     if (event.detail.length === 0 && filterText.length > 0) {
       const prev = items.filter((i) => !i.created)

@@ -3,14 +3,12 @@
 	"version": "0.25.0",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "POMO_DIR=./tmp vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "vitest",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"tidy": "prettier --write --plugin-search-dir=. ./src"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-node": "1.3.1",

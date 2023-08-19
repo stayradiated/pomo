@@ -9,6 +9,8 @@
     console.log('content from the database is loaded')
   })
 
+  $: log = [] as string[]
+
   const remoteUrl = '/api/sync'
 
   const transport = async (
@@ -47,6 +49,8 @@
   }
 
   const handleSync = async () => {
+    log = [...log, 'Sync started']
+
     const remoteData = await transport(
       remoteUrl,
       syncWithRemote({
@@ -55,6 +59,8 @@
         shouldSendStateVector: true,
       }),
     )
+
+    log = [...log, 'Sync 50% complete']
 
     await transport(
       remoteUrl,
@@ -66,10 +72,14 @@
       }),
     )
 
-    console.log('Sync complete')
+    log = [...log, 'Sync complete']
   }
 </script>
 
 <h1>Sync</h1>
 
 <button on:click={handleSync}>Sync</button>
+
+<pre>
+  <code>{JSON.stringify(log, null, 2)}</code>
+</pre>
