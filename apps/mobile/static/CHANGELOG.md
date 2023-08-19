@@ -1,3 +1,7 @@
+## [v0.25.0](https://github.com/stayradiated/pomo/releases/tag/v0.25.0) - 2023-08-19
+
+- [`36f45a4`](https://github.com/stayradiated/pomo/commit/36f45a493eee1bd56328cb94a2c3a690ee4ca61b) feat(mobile): migrate some of the web UI over
+
 ## [v0.24.1](https://github.com/stayradiated/pomo/releases/tag/v0.24.1) - 2023-08-19
 
 ## [v0.24.0](https://github.com/stayradiated/pomo/releases/tag/v0.24.0) - 2023-08-19
