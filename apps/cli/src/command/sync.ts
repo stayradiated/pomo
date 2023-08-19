@@ -1,7 +1,46 @@
 import { CliCommand } from 'cilly'
 import { syncWithRemote } from '@stayradiated/pomo-doc'
+import type { SyncTransportData } from '@stayradiated/pomo-doc'
 import { fetch, FormData } from 'undici'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
+
+const transport = async (
+  remoteUrl: string,
+  local: SyncTransportData,
+): Promise<SyncTransportData> => {
+  const formData = new FormData()
+  if (local.diff) {
+    formData.append('diff', new Blob([local.diff]))
+  }
+
+  if (local.stateVector) {
+    formData.append('stateVector', new Blob([local.stateVector]))
+  }
+
+  const response = await fetch(`${remoteUrl}/sync`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      origin: remoteUrl,
+    },
+  })
+  const body = await response.formData()
+
+  const remoteDiffFile = body.get('diff')
+  const remoteStateVectorFile = body.get('stateVector')
+
+  const remoteDiff =
+    remoteDiffFile && remoteDiffFile instanceof File
+      ? new Uint8Array(await remoteDiffFile.arrayBuffer())
+      : undefined
+
+  const remoteStateVector =
+    remoteStateVectorFile && remoteStateVectorFile instanceof File
+      ? new Uint8Array(await remoteStateVectorFile.arrayBuffer())
+      : undefined
+
+  return { diff: remoteDiff, stateVector: remoteStateVector }
+}
 
 type HandlerOptions = {
   remoteUrl: string
@@ -15,48 +54,26 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     return doc
   }
 
-  const syncResult = await syncWithRemote({
-    doc,
-    async postDiff(request) {
-      const { localDiff, localStateVector } = request
+  const remoteData = await transport(
+    remoteUrl,
+    syncWithRemote({
+      doc,
+      remote: undefined,
+      shouldSendStateVector: true,
+    }),
+  )
 
-      const formData = new FormData()
-      if (localDiff) {
-        formData.append('diff', new Blob([localDiff]))
-      }
+  await transport(
+    remoteUrl,
+    syncWithRemote({
+      doc,
+      remote: remoteData,
+      shouldApplyDiff: true,
+      shouldSendDiff: true,
+    }),
+  )
 
-      if (localStateVector) {
-        formData.append('stateVector', new Blob([localStateVector]))
-      }
-
-      const response = await fetch(`${remoteUrl}/sync`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          origin: remoteUrl,
-        },
-      })
-      const body = await response.formData()
-
-      const remoteDiffFile = body.get('diff')
-      const remoteStateVectorFile = body.get('stateVector')
-
-      const remoteDiff =
-        remoteDiffFile && remoteDiffFile instanceof File
-          ? new Uint8Array(await remoteDiffFile.arrayBuffer())
-          : undefined
-
-      const remoteStateVector =
-        remoteStateVectorFile && remoteStateVectorFile instanceof File
-          ? new Uint8Array(await remoteStateVectorFile.arrayBuffer())
-          : undefined
-
-      return { remoteDiff, remoteStateVector }
-    },
-  })
-  if (syncResult instanceof Error) {
-    return syncResult
-  }
+  console.log('Sync complete')
 
   await saveDoc()
 }

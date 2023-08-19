@@ -5,55 +5,58 @@ import { diffUpdate } from './diff-update.js'
 import { mergeUpdates } from './merge-updates.js'
 import type { Doc } from './types.js'
 
-type PostDiffRequest = {
-  localStateVector?: Uint8Array
-  localDiff?: Uint8Array
+type SyncTransportData = {
+  stateVector?: Uint8Array | undefined
+  diff?: Uint8Array | undefined
 }
-type PostDiffResult = {
-  remoteStateVector?: Uint8Array
-  remoteDiff?: Uint8Array
-}
-
-type PostDiffFn = (formData: PostDiffRequest) => Promise<PostDiffResult>
 
 type SyncWithRemoteOptions = {
   doc: Doc
-  postDiff: PostDiffFn
+  remote?: SyncTransportData
+  shouldSendDiff?: boolean
+  shouldSendStateVector?: boolean
+  shouldApplyDiff?: boolean
 }
 
-const syncWithRemote = async (
-  options: SyncWithRemoteOptions,
-): Promise<void | Error> => {
-  const { doc, postDiff } = options
+const syncWithRemote = (options: SyncWithRemoteOptions): SyncTransportData => {
+  const {
+    doc,
+    remote,
+    shouldApplyDiff,
+    shouldSendStateVector,
+    shouldSendDiff,
+  } = options
 
   let localState = encodeStateAsUpdate(doc)
-  const localStateVector = encodeStateVectorFromUpdate(localState)
+  const local: SyncTransportData = {}
 
-  console.log(
-    `Sending state vector to the server: ${localStateVector.length} bytes`,
-  )
-  const { remoteDiff, remoteStateVector } = await postDiff({
-    localStateVector,
-  })
-  if (!remoteDiff) {
-    throw new Error('Expected remoteDiff, but got none')
+  if (shouldApplyDiff) {
+    if (!remote?.diff) {
+      throw new Error('Cannot apply diff without remote diff')
+    }
+
+    console.log(`Received diff: ${remote.diff.length} bytes`)
+    localState = mergeUpdates([localState, remote.diff])
+    applyUpdate(doc, remote.diff)
   }
 
-  console.log(`Received diff from server: ${remoteDiff.length} bytes`)
-
-  applyUpdate(doc, remoteDiff)
-  localState = mergeUpdates([localState, remoteDiff])
-
-  if (remoteStateVector) {
-    console.log(
-      `Received state vector from server: ${remoteStateVector.length} bytes`,
-    )
-    const localDiff = diffUpdate(localState, remoteStateVector)
-    console.log(`Sending diff to the server: ${localDiff.length} bytes`)
-    await postDiff({ localDiff })
+  if (shouldSendStateVector) {
+    local.stateVector = encodeStateVectorFromUpdate(localState)
+    console.log(`Sending state vector: ${local.stateVector.length} bytes`)
   }
 
-  console.log('Sync complete')
+  if (shouldSendDiff) {
+    if (!remote?.stateVector) {
+      throw new Error('Cannot send diff without remote state vector')
+    }
+
+    const localDiff = diffUpdate(localState, remote.stateVector)
+    local.diff = localDiff
+    console.log(`Sending diff: ${local.diff.length} bytes`)
+  }
+
+  return local
 }
 
 export { syncWithRemote }
+export type { SyncTransportData }
