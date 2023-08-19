@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { randomUlid } from './utils/ulid.js'
 import * as Y from 'yjs'
 import { find } from './utils/find.js'
 import type { Doc, YStream } from './types.js'
@@ -44,7 +44,7 @@ const upsertStream = (options: UpsertStreamOptions): string | Error => {
     return existingStream.get('id')!
   }
 
-  const streamId = randomUUID()
+  const streamId = randomUlid()
   const stream = new Y.Map() as YStream
   stream.set('id', streamId)
   stream.set('name', name)

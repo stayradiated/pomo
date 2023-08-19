@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { randomUlid } from './utils/ulid.js'
 import * as Y from 'yjs'
 import { find } from './utils/find.js'
 import type { Doc, YLabel } from './types.js'
@@ -52,7 +52,7 @@ const upsertLabel = (options: UpsertLabelOptions): string | Error => {
     return existingLabel.get('id')!
   }
 
-  const labelId = randomUUID()
+  const labelId = randomUlid()
   const label = new Y.Map() as YLabel
   label.set('id', labelId)
   label.set('streamId', streamId)

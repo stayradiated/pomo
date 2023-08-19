@@ -59,6 +59,7 @@ export * from './create-doc.js'
 export * from './create-doc-with-data.js'
 export * from './load-doc.js'
 
+export * from './apply-update.js'
 export * from './encode-state-as-update.js'
 export * from './encode-state-vector.js'
 export * from './encode-state-vector-from-update.js'

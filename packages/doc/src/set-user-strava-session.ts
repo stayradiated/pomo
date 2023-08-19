@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { randomUlid } from './utils/ulid.js'
 import * as Y from 'yjs'
 import { head } from './utils/head.js'
 import type { Doc, YUser } from './types.js'
@@ -30,7 +30,7 @@ const setUserStravaSession = (
     user.set('stravaSession', session)
     user.set('updatedAt', now)
   } else {
-    const userId = randomUUID()
+    const userId = randomUlid()
     const user = new Y.Map() as YUser
     user.set('id', userId)
     user.set('stravaSession', session)

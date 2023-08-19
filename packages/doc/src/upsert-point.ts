@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { randomUlid } from './utils/ulid.js'
 import * as Y from 'yjs'
 import { find } from './utils/find.js'
 import type { Doc, YPoint } from './types.js'
@@ -58,7 +58,7 @@ const upsertPoint = (options: UpsertPointOptions): string | Error => {
     return existingPoint.get('id')!
   }
 
-  const pointId = randomUUID()
+  const pointId = randomUlid()
   const point = new Y.Map() as YPoint
   point.set('id', pointId)
   point.set('streamId', streamId)
