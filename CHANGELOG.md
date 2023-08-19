@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [v0.23.0](https://github.com/stayradiated/pomo/releases/tag/v0.23.0) - 2023-08-19
 
+- [`72b8ed6`](https://github.com/stayradiated/pomo/commit/72b8ed66f73b72cc459e1e98e6d1a65166522209) feat(web): allows CORS on sync route
+- [`03352a9`](https://github.com/stayradiated/pomo/commit/03352a957eea426ca146342d227bca4b7e4fa813) ci(uplift): uplifted for version v0.23.0
+- [`884c98b`](https://github.com/stayradiated/pomo/commit/884c98b00c49c51e740e65a41b2b49a27db07732) feat(mobile): include YJS
+
+## [v0.23.0](https://github.com/stayradiated/pomo/releases/tag/v0.23.0) - 2023-08-19
+
 - [`884c98b`](https://github.com/stayradiated/pomo/commit/884c98b00c49c51e740e65a41b2b49a27db07732) feat(mobile): include YJS
 
 ## [v0.22.1](https://github.com/stayradiated/pomo/releases/tag/v0.22.1) - 2023-08-13
