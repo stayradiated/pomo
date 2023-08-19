@@ -1,3 +1,7 @@
+## [v0.27.0](https://github.com/stayradiated/pomo/releases/tag/v0.27.0) - 2023-08-19
+
+- [`3ed93c4`](https://github.com/stayradiated/pomo/commit/3ed93c4b93aa0c3094ab0bdd232b3cd458199872) feat(mobile): add manifest and icons
+
 ## [v0.26.0](https://github.com/stayradiated/pomo/releases/tag/v0.26.0) - 2023-08-19
 
 - [`f3cf996`](https://github.com/stayradiated/pomo/commit/f3cf9967133638c1060cc64a6e543b8e901c1a61) feat(mobile): implement actions for /add route
