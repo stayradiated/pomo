@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.24.0](https://github.com/stayradiated/pomo/releases/tag/v0.24.0) - 2023-08-19
+
+- [`f5dd135`](https://github.com/stayradiated/pomo/commit/f5dd1358a3d9716312ef0dbd63674fed0dc3bad5) feat: copy sync api to mobile app
+
 ## [v0.23.0](https://github.com/stayradiated/pomo/releases/tag/v0.23.0) - 2023-08-19
 
 - [`72b8ed6`](https://github.com/stayradiated/pomo/commit/72b8ed66f73b72cc459e1e98e6d1a65166522209) feat(web): allows CORS on sync route
