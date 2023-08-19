@@ -1,3 +1,7 @@
+## [v0.23.0](https://github.com/stayradiated/pomo/releases/tag/v0.23.0) - 2023-08-19
+
+- [`884c98b`](https://github.com/stayradiated/pomo/commit/884c98b00c49c51e740e65a41b2b49a27db07732) feat(mobile): include YJS
+
 ## [v0.22.1](https://github.com/stayradiated/pomo/releases/tag/v0.22.1) - 2023-08-13
 
 ## [v0.22.0](https://github.com/stayradiated/pomo/releases/tag/v0.22.0) - 2023-08-13
