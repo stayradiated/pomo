@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [v0.24.0](https://github.com/stayradiated/pomo/releases/tag/v0.24.0) - 2023-08-19
 
+- [`1cfb542`](https://github.com/stayradiated/pomo/commit/1cfb542a4b96a7de9fa1a52637a4045c5d29e3b4) feat: use syncWithRemote everywhere
+- [`efd122a`](https://github.com/stayradiated/pomo/commit/efd122aac966cc6e57dd2fb452ee0343db309ac3) ci(uplift): uplifted for version v0.24.0
+- [`f5dd135`](https://github.com/stayradiated/pomo/commit/f5dd1358a3d9716312ef0dbd63674fed0dc3bad5) feat: copy sync api to mobile app
+
+## [v0.24.0](https://github.com/stayradiated/pomo/releases/tag/v0.24.0) - 2023-08-19
+
 - [`f5dd135`](https://github.com/stayradiated/pomo/commit/f5dd1358a3d9716312ef0dbd63674fed0dc3bad5) feat: copy sync api to mobile app
 
 ## [v0.23.0](https://github.com/stayradiated/pomo/releases/tag/v0.23.0) - 2023-08-19
