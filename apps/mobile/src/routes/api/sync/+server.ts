@@ -22,12 +22,14 @@ const POST = async ({ request }: RequestEvent) => {
       ? new Uint8Array(await remoteStateVectorFile.arrayBuffer())
       : undefined
 
-  const shouldSendStateVector = !!remoteStateVector
-  const shouldSendDiff = !!remoteStateVector
+  const shouldApplyDiff = Boolean(remoteDiff)
+  const shouldSendStateVector = Boolean(remoteStateVector)
+  const shouldSendDiff = Boolean(remoteStateVector)
 
   const result = syncWithRemote({
     doc,
     remote: { diff: remoteDiff, stateVector: remoteStateVector },
+    shouldApplyDiff,
     shouldSendStateVector,
     shouldSendDiff,
   })
