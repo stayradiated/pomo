@@ -1,7 +1,7 @@
-import { Ulid } from 'id128';
+import * as id128 from 'id128'
 
 const randomUlid = (): string => {
-  return Ulid.generate().toCanonical()
+  return id128.Ulid.generate().toCanonical()
 }
 
 export { randomUlid }

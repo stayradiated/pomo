@@ -9,6 +9,8 @@ import {
 } from '@stayradiated/pomo-doc'
 
 const POST = async ({ request }: RequestEvent) => {
+  // TODO: use an API key or something
+  
   const requestFormData = await request.formData()
   const responseFormData = new FormData()
 
@@ -58,7 +60,9 @@ const POST = async ({ request }: RequestEvent) => {
     )
   }
 
-  return new Response(responseFormData, { status: 200 })
+  const response = new Response(responseFormData, { status: 200 })
+  response.headers.append('Access-Control-Allow-Origin', '*')
+  return response
 }
 
 export { POST }

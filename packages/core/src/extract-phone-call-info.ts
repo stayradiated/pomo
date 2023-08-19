@@ -1,16 +1,11 @@
-import { Configuration, OpenAIApi } from 'openai'
-import type {
-  ChatCompletionFunctions,
-  ChatCompletionRequestMessage,
-} from 'openai'
+import OpenAI from 'openai'
 import { z } from 'zod'
 import { errorBoundary, errorBoundarySync } from '@stayradiated/error-boundary'
 
 const getOpenAi = (apiKey: string) => {
-  const configuration = new Configuration({
+  return new OpenAI({
     apiKey,
   })
-  return new OpenAIApi(configuration)
 }
 
 const $ExtractPhoneCallInfoResult = z.object({
@@ -54,7 +49,7 @@ const extractPhoneCallInfo = async (
 
   const openai = getOpenAi(openaiApiKey)
 
-  const messageList: ChatCompletionRequestMessage[] = [
+  const messageList: OpenAI.Chat.Completions.ChatCompletionMessage[] = [
     {
       role: 'system',
       content: `Please extract the name and call log from the information that the user provides you.`,
@@ -65,10 +60,11 @@ const extractPhoneCallInfo = async (
     },
   ]
 
-  const functionList: ChatCompletionFunctions[] = [
-    {
-      name: 'extract_phone_call_info',
-      description: `Extract the name and call log information. Ignore any cancelled calls.
+  const functionList: OpenAI.Chat.Completions.CompletionCreateParams.Function[] =
+    [
+      {
+        name: 'extract_phone_call_info',
+        description: `Extract the name and call log information. Ignore any cancelled calls.
 
 ###
 
@@ -110,44 +106,44 @@ Output:
   extractPhoneCallInfo({ name: "Shawn Townsend", calls: [{ date: "10 July 2023", time: "15:59", durationMinutes: 5 }, { date: "10 July 2023", time: "16:04", durationMinutes: 7 }] })
 
 ###`,
-      parameters: {
-        type: 'object',
-        properties: {
-          name: {
-            type: 'string',
-            description: 'The name of the person who called.',
-          },
-          calls: {
-            type: 'array',
-            description: 'A list of calls',
-            items: {
-              type: 'object',
-              properties: {
-                date: {
-                  type: 'string',
-                  description:
-                    'The date the call started. Example: "Today", "Yesterday" or "10 July 2023"',
-                },
-                time: {
-                  type: 'string',
-                  description:
-                    'The time the call started. Example: "10:44", "23:11" or "15:59"',
-                },
-                durationMinutes: {
-                  type: 'number',
-                  description:
-                    'The duration of the call rounded to the nearest minute.',
+        parameters: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'The name of the person who called.',
+            },
+            calls: {
+              type: 'array',
+              description: 'A list of calls',
+              items: {
+                type: 'object',
+                properties: {
+                  date: {
+                    type: 'string',
+                    description:
+                      'The date the call started. Example: "Today", "Yesterday" or "10 July 2023"',
+                  },
+                  time: {
+                    type: 'string',
+                    description:
+                      'The time the call started. Example: "10:44", "23:11" or "15:59"',
+                  },
+                  durationMinutes: {
+                    type: 'number',
+                    description:
+                      'The duration of the call rounded to the nearest minute.',
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  ]
+    ]
 
   const rawResponse = await errorBoundary(async () =>
-    openai.createChatCompletion({
+    openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0613',
       messages: messageList,
       functions: functionList,

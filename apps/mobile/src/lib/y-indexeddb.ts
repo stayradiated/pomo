@@ -5,7 +5,6 @@ import * as promise from 'lib0/promise'
 import { Observable } from 'lib0/observable'
 import * as Y from 'yjs'
 
-const customStoreName = 'custom'
 const updatesStoreName = 'updates'
 
 export const PREFERRED_TRIM_SIZE = 500
@@ -29,7 +28,7 @@ export const fetchUpdates = async (
     beforeApplyUpdatesCallback(updatesStore)
     Y.transact(idbPersistence.doc, () => {
       updates.forEach(val => {
-        Y.applyUpdate(idbPersistence.doc, val)
+        Y.applyUpdateV2(idbPersistence.doc, val)
       })
     }, idbPersistence, false)
     afterApplyUpdatesCallback(updatesStore)
@@ -45,7 +44,7 @@ export const fetchUpdates = async (
 export const storeState = async (idbPersistence: IndexeddbPersistence, forceStore: boolean = true) => {
   const updatesStore = await fetchUpdates(idbPersistence)
   if (forceStore || idbPersistence.dbsize >= PREFERRED_TRIM_SIZE) {
-    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(idbPersistence.doc))
+    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdateV2(idbPersistence.doc))
     idb.del(updatesStore, idb.createIDBKeyRangeUpperBound(idbPersistence.dbref, true))
 
     idbPersistence.dbsize = await idb.count(updatesStore)
@@ -90,7 +89,7 @@ export class IndexeddbPersistence extends Observable<string> {
 
     this._dbPromise.then(db => {
       this.db = db
-      const beforeApplyUpdatesCallback = (updatesStore: IDBObjectStore) => idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(doc))
+      const beforeApplyUpdatesCallback = (updatesStore: IDBObjectStore) => idb.addAutoKey(updatesStore, Y.encodeStateAsUpdateV2(doc))
       const afterApplyUpdatesCallback = () => {
         if (this.destroyed) return this
         this.synced = true
@@ -119,7 +118,7 @@ export class IndexeddbPersistence extends Observable<string> {
         }
       }
     }
-    doc.on('update', this._storeUpdate)
+    doc.on('updateV2', this._storeUpdate)
     this.destroy = this.destroy.bind(this)
     doc.on('destroy', this.destroy)
   }
@@ -128,7 +127,7 @@ export class IndexeddbPersistence extends Observable<string> {
     if (this._storeTimeoutId) {
       clearTimeout(this._storeTimeoutId)
     }
-    this.doc.off('update', this._storeUpdate)
+    this.doc.off('updateV2', this._storeUpdate)
     this.doc.off('destroy', this.destroy)
     this.destroyed = true
     const db = await this._dbPromise
@@ -139,23 +138,5 @@ export class IndexeddbPersistence extends Observable<string> {
   async clearData (): Promise<void> {
     await this.destroy()
     idb.deleteDB(this.name)
-  }
-
-  async get (key: string|number|ArrayBuffer|Date): Promise<string|number|ArrayBuffer|Date> {
-    const db = await this._dbPromise
-    const [custom] = idb.transact(db, [customStoreName], 'readonly')
-    return idb.get(custom, key) as Promise<string|number|ArrayBuffer|Date>
-  }
-
-  async set (key: string|number|ArrayBuffer|Date, value: string|number|ArrayBuffer|Date): Promise<string|number|ArrayBuffer|Date> {
-    const db = await this._dbPromise
-    const [custom] = idb.transact(db, [customStoreName])
-    return idb.put(custom, value, key)
-  }
-
-  async del (key: string | number | ArrayBuffer | Date): Promise<undefined> {
-    const db = await this._dbPromise
-    const [custom] = idb.transact(db, [customStoreName])
-    return idb.del(custom, key)
   }
 }

@@ -1,74 +1,7 @@
 import { CliCommand } from 'cilly'
-import {
-  loadDoc,
-  encodeStateAsUpdate,
-  encodeStateVectorFromUpdate,
-  diffUpdate,
-  mergeUpdates,
-} from '@stayradiated/pomo-doc'
+import { syncWithRemote } from '@stayradiated/pomo-doc'
 import { fetch, FormData } from 'undici'
-import { getDoc, replaceDoc, saveDoc } from '#src/lib/doc.js'
-
-type postDiffOptions = {
-  remoteUrl: string
-  localStateVector?: Uint8Array
-  localDiff?: Uint8Array
-}
-
-type PostDiffResult = {
-  remoteStateVector?: Uint8Array
-  remoteDiff?: Uint8Array
-}
-
-const postDiff = async (options: postDiffOptions): Promise<PostDiffResult> => {
-  const { remoteUrl, localStateVector, localDiff } = options
-
-  const formData = new FormData()
-
-  if (localDiff) {
-    formData.append('diff', new Blob([localDiff]))
-  }
-
-  if (localStateVector) {
-    formData.append('stateVector', new Blob([localStateVector]))
-  }
-
-  const response = await fetch(`${remoteUrl}/sync`, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      origin: remoteUrl,
-    },
-  })
-
-  const body = await response.formData()
-
-  const output = {} as PostDiffResult
-
-  const remoteDiffFile = body.get('diff')
-  if (remoteDiffFile) {
-    if (!(remoteDiffFile instanceof File)) {
-      throw new TypeError('Expected diff to be a File')
-    }
-
-    const remoteDiff = new Uint8Array(await remoteDiffFile.arrayBuffer())
-    output.remoteDiff = remoteDiff
-  }
-
-  const remoteStateVectorFile = body.get('stateVector')
-  if (remoteStateVectorFile) {
-    if (!(remoteStateVectorFile instanceof File)) {
-      throw new TypeError('Expected stateVector to be a File')
-    }
-
-    const remoteStateVector = new Uint8Array(
-      await remoteStateVectorFile.arrayBuffer(),
-    )
-    output.remoteStateVector = remoteStateVector
-  }
-
-  return output
-}
+import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
   remoteUrl: string
@@ -82,36 +15,50 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
     return doc
   }
 
-  let localState = encodeStateAsUpdate(doc)
-  const localStateVector = encodeStateVectorFromUpdate(localState)
+  const syncResult = await syncWithRemote({
+    doc,
+    async postDiff(request) {
+      const { localDiff, localStateVector } = request
 
-  console.log(
-    `Sending state vector to the server: ${localStateVector.length} bytes`,
-  )
-  const { remoteDiff, remoteStateVector } = await postDiff({
-    remoteUrl,
-    localStateVector,
+      const formData = new FormData()
+      if (localDiff) {
+        formData.append('diff', new Blob([localDiff]))
+      }
+
+      if (localStateVector) {
+        formData.append('stateVector', new Blob([localStateVector]))
+      }
+
+      const response = await fetch(`${remoteUrl}/sync`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          origin: remoteUrl,
+        },
+      })
+      const body = await response.formData()
+
+      const remoteDiffFile = body.get('diff')
+      const remoteStateVectorFile = body.get('stateVector')
+
+      const remoteDiff =
+        remoteDiffFile && remoteDiffFile instanceof File
+          ? new Uint8Array(await remoteDiffFile.arrayBuffer())
+          : undefined
+
+      const remoteStateVector =
+        remoteStateVectorFile && remoteStateVectorFile instanceof File
+          ? new Uint8Array(await remoteStateVectorFile.arrayBuffer())
+          : undefined
+
+      return { remoteDiff, remoteStateVector }
+    },
   })
-  if (!remoteDiff) {
-    throw new Error('Expected remoteDiff, but got none')
+  if (syncResult instanceof Error) {
+    return syncResult
   }
 
-  console.log(`Received diff from server: ${remoteDiff.length} bytes`)
-
-  localState = mergeUpdates([localState, remoteDiff])
-  const nextDoc = loadDoc(localState)
-  replaceDoc(nextDoc)
   await saveDoc()
-
-  if (remoteStateVector) {
-    console.log(
-      `Received state vector from server: ${remoteStateVector.length} bytes`,
-    )
-    const localDiff = diffUpdate(localState, remoteStateVector)
-    console.log(`Sending diff to the server: ${localDiff.length} bytes`)
-    const response = await postDiff({ remoteUrl, localDiff })
-    console.log(Object.keys(response))
-  }
 }
 
 const syncCmd = new CliCommand('sync')

@@ -1,5 +1,5 @@
-import { randomUlid } from './utils/ulid.js'
 import * as Y from 'yjs'
+import { randomUlid } from './utils/ulid.js'
 import { head } from './utils/head.js'
 import type { Doc, YUser } from './types.js'
 

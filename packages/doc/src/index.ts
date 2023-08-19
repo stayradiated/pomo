@@ -73,3 +73,5 @@ export * from './types.js'
 export * from './schema.js'
 
 export * from './error.js'
+
+export * from './sync-with-remote.js'
