@@ -8,7 +8,7 @@ import {
   transact,
 } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '$lib/doc'
-import { getCurrentPoints } from '$lib/get-current-points'
+import { getCurrentPoints } from '@stayradiated/pomo-core'
 import { toDate, formatInTimeZone } from 'date-fns-tz'
 import { zfd } from 'zod-form-data'
 import { z } from 'zod'

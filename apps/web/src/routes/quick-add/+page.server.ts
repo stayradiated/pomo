@@ -3,22 +3,17 @@ import type { PageServerLoad, Actions } from './$types'
 import {
   getLabelRecord,
   getStreamList,
-  getStreamByName,
-  upsertPoint,
-  updatePoint,
-  transact,
   getUserTimeZone,
-  upsertLabel,
   retrievePointList,
 } from '@stayradiated/pomo-doc'
-import { getDoc, saveDoc } from '$lib/doc.js'
-import { redirect } from '@sveltejs/kit'
-import { getCurrentPoints } from '$lib/get-current-points'
+import { getDoc } from '$lib/doc.js'
 import { zfd } from 'zod-form-data'
-import { z } from 'zod'
-import { toDate, formatInTimeZone } from 'date-fns-tz'
-import type { Label, Point } from '@stayradiated/pomo-doc'
-import { startOfDayWithTimeZone } from '@stayradiated/pomo-core'
+import { formatInTimeZone } from 'date-fns-tz'
+import type { Point } from '@stayradiated/pomo-doc'
+import {
+  startOfDayWithTimeZone,
+  getCurrentPoints,
+} from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 
 type GetCommonLabelsOptions = {

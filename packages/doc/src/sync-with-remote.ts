@@ -38,6 +38,8 @@ const syncWithRemote = (options: SyncWithRemoteOptions): SyncTransportData => {
     console.log(`Received diff: ${remote.diff.length} bytes`)
     localState = mergeUpdates([localState, remote.diff])
     applyUpdate(doc, remote.diff)
+  } else if (remote?.diff) {
+    console.warn('Received diff but was not expecting it!')
   }
 
   if (shouldSendStateVector) {
@@ -50,9 +52,12 @@ const syncWithRemote = (options: SyncWithRemoteOptions): SyncTransportData => {
       throw new Error('Cannot send diff without remote state vector')
     }
 
+    console.log(`Received state vector: ${remote.stateVector.length} bytes`)
     const localDiff = diffUpdate(localState, remote.stateVector)
     local.diff = localDiff
     console.log(`Sending diff: ${local.diff.length} bytes`)
+  } else if (remote?.stateVector) {
+    console.warn('Received state vector but was not expecting it!')
   }
 
   return local

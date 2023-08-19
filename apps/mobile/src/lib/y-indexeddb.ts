@@ -3,7 +3,8 @@
 import * as idb from 'lib0/indexeddb'
 import * as promise from 'lib0/promise'
 import { Observable } from 'lib0/observable'
-import * as Y from 'yjs'
+import { transact, applyUpdate, encodeStateAsUpdate} from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
 
 const updatesStoreName = 'updates'
 
@@ -26,9 +27,9 @@ export const fetchUpdates = async (
 
   if (!idbPersistence.destroyed) {
     beforeApplyUpdatesCallback(updatesStore)
-    Y.transact(idbPersistence.doc, () => {
+    transact(idbPersistence.doc, () => {
       updates.forEach(val => {
-        Y.applyUpdateV2(idbPersistence.doc, val)
+        applyUpdate(idbPersistence.doc, val)
       })
     }, idbPersistence, false)
     afterApplyUpdatesCallback(updatesStore)
@@ -44,7 +45,7 @@ export const fetchUpdates = async (
 export const storeState = async (idbPersistence: IndexeddbPersistence, forceStore: boolean = true) => {
   const updatesStore = await fetchUpdates(idbPersistence)
   if (forceStore || idbPersistence.dbsize >= PREFERRED_TRIM_SIZE) {
-    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdateV2(idbPersistence.doc))
+    await idb.addAutoKey(updatesStore, encodeStateAsUpdate(idbPersistence.doc))
     idb.del(updatesStore, idb.createIDBKeyRangeUpperBound(idbPersistence.dbref, true))
 
     idbPersistence.dbsize = await idb.count(updatesStore)
@@ -54,7 +55,7 @@ export const storeState = async (idbPersistence: IndexeddbPersistence, forceStor
 export const clearDocument = (name: string) => idb.deleteDB(name)
 
 export class IndexeddbPersistence extends Observable<string> {
-  public readonly doc: Y.Doc
+  public readonly doc: Doc
   public readonly name: string
   public db: IDBDatabase|null
   public synced: boolean
@@ -68,7 +69,7 @@ export class IndexeddbPersistence extends Observable<string> {
   private _storeTimeoutId: any
   private _storeUpdate: (update: Uint8Array, origin: any) => void
 
-  constructor (name: string, doc: Y.Doc) {
+  constructor (name: string, doc: Doc) {
     super()
 
     this.doc = doc
@@ -89,7 +90,7 @@ export class IndexeddbPersistence extends Observable<string> {
 
     this._dbPromise.then(db => {
       this.db = db
-      const beforeApplyUpdatesCallback = (updatesStore: IDBObjectStore) => idb.addAutoKey(updatesStore, Y.encodeStateAsUpdateV2(doc))
+      const beforeApplyUpdatesCallback = (updatesStore: IDBObjectStore) => idb.addAutoKey(updatesStore, encodeStateAsUpdate(doc))
       const afterApplyUpdatesCallback = () => {
         if (this.destroyed) return this
         this.synced = true

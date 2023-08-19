@@ -1,8 +1,9 @@
 <script lang="ts">
-  import * as pDoc from '@stayradiated/pomo-doc';
+  import { createDoc, syncWithRemote } from '@stayradiated/pomo-doc';
+  import type { SyncTransportData } from '@stayradiated/pomo-doc';
   import { IndexeddbPersistence } from '$lib/y-indexeddb';
 
-  const doc = pDoc.createDoc()
+  const doc = createDoc()
   const provider = new IndexeddbPersistence('pomo', doc)
   provider.on('synced', () => {
     console.log('content from the database is loaded')
@@ -10,49 +11,62 @@
 
   const remoteUrl = '/api/sync'
 
-  const handleSync = async () => {
-    const result = await pDoc.syncWithRemote({
-      doc,
-      async postDiff(request) {
-        const { localDiff, localStateVector } = request
-
-        const formData = new FormData()
-        if (localDiff) {
-          formData.append('diff', new Blob([localDiff]))
-        }
-
-        if (localStateVector) {
-          formData.append('stateVector', new Blob([localStateVector]))
-        }
-
-        const response = await fetch(remoteUrl, {
-          method: 'POST',
-          body: formData,
-        })
-        const body = await response.formData()
-
-        const remoteDiffFile = body.get('diff')
-        const remoteStateVectorFile = body.get('stateVector')
-
-        const remoteDiff =
-          remoteDiffFile && remoteDiffFile instanceof File
-            ? new Uint8Array(await remoteDiffFile.arrayBuffer())
-            : undefined
-
-        const remoteStateVector =
-          remoteStateVectorFile && remoteStateVectorFile instanceof File
-            ? new Uint8Array(await remoteStateVectorFile.arrayBuffer())
-            : undefined
-
-        return { remoteDiff, remoteStateVector }
-      },
-    })
-    if (result instanceof Error) {
-      console.error(result)
-    } else {
-      console.log('synced!')
-      console.log(doc)
+  const transport = async (
+    remoteUrl: string,
+    local: SyncTransportData,
+  ): Promise<SyncTransportData> => {
+    const formData = new FormData()
+    if (local.diff) {
+      formData.append('diff', new Blob([local.diff]))
     }
+
+    if (local.stateVector) {
+      formData.append('stateVector', new Blob([local.stateVector]))
+    }
+
+    const response = await fetch(remoteUrl, {
+      method: 'POST',
+      body: formData,
+    })
+    const body = await response.formData()
+
+    const remoteDiffFile = body.get('diff')
+    const remoteStateVectorFile = body.get('stateVector')
+
+    const remoteDiff =
+      remoteDiffFile && remoteDiffFile instanceof File
+        ? new Uint8Array(await remoteDiffFile.arrayBuffer())
+        : undefined
+
+    const remoteStateVector =
+      remoteStateVectorFile && remoteStateVectorFile instanceof File
+        ? new Uint8Array(await remoteStateVectorFile.arrayBuffer())
+        : undefined
+
+    return { diff: remoteDiff, stateVector: remoteStateVector }
+  }
+
+  const handleSync = async () => {
+    const remoteData = await transport(
+      remoteUrl,
+      syncWithRemote({
+        doc,
+        remote: undefined,
+        shouldSendStateVector: true,
+      }),
+    )
+
+    await transport(
+      remoteUrl,
+      syncWithRemote({
+        doc,
+        remote: remoteData,
+        shouldApplyDiff: true,
+        shouldSendDiff: true,
+      }),
+    )
+
+    console.log('Sync complete')
   }
 </script>
 

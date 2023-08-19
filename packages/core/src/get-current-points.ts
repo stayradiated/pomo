@@ -1,8 +1,6 @@
 import type { Doc, Point, Stream } from '@stayradiated/pomo-doc'
 import { retrieveCurrentPoint } from '@stayradiated/pomo-doc'
 
-/* TODO: move to the core library */
-
 type GetCurrentPointsOptions = {
   doc: Doc
   streamList: Stream[]

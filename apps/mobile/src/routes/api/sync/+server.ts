@@ -1,5 +1,5 @@
 import type { RequestEvent } from './$types'
-import { getDoc, saveDoc } from '$lib/doc.js'
+import { getDoc, saveDoc } from '$lib/doc.server.js'
 import { syncWithRemote, } from '@stayradiated/pomo-doc'
 
 const POST = async ({ request }: RequestEvent) => {
