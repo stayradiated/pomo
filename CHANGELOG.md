@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.24.1](https://github.com/stayradiated/pomo/releases/tag/v0.24.1) - 2023-08-19
+
+- [`b7afa40`](https://github.com/stayradiated/pomo/commit/b7afa401a040a171fdfa75bed7f98ecc67df9663) fix(web): apply diff when syncing
+
 ## [v0.24.0](https://github.com/stayradiated/pomo/releases/tag/v0.24.0) - 2023-08-19
 
 - [`1cfb542`](https://github.com/stayradiated/pomo/commit/1cfb542a4b96a7de9fa1a52637a4045c5d29e3b4) feat: use syncWithRemote everywhere
