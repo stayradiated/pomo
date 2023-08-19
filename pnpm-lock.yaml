@@ -99,6 +99,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@stayradiated/error-boundary':
+        specifier: 4.1.0
+        version: 4.1.0
       '@stayradiated/pomo-doc':
         specifier: workspace:*
         version: link:../../packages/doc
@@ -108,6 +111,9 @@ importers:
       yjs:
         specifier: 13.6.7
         version: 13.6.7
+      zod:
+        specifier: 3.22.2
+        version: 3.22.2
     devDependencies:
       '@sveltejs/adapter-node':
         specifier: 1.3.1

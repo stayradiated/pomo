@@ -8,7 +8,7 @@
     console.log('content from the database is loaded')
   })
 
-  const remoteUrl = 'https://pomo.stayradiated.com'
+  const remoteUrl = '/api/sync'
 
   const handleSync = async () => {
     const result = await pDoc.syncWithRemote({
@@ -25,12 +25,9 @@
           formData.append('stateVector', new Blob([localStateVector]))
         }
 
-        const response = await fetch(`${remoteUrl}/sync`, {
+        const response = await fetch(remoteUrl, {
           method: 'POST',
           body: formData,
-          headers: {
-            origin: remoteUrl,
-          },
         })
         const body = await response.formData()
 

@@ -1,7 +1,7 @@
 import type { RequestEvent } from './$types'
-import { getDoc, saveDoc } from '$lib/doc.js'
+import { getDoc, replaceDoc, saveDoc } from '$lib/doc.js'
 import {
-  applyUpdate,
+  loadDoc,
   encodeStateAsUpdate,
   encodeStateVectorFromUpdate,
   diffUpdate,
@@ -14,11 +14,15 @@ const POST = async ({ request }: RequestEvent) => {
   const requestFormData = await request.formData()
   const responseFormData = new FormData()
 
-  const doc = await getDoc()
-  if (doc instanceof Error) {
-    return new Response(doc.message, { status: 500 })
+  let localState: Uint8Array
+
+  {
+    const doc = await getDoc()
+    if (doc instanceof Error) {
+      return new Response(doc.message, { status: 500 })
+    }
+    localState = encodeStateAsUpdate(doc)
   }
-  let localState = encodeStateAsUpdate(doc)
 
   const remoteDiffFile = requestFormData.get('diff')
   if (remoteDiffFile) {
@@ -29,7 +33,7 @@ const POST = async ({ request }: RequestEvent) => {
     console.log(`Received diff from client: ${remoteDiff.length} bytes`)
 
     localState = mergeUpdates([localState, remoteDiff])
-    applyUpdate(doc, remoteDiff)
+    replaceDoc(loadDoc(localState))
     await saveDoc()
   }
 
@@ -56,7 +60,9 @@ const POST = async ({ request }: RequestEvent) => {
     )
   }
 
-  return new Response(responseFormData, { status: 200 })
+  const response = new Response(responseFormData, { status: 200 })
+  response.headers.append('Access-Control-Allow-Origin', '*')
+  return response
 }
 
 export { POST }
