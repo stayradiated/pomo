@@ -1,3 +1,7 @@
+## [v0.28.0](https://github.com/stayradiated/pomo/releases/tag/v0.28.0) - 2023-08-20
+
+- [`5823d87`](https://github.com/stayradiated/pomo/commit/5823d8787c05826af75edd579b2e19b881b05557) feat(mobile): migrate routes from web (without actions)
+
 ## [v0.27.2](https://github.com/stayradiated/pomo/releases/tag/v0.27.2) - 2023-08-20
 
 ## [v0.27.1](https://github.com/stayradiated/pomo/releases/tag/v0.27.1) - 2023-08-20
