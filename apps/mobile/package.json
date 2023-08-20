@@ -32,9 +32,11 @@
 		"@stayradiated/error-boundary": "4.1.0",
 		"@stayradiated/pomo-core": "workspace:*",
 		"@stayradiated/pomo-doc": "workspace:*",
+		"@svelte-put/shortcut": "3.0.0",
 		"date-fns": "2.30.0",
 		"date-fns-tz": "2.0.0",
 		"lib0": "0.2.82",
+		"svelte-awesome-color-picker": "2.4.7",
 		"svelte-select": "5.6.1",
 		"zod": "3.22.2",
 		"zod-form-data": "2.0.1"

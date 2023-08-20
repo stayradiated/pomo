@@ -11,7 +11,16 @@
         <a href="/add">Add</a>
       </li>
       <li>
+        <a href="/quick-add">Quick Add</a>
+      </li>
+      <li>
         <a href="/log">Log</a>
+      </li>
+      <li>
+        <a href="/calendar/day">Calendar</a>
+      </li>
+      <li>
+        <a href="/label">Labels</a>
       </li>
       <li>
         <a href="/sync">Sync</a>

@@ -108,6 +108,9 @@ importers:
       '@stayradiated/pomo-doc':
         specifier: workspace:*
         version: link:../../packages/doc
+      '@svelte-put/shortcut':
+        specifier: 3.0.0
+        version: 3.0.0
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -117,6 +120,9 @@ importers:
       lib0:
         specifier: 0.2.82
         version: 0.2.82
+      svelte-awesome-color-picker:
+        specifier: 2.4.7
+        version: 2.4.7
       svelte-select:
         specifier: 5.6.1
         version: 5.6.1
