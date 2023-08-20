@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.27.1](https://github.com/stayradiated/pomo/releases/tag/v0.27.1) - 2023-08-20
+
+- [`c2d563c`](https://github.com/stayradiated/pomo/commit/c2d563cd9b56185be36baa31b61d35835e2c08b9) fix(web): do not return error(), instead throw
+
 ## [v0.27.0](https://github.com/stayradiated/pomo/releases/tag/v0.27.0) - 2023-08-19
 
 - [`3ed93c4`](https://github.com/stayradiated/pomo/commit/3ed93c4b93aa0c3094ab0bdd232b3cd458199872) feat(mobile): add manifest and icons
