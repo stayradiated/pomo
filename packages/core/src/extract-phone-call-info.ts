@@ -20,19 +20,17 @@ const $ExtractPhoneCallInfoResult = z.object({
 })
 
 const $Response = z.object({
-  data: z.object({
-    choices: z.tuple([
-      z.object({
-        message: z.object({
-          role: z.enum(['assistant']),
-          function_call: z.object({
-            name: z.string(),
-            arguments: z.string(),
-          }),
+  choices: z.tuple([
+    z.object({
+      message: z.object({
+        role: z.enum(['assistant']),
+        function_call: z.object({
+          name: z.string(),
+          arguments: z.string(),
         }),
       }),
-    ]),
-  }),
+    }),
+  ]),
 })
 
 type ExtractPhoneCallInfoResult = z.infer<typeof $ExtractPhoneCallInfoResult>
@@ -160,7 +158,7 @@ Output:
   }
 
   const functionCallArguments =
-    response.data.choices[0].message.function_call.arguments
+    response.choices[0].message.function_call.arguments
 
   console.log('---')
   console.log(functionCallArguments)
@@ -173,7 +171,13 @@ Output:
     return extractPhoneCallInfoResult
   }
 
-  return extractPhoneCallInfoResult
+  return {
+    name: extractPhoneCallInfoResult.name,
+    // Filter out any calls that have a duration of 0 minutes.
+    calls: extractPhoneCallInfoResult.calls.filter(
+      (call) => call.durationMinutes > 0,
+    ),
+  }
 }
 
 export { extractPhoneCallInfo }
