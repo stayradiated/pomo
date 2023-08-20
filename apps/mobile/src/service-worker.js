@@ -10,7 +10,15 @@ const CACHE = `cache-${version}`;
 
 const ASSETS = [
 	...build, // the app itself
-	...files // everything in `static`
+	...files, // everything in `static`
+
+	'/add',
+	'/calendar/day',
+	'/calendar/week',
+	'/label',
+	'/log',
+	'/quick-add',
+	'/sync'
 ];
 
 self.addEventListener('install', (event) => {
@@ -37,37 +45,46 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
 	// ignore POST requests etc
 	if (event.request.method !== 'GET') {
+		console.log(`Passing through ${event.request.method} request`);
 		return;
 	}
 
 	const getResponse = async () => {
 		const url = new URL(event.request.url);
-		console.log(url.pathname);
-
 		const cache = await caches.open(CACHE);
 
 		// `build`/`files` can always be served from the cache
 		if (ASSETS.includes(url.pathname)) {
+			console.log(`Resolving cached asset: ${url.pathname}`);
 			return cache.match(url.pathname);
 		}
 
 		// api requests must always be served from the network
-		// if (url.pathname.startsWith('/api')) {
-		//   return fetch(event.request)
-		// }
+		if (url.pathname.startsWith('/api')) {
+			console.log(`Passing through API request: ${url.pathname}`);
+			return fetch(event.request);
+		}
 
 		// for everything else, try the network first, but
 		// fall back to the cache if we're offline
 		try {
 			const response = await fetch(event.request);
+			console.log(`Passing through API : GET ${url.pathname}`);
 
 			if (response.status === 200) {
+				console.log(`Caching response: ${url.pathname}`);
 				cache.put(event.request, response.clone());
 			}
 
 			return response;
 		} catch {
-			return cache.match(event.request);
+			const match = await cache.match(event.request);
+			if (match) {
+				console.log(`Resolve response from cache: ${url.pathname}`);
+				return match;
+			}
+			console.log(`No response found in cache: ${url.pathname}`);
+			return undefined;
 		}
 	};
 
