@@ -1,3 +1,7 @@
+## [v0.29.0](https://github.com/stayradiated/pomo/releases/tag/v0.29.0) - 2023-08-20
+
+- [`b0deeb1`](https://github.com/stayradiated/pomo/commit/b0deeb1994f70ee1796aac9283d5ec24085a7aad) feat(mobile): implement local action handling
+
 ## [v0.28.0](https://github.com/stayradiated/pomo/releases/tag/v0.28.0) - 2023-08-20
 
 - [`5823d87`](https://github.com/stayradiated/pomo/commit/5823d8787c05826af75edd579b2e19b881b05557) feat(mobile): migrate routes from web (without actions)
