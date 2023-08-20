@@ -1,11 +1,18 @@
 <script lang="ts">
   import type { PageData } from './$types'
+  import { handleFormSubmit } from './actions';
 
   export let data: PageData
   const { startedAtLocal, streamList, pointList } = data
 
   const getStream = (id: string) => {
     return streamList.find((stream) => stream.id === id)
+  }
+
+  const handleSubmit = (event: SubmitEvent) => {
+    const form = event.target as HTMLFormElement
+    const formData = new FormData(form)
+    handleFormSubmit({ doc: data.doc, formData })
   }
 </script>
 
@@ -18,7 +25,7 @@
   {/each}
 </ul>
 
-<form method="POST">
+<form on:submit|preventDefault={handleSubmit}>
   {#each pointList as point}
     <input type="hidden" name="pointId" value={point.id} />
   {/each}

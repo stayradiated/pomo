@@ -1,15 +1,9 @@
 import type { PageLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import {
-	getPointById,
-	getStreamList,
-	getUserTimeZone,
-	updatePointStartedAt,
-	transact
-} from '@stayradiated/pomo-doc';
+import { getPointById, getStreamList, getUserTimeZone } from '@stayradiated/pomo-doc';
 import { getDoc } from '$lib/doc';
 import { getCurrentPoints } from '@stayradiated/pomo-core';
-import { toDate, formatInTimeZone } from 'date-fns-tz';
+import { formatInTimeZone } from 'date-fns-tz';
 
 const load = (async ({ url }) => {
 	const pointId = url.searchParams.get('ref') ?? undefined;
@@ -38,6 +32,7 @@ const load = (async ({ url }) => {
 	const startedAtLocal = formatInTimeZone(startedAt, timeZone, 'yyyy-MM-dd HH:mm');
 
 	return {
+		doc,
 		startedAtLocal,
 		streamList,
 		pointList

@@ -1,25 +1,26 @@
-import { error, redirect } from '@sveltejs/kit';
-import { getDoc } from '$lib/doc.js';
 import { updateLabel, transact } from '@stayradiated/pomo-doc';
+import type { Doc } from '@stayradiated/pomo-doc';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
+import { goto } from '$app/navigation';
 
-const $schema = zfd.formData({
+const $FormDataSchema = zfd.formData({
 	name: zfd.text(),
 	icon: zfd.text(z.string().optional()),
 	color: zfd.text()
 });
 
-const actions = async ({ params, request }) => {
-	const { labelId } = params;
+type HandleFormSubmitOptions = {
+	doc: Doc;
+	labelId: string;
+	formData: FormData;
+};
 
-	const formData = $schema.parse(await request.formData());
+const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
+	const { doc, labelId, formData: rawFormData } = options;
+
+	const formData = $FormDataSchema.parse(rawFormData);
 	const { name, icon, color } = formData;
-
-	const doc = await getDoc();
-	if (doc instanceof Error) {
-		throw error(500, doc.message);
-	}
 
 	const result = transact(doc, () =>
 		updateLabel({
@@ -31,10 +32,10 @@ const actions = async ({ params, request }) => {
 		})
 	);
 	if (result instanceof Error) {
-		throw error(500, result.message);
+		throw result;
 	}
 
-	throw redirect(302, '/label');
+	goto('/label');
 };
 
-export { actions };
+export { handleFormSubmit };

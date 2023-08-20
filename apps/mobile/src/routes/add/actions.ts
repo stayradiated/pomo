@@ -39,7 +39,14 @@ const $FormDataSchema = zfd.formData({
 	)
 });
 
-const handleFormSubmit = async (doc: Doc, rawFormData: FormData) => {
+type HandleFormSubmitOptions = {
+	doc: Doc;
+	formData: FormData;
+};
+
+const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
+	const { doc, formData: rawFormData } = options;
+
 	const formData = $FormDataSchema.parse(rawFormData);
 	const { startedAtLocal, stream: streamValueList } = formData;
 

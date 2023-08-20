@@ -5,11 +5,11 @@
 
   export let data: PageData
   const { startedAtLocal, streamList, currentPoints, streamLabelRecord } = data
+
   const handleSubmit = async (event: SubmitEvent) => {
     const form = event.target as HTMLFormElement
     const formData = new FormData(form)
-
-    await handleFormSubmit(data.doc, formData)
+    await handleFormSubmit({ doc: data.doc, formData })
   }
 </script>
 

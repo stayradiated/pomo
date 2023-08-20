@@ -1,9 +1,11 @@
 <script lang="ts">
-  import type { Stream, Label } from '@stayradiated/pomo-doc'
+  import type { Doc, Stream, Label } from '@stayradiated/pomo-doc'
+  import { handleDeleteFormSubmit } from './actions.js';
 
   export let stream: Stream
   export let labelListMap: Map<string|null, Label[]>
   export let labelRecord: Record<string, Label>
+  export let doc: Doc
 
   $: labelIdList = Array.from(labelListMap.values()).flatMap((list) => list.map((label) => label.id))
 
@@ -22,11 +24,17 @@
   }
 
   $: toggleHtmlId = `stream-${stream.id}-all`
+
+  const handleSubmit = async (event: SubmitEvent) => {
+    const form = event.target as HTMLFormElement
+    const formData = new FormData(form)
+    handleDeleteFormSubmit({ doc, formData })
+  }
 </script>
 
 <h3>{stream.name}</h3>
 
-<form method="POST">
+<form on:submit|preventDefault={handleSubmit}>
   <input type="hidden" name="stream" value={stream.id} />
   <input type="submit" name="action:delete" value="Delete" />
 

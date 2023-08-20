@@ -38,6 +38,7 @@ const load = (async () => {
 	}
 
 	return {
+		doc,
 		streamList,
 		labelRecord,
 		streamLabelListMap

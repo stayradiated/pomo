@@ -18,8 +18,10 @@ const load = (async ({ params }) => {
 	const stream = streamRecord[label.streamId];
 
 	return {
+		doc,
 		stream,
-		label
+		label,
+		labelId
 	};
 }) satisfies PageLoad;
 

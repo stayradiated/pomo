@@ -4,7 +4,7 @@
 
   export let data: PageData
 
-  $:({ streamList, labelRecord, streamLabelListMap } = data)
+  $:({ streamList, labelRecord, streamLabelListMap, doc } = data)
 </script>
 
 <h2>Labels</h2>
@@ -12,6 +12,6 @@
 {#each streamList as stream}
   {@const labelListMap = streamLabelListMap.get(stream.id)}
   {#if labelListMap}
-    <StreamLabelList {stream} {labelListMap} {labelRecord} />
+    <StreamLabelList {stream} {labelListMap} {labelRecord} {doc} />
   {/if}
 {/each}

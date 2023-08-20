@@ -77,6 +77,6 @@ const load = (async ({ url }) => {
 		instant,
 		timeZone
 	};
-}) satisfies PageServerLoad;
+}) satisfies PageLoad;
 
 export { load };
