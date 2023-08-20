@@ -1,10 +1,7 @@
 import { error, text } from '@sveltejs/kit'
 import type { RequestEvent } from './$types'
 import { z } from 'zod'
-import {
-  extractPhoneCallInfo,
-  formatDurationHMS,
-} from '@stayradiated/pomo-core'
+import { extractPhoneCallInfo } from '@stayradiated/pomo-core'
 import { getEnv } from '$lib/env'
 import { getDoc, saveDoc } from '$lib/doc'
 import {
@@ -32,12 +29,12 @@ const POST = async ({ request }: RequestEvent) => {
     input: content,
   })
   if (callLog instanceof Error) {
-    return error(400, callLog.message)
+    throw error(400, callLog.message)
   }
 
   const doc = await getDoc()
   if (doc instanceof Error) {
-    return error(500, doc.message)
+    throw error(500, doc.message)
   }
 
   const timeZone = getUserTimeZone({ doc })
@@ -49,7 +46,7 @@ const POST = async ({ request }: RequestEvent) => {
     }),
   )
   if (streamId instanceof Error) {
-    return error(500, streamId.message)
+    throw error(500, streamId.message)
   }
 
   const labelPerson = transact(doc, () =>
@@ -60,7 +57,7 @@ const POST = async ({ request }: RequestEvent) => {
     }),
   )
   if (labelPerson instanceof Error) {
-    return error(500, labelPerson.message)
+    throw error(500, labelPerson.message)
   }
 
   const lines = callLog.calls
@@ -111,7 +108,7 @@ const POST = async ({ request }: RequestEvent) => {
     ),
   )
   if (upsertPointResult instanceof Error) {
-    return error(400, upsertPointResult.message)
+    throw error(400, upsertPointResult.message)
   }
 
   await saveDoc()
