@@ -17,11 +17,13 @@ const transport = async (
     formData.append('stateVector', new Blob([local.stateVector]))
   }
 
-  const response = await fetch(`${remoteUrl}/sync`, {
+  const origin = new URL(remoteUrl).origin
+
+  const response = await fetch(remoteUrl, {
     method: 'POST',
     body: formData,
     headers: {
-      origin: remoteUrl,
+      origin,
     },
   })
   const body = await response.formData()
