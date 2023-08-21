@@ -17,7 +17,7 @@
   "dependencies": {
     "@stayradiated/error-boundary": "4.1.0",
     "@stayradiated/pomo-doc": "workspace:*",
-    "chrono-node": "2.6.4",
+    "chrono-node": "2.6.5",
     "colord": "2.9.3",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",

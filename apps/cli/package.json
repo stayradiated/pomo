@@ -29,7 +29,7 @@
     "@stayradiated/pomo-markdown": "workspace:*",
     "@types/better-sqlite3": "7.6.4",
     "better-sqlite3": "8.5.1",
-    "chrono-node": "2.6.4",
+    "chrono-node": "2.6.5",
     "cilly": "1.0.25",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",

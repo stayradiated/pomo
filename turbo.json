@@ -6,6 +6,9 @@
       "dependsOn": ["^build"],
       "inputs": ["./src/**"],
       "outputs": ["./dist/**"]
+    },
+    "test": {
+      "inputs": ["./src/**"]
     }
   }
 }
