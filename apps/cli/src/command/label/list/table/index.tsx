@@ -13,7 +13,7 @@ type ListLabelsOptions = {
   streamId?: string
 }
 
-const listLabels = (options: ListLabelsOptions): void | Error => {
+const listLabelsAsTable = (options: ListLabelsOptions): void | Error => {
   const { doc, streamId: whereStreamId } = options
 
   const streamRecord = getStreamRecord({ doc })
@@ -80,4 +80,4 @@ const listLabels = (options: ListLabelsOptions): void | Error => {
   render(<>{children}</>)
 }
 
-export { listLabels }
+export { listLabelsAsTable }
