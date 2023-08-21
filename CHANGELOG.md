@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.31.0](https://github.com/stayradiated/pomo/releases/tag/v0.31.0) - 2023-08-21
+
+- [`ca1250b`](https://github.com/stayradiated/pomo/commit/ca1250b4c66b83f37d0efff020b5dbaedc4c567f) feat(cli): support listing labels as json
+
 ## [v0.30.1](https://github.com/stayradiated/pomo/releases/tag/v0.30.1) - 2023-08-20
 
 - [`d206e03`](https://github.com/stayradiated/pomo/commit/d206e03a7a095b94f1532e44f370fbc092f25345) fix(mobile): try and improve service worker logic

@@ -1,3 +1,5 @@
+## [v0.31.0](https://github.com/stayradiated/pomo/releases/tag/v0.31.0) - 2023-08-21
+
 ## [v0.30.1](https://github.com/stayradiated/pomo/releases/tag/v0.30.1) - 2023-08-20
 
 - [`d206e03`](https://github.com/stayradiated/pomo/commit/d206e03a7a095b94f1532e44f370fbc092f25345) fix(mobile): try and improve service worker logic
