@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.34.1](https://github.com/stayradiated/pomo/releases/tag/v0.34.1) - 2023-08-24
+
+- [`6c9c76c`](https://github.com/stayradiated/pomo/commit/6c9c76cd9a9be2309490b9f20e198b7427a2b3fe) fix(mobile): debounce/queue syncing logic
+
 ## [v0.34.0](https://github.com/stayradiated/pomo/releases/tag/v0.34.0) - 2023-08-24
 
 - [`da1b79e`](https://github.com/stayradiated/pomo/commit/da1b79e2b263b076704448e79835e5cfc312e791) feat(mobile): automatically sync in the background when making changes
