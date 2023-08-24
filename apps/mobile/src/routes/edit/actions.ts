@@ -9,6 +9,7 @@ import {
 	transact
 } from '@stayradiated/pomo-doc';
 import { toDate } from 'date-fns-tz';
+import { markDocAsStale } from '$lib/sync.js';
 
 const $FormDataSchema = zfd.formData({
 	startedAtLocal: zfd.text(),
@@ -44,6 +45,8 @@ const handleFormSubmit = (options: HandleFormSubmitOptions) => {
 	if (result instanceof Error) {
 		throw result;
 	}
+
+	void markDocAsStale(doc);
 
 	goto('/log');
 };

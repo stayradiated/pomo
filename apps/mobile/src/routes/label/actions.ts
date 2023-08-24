@@ -2,6 +2,8 @@ import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 import { deleteLabels, transact } from '@stayradiated/pomo-doc';
 import type { Doc } from '@stayradiated/pomo-doc';
+import { markDocAsStale } from '$lib/sync.js';
+import { goto } from '$app/navigation';
 
 const $DeleteFormDataSchema = zfd.formData({
 	stream: zfd.text(),
@@ -23,6 +25,10 @@ const handleDeleteFormSubmit = (options: HandleDeleteFormSubmitOptions) => {
 	if (result instanceof Error) {
 		throw result;
 	}
+
+	void markDocAsStale(doc);
+
+	goto('/label');
 };
 
 export { handleDeleteFormSubmit };

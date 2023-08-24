@@ -3,6 +3,7 @@ import type { Doc } from '@stayradiated/pomo-doc';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 import { goto } from '$app/navigation';
+import { markDocAsStale } from '$lib/sync.js';
 
 const $FormDataSchema = zfd.formData({
 	name: zfd.text(),
@@ -34,6 +35,8 @@ const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
 	if (result instanceof Error) {
 		throw result;
 	}
+
+	void markDocAsStale(doc);
 
 	goto('/label');
 };

@@ -12,6 +12,7 @@ import { getCurrentPoints } from '@stayradiated/pomo-core';
 import { toDate } from 'date-fns-tz';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
+import { markDocAsStale } from '$lib/sync.js';
 
 const $FormDataSchema = zfd.formData({
 	startedAtLocal: zfd.text(),
@@ -80,6 +81,7 @@ const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
 					if (labelId instanceof Error) {
 						throw labelId;
 					}
+					void markDocAsStale(doc);
 					return labelId;
 				}
 				default: {
@@ -113,6 +115,7 @@ const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
 			if (result instanceof Error) {
 				throw result;
 			}
+			void markDocAsStale(doc);
 		}
 	}
 

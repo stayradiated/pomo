@@ -15,14 +15,14 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@stayradiated/error-boundary": "4.1.0",
+    "@stayradiated/error-boundary": "4.2.1",
     "@stayradiated/pomo-doc": "workspace:*",
     "chrono-node": "2.6.5",
     "colord": "2.9.3",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
     "mem": "9.0.2",
-    "openai": "4.0.1",
+    "openai": "4.2.0",
     "zod": "3.22.2"
   },
   "devDependencies": {
