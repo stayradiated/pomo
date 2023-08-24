@@ -3,6 +3,8 @@ import { syncWithRemote } from '@stayradiated/pomo-doc';
 import type { SyncTransportData } from '@stayradiated/pomo-doc';
 import { errorBoundary, serializeError } from '@stayradiated/error-boundary';
 import type { Doc } from '@stayradiated/pomo-doc';
+import debounce from 'p-debounce';
+import Queue from 'p-queue';
 
 const transport = async (
 	remoteUrl: string,
@@ -44,7 +46,7 @@ const transport = async (
 	return { diff: remoteDiff, stateVector: remoteStateVector };
 };
 
-const syncWithServer = async (doc: Doc): Promise<void | Error> => {
+const forceSyncWithServer = async (doc: Doc): Promise<void | Error> => {
 	const remoteUrl = '/api/sync';
 
 	const remoteDataPartA = await transport(
@@ -87,7 +89,7 @@ type LogList = Log[];
 const internalSyncLogs = writable<LogList>([]);
 const syncLogs = readonly(internalSyncLogs);
 
-const markDocAsStale = async (doc: Doc) => {
+const syncWithServer = async (doc: Doc) => {
 	internalSyncLogs.update((logs) => [
 		...logs,
 		{
@@ -95,7 +97,7 @@ const markDocAsStale = async (doc: Doc) => {
 			message: 'Sync started'
 		}
 	]);
-	const result = await syncWithServer(doc);
+	const result = await forceSyncWithServer(doc);
 	if (result instanceof Error) {
 		const jsonError = JSON.stringify(serializeError(result));
 		internalSyncLogs.update((logs) => [
@@ -116,6 +118,19 @@ const markDocAsStale = async (doc: Doc) => {
 		]);
 	}
 };
+
+const queue = new Queue({ concurrency: 1 });
+
+const forceMarkDocAsStale = async (doc: Doc): Promise<void | Error> => {
+	if (queue.size > 0) {
+		return;
+	}
+	await queue.add(async () => {
+		await syncWithServer(doc);
+	});
+};
+
+const markDocAsStale = debounce(forceMarkDocAsStale, 1000);
 
 export { markDocAsStale, syncLogs };
 export type { Log, LogList };

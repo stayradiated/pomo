@@ -37,6 +37,8 @@
 		"date-fns": "2.30.0",
 		"date-fns-tz": "2.0.0",
 		"lib0": "0.2.82",
+		"p-debounce": "4.0.0",
+		"p-queue": "7.3.4",
 		"svelte-awesome-color-picker": "2.4.7",
 		"svelte-select": "5.7.0",
 		"zod": "3.22.2",
