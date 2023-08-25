@@ -1,3 +1,7 @@
+## [v0.35.0](https://github.com/stayradiated/pomo/releases/tag/v0.35.0) - 2023-08-25
+
+- [`70bc6b6`](https://github.com/stayradiated/pomo/commit/70bc6b6dc919dc7b5ee70920bb92e8f29640ec0e) feat(mobile): viewport-fit=cover
+
 ## [v0.34.1](https://github.com/stayradiated/pomo/releases/tag/v0.34.1) - 2023-08-24
 
 - [`6c9c76c`](https://github.com/stayradiated/pomo/commit/6c9c76cd9a9be2309490b9f20e198b7427a2b3fe) fix(mobile): debounce/queue syncing logic
