@@ -1,3 +1,7 @@
+## [v0.36.0](https://github.com/stayradiated/pomo/releases/tag/v0.36.0) - 2023-08-25
+
+- [`08ed08c`](https://github.com/stayradiated/pomo/commit/08ed08cc45aa4f0217935f7f1d9b298ac910d02c) feat(mobile): try env(safe-area-inset-*) trick
+
 ## [v0.35.0](https://github.com/stayradiated/pomo/releases/tag/v0.35.0) - 2023-08-25
 
 - [`70bc6b6`](https://github.com/stayradiated/pomo/commit/70bc6b6dc919dc7b5ee70920bb92e8f29640ec0e) feat(mobile): viewport-fit=cover
