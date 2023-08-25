@@ -1,3 +1,7 @@
+## [v0.38.0](https://github.com/stayradiated/pomo/releases/tag/v0.38.0) - 2023-08-25
+
+- [`326ee0e`](https://github.com/stayradiated/pomo/commit/326ee0e1b328e12fb636f070821a11caee188e29) feat(mobile): experiment with StreamStatus component
+
 ## [v0.37.0](https://github.com/stayradiated/pomo/releases/tag/v0.37.0) - 2023-08-25
 
 - [`aec7cd2`](https://github.com/stayradiated/pomo/commit/aec7cd2005855d94162e5c4ab4f08e2a1d4801af) feat(mobile): add a bunch more meta tags
