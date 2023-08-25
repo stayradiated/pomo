@@ -93,4 +93,11 @@
       z-index: 11;
     }
   }
+
+  @supports(padding:max(0px)) {
+    body, header, footer {
+      padding-left: min(0vmin, env(safe-area-inset-left));
+      padding-right: min(0vmin, env(safe-area-inset-right));
+    }
+  }
 </style>
