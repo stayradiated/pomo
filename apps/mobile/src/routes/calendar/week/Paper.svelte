@@ -88,7 +88,7 @@
   .row {
     position: relative;
     box-sizing: border-box;
-    height: 60px;
+    height: calc(60px * 4);
     display: flex;
   }
   .label {

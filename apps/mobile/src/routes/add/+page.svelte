@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import PointInput from './PointInput.svelte'
+  import StreamStatus from './StreamStatus.svelte'
   import { handleFormSubmit } from './actions';
 
   export let data: PageData
@@ -19,7 +19,7 @@
 
     {#each streamList as stream, streamIndex}
       {@const point = currentPoints.get(stream.id)}
-      <PointInput
+      <StreamStatus
         {stream}
         {streamIndex}
         defaultPoint={point}

@@ -9,7 +9,7 @@
   export let line: Line
   export let labelRecord: Record<string, Label>
 
-  $: height = line.durationMs / 1000 / 60
+  $: height = line.durationMs / 1000 / 60 * 4
 
   $: labelList = line.labelIdList
     .map((labelId) => {

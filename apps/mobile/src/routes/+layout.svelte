@@ -1,5 +1,6 @@
 <script lang="ts">
   import './water.css'
+  import './pollen.css'
   import { afterNavigate } from '$app/navigation';
 
   let menuOpen = false
@@ -69,13 +70,13 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: flex-end;
+      align-items: center;
 
       margin: 0;
       padding-left: 7vw;
       padding-right: 7vw;
 
-      background: lightblue;
+      background: var(--color-grey-800);
       z-index: 10;
 
       opacity: 0;
@@ -91,6 +92,14 @@
     .menuToggle {
       display: initial;
       z-index: 11;
+    }
+
+    .menuContainer a {
+      margin: 0;
+      font-size: var(--scale-3);
+      font-weight: var(--weight-bold);
+      line-height: var(--line-xl);
+      color: var(--color-grey-100);
     }
   }
 

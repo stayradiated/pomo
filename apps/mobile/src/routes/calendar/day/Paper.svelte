@@ -31,7 +31,7 @@
     position: relative;
     box-sizing: border-box;
     border-bottom: 1px solid #ccc;
-    height: 60px;
+    height: calc(60px * 4);
   }
   .row:first-of-type {
     border-top: 1px solid #ccc;
