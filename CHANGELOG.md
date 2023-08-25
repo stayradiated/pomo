@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.37.0](https://github.com/stayradiated/pomo/releases/tag/v0.37.0) - 2023-08-25
+
+- [`aec7cd2`](https://github.com/stayradiated/pomo/commit/aec7cd2005855d94162e5c4ab4f08e2a1d4801af) feat(mobile): add a bunch more meta tags
+
 ## [v0.36.0](https://github.com/stayradiated/pomo/releases/tag/v0.36.0) - 2023-08-25
 
 - [`08ed08c`](https://github.com/stayradiated/pomo/commit/08ed08cc45aa4f0217935f7f1d9b298ac910d02c) feat(mobile): try env(safe-area-inset-*) trick
