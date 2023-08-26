@@ -1,3 +1,7 @@
+## [v0.39.0](https://github.com/stayradiated/pomo/releases/tag/v0.39.0) - 2023-08-26
+
+- [`4611b63`](https://github.com/stayradiated/pomo/commit/4611b632868a5d0308c0ab5d7bfc7d399f760f4c) feat(mobile): wip styles for /add
+
 ## [v0.38.0](https://github.com/stayradiated/pomo/releases/tag/v0.38.0) - 2023-08-25
 
 - [`326ee0e`](https://github.com/stayradiated/pomo/commit/326ee0e1b328e12fb636f070821a11caee188e29) feat(mobile): experiment with StreamStatus component
