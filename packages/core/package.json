@@ -4,7 +4,8 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "dotenv -- vitest --watch=false",
+    "test": "dotenv -- vitest --watch=false --testNamePattern=\"^((?!INTEGRATION).)*$\"",
+    "test:integration": "dotenv -- vitest --watch=false",
     "tidy": "xo --fix",
     "build": "rm -rf ./dist && tsc"
   },

@@ -82,6 +82,9 @@
     max-width: none;
     overscroll-behavior-y: contain;
     background: var(--theme-background-body);
+    font-family: var(--font-sans);
+    color: var(--theme-text-main);
+    font-weight: var(--weight-regular);
   }
 
   header {

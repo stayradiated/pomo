@@ -4,7 +4,10 @@
   import { handleFormSubmit } from './actions';
 
   export let data: PageData
-  const { startedAtLocal, streamList, currentPoints, streamLabelRecord } = data
+  const { startedAtLocal: defaultStartedAtLocal, streamList, currentPointMap, streamLabelRecord } = data
+
+  $: startedAtLocal = defaultStartedAtLocal
+  $: currentTime = new Date(startedAtLocal).getTime()
 
   const handleSubmit = async (event: SubmitEvent) => {
     const form = event.target as HTMLFormElement
@@ -15,14 +18,15 @@
 
 <main>
   <form on:submit|preventDefault={handleSubmit}>
-    <input type="datetime-local" name="startedAtLocal" value={startedAtLocal} />
+    <input type="datetime-local" name="startedAtLocal" bind:value={startedAtLocal} />
 
     {#each streamList as stream, streamIndex}
-      {@const point = currentPoints.get(stream.id)}
+      {@const point = currentPointMap.get(stream.id)}
       <StreamStatus
         {stream}
         {streamIndex}
-        defaultPoint={point}
+        {currentTime}
+        currentPoint={point}
         labelRecord={streamLabelRecord[stream.id] ?? {}}
       />
     {/each}

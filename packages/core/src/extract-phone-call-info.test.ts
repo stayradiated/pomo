@@ -309,7 +309,7 @@ Messages and calls are endsto-end`,
   },
 ]
 
-describe('extractPhoneCallInfo', () => {
+describe('[INTEGRATION] extractPhoneCallInfo', () => {
   test.each(exampleList)('$description', async (example) => {
     const actual = await extractPhoneCallInfo({
       openaiApiKey,

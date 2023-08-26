@@ -14,7 +14,7 @@ const load = (async () => {
 
 	const streamList = getStreamList({ doc });
 	const streamIdList = streamList.map((stream) => stream.id);
-	const currentPoints = getCurrentPointMap({ doc, streamIdList, currentTime });
+	const currentPointMap = getCurrentPointMap({ doc, streamIdList, currentTime });
 
 	const timeZone = getUserTimeZone({ doc });
 	const startedAtLocal = formatInTimeZone(Date.now(), timeZone, 'yyyy-MM-dd HH:mm');
@@ -26,7 +26,7 @@ const load = (async () => {
 		doc,
 		startedAtLocal,
 		streamList,
-		currentPoints,
+		currentPointMap,
 		streamLabelRecord
 	};
 }) satisfies PageLoad;

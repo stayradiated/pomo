@@ -1,14 +1,16 @@
 <script lang="ts">
   import type { Stream, Point, Label } from '@stayradiated/pomo-doc'
+  import { formatDurationRough } from '@stayradiated/pomo-core'
 
   import PointInput from './PointInput.svelte'
 
   export let streamIndex: number
   export let stream: Stream
-  export let defaultPoint: Point | undefined
+  export let currentTime: number
+  export let currentPoint: Point | undefined
   export let labelRecord: Record<string, Label>
 
-  const defaultPointLabels = (defaultPoint?.labelIdList ?? []).map((id) => labelRecord[id])
+  const currentPointLabelList = (currentPoint?.labelIdList ?? []).map((id) => labelRecord[id])
 
   $: editMode = false
 
@@ -25,19 +27,25 @@
   <PointInput
     {stream}
     {streamIndex}
-    defaultPoint={defaultPoint}
+    defaultPoint={currentPoint}
     labelRecord={labelRecord}
   />
 {:else}
   <button class="container" on:click|preventDefault={handleClick}>
     <div class="label">{stream.name}</div>
-    <div class="current-value">
-      {#each defaultPointLabels as label}
-        {label.icon ?? ''} {label.name}
-      {/each}
-      {#if defaultPointLabels.length === 0}
-        -- 
+    <div class="value">
+      {#if currentPointLabelList.length === 0}
+        --
+      {:else}
+        {#each currentPointLabelList as label}
+          {label.icon ?? ''} {label.name}
+        {/each}
       {/if}
+    </div>
+    <div class="duration">
+      {currentPoint
+      ? (formatDurationRough(currentTime - currentPoint?.startedAt))
+      : ''}
     </div>
   </button>
 {/if}
@@ -51,7 +59,11 @@
     border-radius: var(--radius-xs);
     cursor: pointer;
 
-    display: flex;
+    display: grid;
+    grid-template-areas:
+      "label value"
+      "label duration";
+
     justify-content: space-between;
     line-height: var(--line-xl);
     border-bottom: 1px solid var(--theme-border);
@@ -62,5 +74,20 @@
 
   .label {
     font-weight: var(--weight-bold);
+    grid-area: label;
+    font-size: var(--scale-1);
+  }
+
+  .value {
+    grid-area: value;
+    text-align: right;
+    font-size: var(--scale-1);
+  }
+
+  .duration {
+    grid-area: duration;
+    text-align: right;
+    font-size: var(--scale-0);
+    color: var(--theme-text-muted);
   }
 </style>
