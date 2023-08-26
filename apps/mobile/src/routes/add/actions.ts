@@ -8,7 +8,7 @@ import {
 	upsertLabel
 } from '@stayradiated/pomo-doc';
 import type { Doc } from '@stayradiated/pomo-doc';
-import { getCurrentPoints } from '@stayradiated/pomo-core';
+import { getCurrentPointMap } from '@stayradiated/pomo-core';
 import { toDate } from 'date-fns-tz';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
@@ -18,24 +18,31 @@ const $FormDataSchema = zfd.formData({
 	startedAtLocal: zfd.text(),
 	stream: zfd.repeatable(
 		z.array(
-			z.object({
-				id: zfd.text(),
-				value: zfd.text(z.string().optional().default('')),
-				label: zfd.repeatable(
-					z.array(
-						z.discriminatedUnion('type', [
-							z.object({
-								type: z.literal('connect'),
-								id: zfd.text()
-							}),
-							z.object({
-								type: z.literal('create'),
-								name: zfd.text()
-							})
-						])
+			z.discriminatedUnion('type', [
+				z.object({
+					type: z.literal('edit'),
+					id: zfd.text(),
+					value: zfd.text(z.string().optional().default('')),
+					label: zfd.repeatable(
+						z.array(
+							z.discriminatedUnion('type', [
+								z.object({
+									type: z.literal('connect'),
+									id: zfd.text()
+								}),
+								z.object({
+									type: z.literal('create'),
+									name: zfd.text()
+								})
+							])
+						)
 					)
-				)
-			})
+				}),
+				z.object({
+					type: z.literal('skip'),
+					id: zfd.text()
+				})
+			])
 		)
 	)
 });
@@ -54,16 +61,21 @@ const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
 	const timeZone = getUserTimeZone({ doc });
 	const startedAt = toDate(startedAtLocal, { timeZone }).getTime();
 
-	const streamList = getStreamList({ doc });
-	const currentPoints = getCurrentPoints({
+	const streamIdList = getStreamList({ doc }).map((stream) => stream.id);
+	const currentPointMap = getCurrentPointMap({
 		doc,
-		streamList,
+		streamIdList,
 		currentTime: startedAt
 	});
+
 	for (const streamValue of streamValueList) {
+		if (streamValue.type === 'skip') {
+			continue;
+		}
+
 		const { id: streamId, value: valueRaw, label: labelRaw } = streamValue;
 
-		const currentPoint = currentPoints.get(streamId);
+		const currentPoint = currentPointMap.get(streamId);
 
 		const labelIdList: string[] = labelRaw.map((labelInput) => {
 			switch (labelInput.type) {

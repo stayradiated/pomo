@@ -57,8 +57,6 @@
   }
 </script>
 
-<input name="stream[{streamIndex}].id" value={stream.id} type="hidden" />
-
 <div class="container">
   <label for={textareaId}>{stream.name}</label>
 
@@ -69,13 +67,18 @@
     bind:filterText
     bind:value
     {items}
+    --background="var(--theme-background-alt)"
+    --border-radius="var(--radius-xs)"
     --border="1px solid transparent"
-    --border-hover="1px solid var(--selection)"
-    --list-background="var(--background)"
-    --item-hover-bg="var(--selection)"
-    --multi-item-bg="var(--background)"
-    --multi-item-outline="var(--focus) 1px solid"
-    --multi-item-clear-icon-color="var(--links)"
+    --border-hover="1px solid var(--theme-selection)"
+    --list-background="var(--theme-background)"
+    --list-color="var(--theme-text-bright)"
+    --item-color="var(--theme-text-main)"
+    --item-hover-color="var(--theme-text-bright)"
+    --item-hover-bg="var(--theme-selection)"
+    --multi-item-bg="var(--theme-background)"
+    --multi-item-outline="var(--theme-focus) 1px solid"
+    --multi-item-clear-icon-color="var(--theme-links)"
   >
     <div slot="item" let:item>
       {item.created ? 'Add new: ' : ''}
@@ -108,11 +111,11 @@
   </Select>
 
   <textarea
-    rows="2"
+    rows="1"
     name="stream[{streamIndex}].value"
     id={textareaId}
     value={pointValue}
-    placeholder="Description"
+    placeholder="Add description…"
   />
 </div>
 
@@ -127,5 +130,20 @@
   label {
     font-weight: bold;
     line-height: 2rem;
+    color: var(--theme-text-main);
+  }
+
+  textarea {
+    background: var(--theme-background);
+    color: var(--theme-text-main);
+    border: none;
+    border-radius: var(--radius-xs);
+    line-height: var(--line-xl);
+    resize: none;
+    padding: var(--size-1) var(--size-3);
+    margin-top: var(--size-2);
+  }
+  textarea:focus {
+    outline: var(--size-px) solid var(--theme-focus);
   }
 </style>

@@ -1,7 +1,7 @@
 import { createDoc } from '@stayradiated/pomo-doc';
 import type { Doc } from '@stayradiated/pomo-doc';
 import { IndexeddbPersistence } from './y-indexeddb.js';
-import { once } from './once.js'
+import { once } from './once.js';
 
 const getDoc = once(() => {
 	return new Promise<Doc>((resolve) => {
@@ -11,6 +11,6 @@ const getDoc = once(() => {
 			resolve(doc);
 		});
 	});
-})
+});
 
 export { getDoc };

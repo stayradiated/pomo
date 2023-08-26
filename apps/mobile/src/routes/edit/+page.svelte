@@ -3,11 +3,7 @@
   import { handleFormSubmit } from './actions';
 
   export let data: PageData
-  const { startedAtLocal, streamList, pointList } = data
-
-  const getStream = (id: string) => {
-    return streamList.find((stream) => stream.id === id)
-  }
+  const { startedAtLocal, streamRecord, pointList } = data
 
   const handleSubmit = (event: SubmitEvent) => {
     const form = event.target as HTMLFormElement
@@ -19,7 +15,7 @@
 <ul>
   {#each pointList as point}
     <li>
-      <strong>{getStream(point.streamId)?.name}</strong>
+      <strong>{streamRecord[point.streamId]?.name}</strong>
       <code>{point.value}</code>
     </li>
   {/each}

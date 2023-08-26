@@ -1,8 +1,8 @@
 import type { PageLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { getPointById, getStreamList, getUserTimeZone } from '@stayradiated/pomo-doc';
+import { getPointById, getStreamRecord, getUserTimeZone } from '@stayradiated/pomo-doc';
 import { getDoc } from '$lib/doc';
-import { getCurrentPoints } from '@stayradiated/pomo-core';
+import { getCurrentPointMap } from '@stayradiated/pomo-core';
 import { formatInTimeZone } from 'date-fns-tz';
 
 const load = (async ({ url }) => {
@@ -22,8 +22,9 @@ const load = (async ({ url }) => {
 	}
 	const startedAt = point.startedAt;
 
-	const streamList = getStreamList({ doc });
-	const pointMap = getCurrentPoints({ doc, streamList, currentTime: startedAt });
+	const streamRecord = getStreamRecord({ doc });
+	const streamIdList = Object.keys(streamRecord);
+	const pointMap = getCurrentPointMap({ doc, streamIdList, currentTime: startedAt });
 	const pointList = [...pointMap.values()].filter((point) => {
 		return point.startedAt >= startedAt;
 	});
@@ -34,7 +35,7 @@ const load = (async ({ url }) => {
 	return {
 		doc,
 		startedAtLocal,
-		streamList,
+		streamRecord,
 		pointList
 	};
 }) satisfies PageLoad;

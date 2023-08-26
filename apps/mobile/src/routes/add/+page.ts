@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import { getLabelRecord, getStreamList, getUserTimeZone } from '@stayradiated/pomo-doc';
 import { getDoc } from '$lib/doc.js';
-import { getCurrentPoints, groupLabelByStream } from '@stayradiated/pomo-core';
+import { getCurrentPointMap, groupLabelByStream } from '@stayradiated/pomo-core';
 import { formatInTimeZone } from 'date-fns-tz';
 
 const load = (async () => {
@@ -13,7 +13,8 @@ const load = (async () => {
 	}
 
 	const streamList = getStreamList({ doc });
-	const currentPoints = getCurrentPoints({ doc, streamList, currentTime });
+	const streamIdList = streamList.map((stream) => stream.id);
+	const currentPoints = getCurrentPointMap({ doc, streamIdList, currentTime });
 
 	const timeZone = getUserTimeZone({ doc });
 	const startedAtLocal = formatInTimeZone(Date.now(), timeZone, 'yyyy-MM-dd HH:mm');

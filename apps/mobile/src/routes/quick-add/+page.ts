@@ -10,7 +10,7 @@ import { getDoc } from '$lib/doc.js';
 import { zfd } from 'zod-form-data';
 import { formatInTimeZone } from 'date-fns-tz';
 import type { Point } from '@stayradiated/pomo-doc';
-import { startOfDayWithTimeZone, getCurrentPoints } from '@stayradiated/pomo-core';
+import { startOfDayWithTimeZone, getCurrentPointMap } from '@stayradiated/pomo-core';
 import * as dateFns from 'date-fns';
 
 type GetCommonLabelsOptions = {
@@ -62,7 +62,8 @@ const load = (async () => {
 	}
 
 	const streamList = getStreamList({ doc });
-	const currentPoints = getCurrentPoints({ doc, streamList, currentTime });
+	const streamIdList = streamList.map((stream) => stream.id);
+	const currentPoints = getCurrentPointMap({ doc, streamIdList, currentTime });
 
 	const timeZone = getUserTimeZone({ doc });
 	const startedAtLocal = formatInTimeZone(Date.now(), timeZone, 'yyyy-MM-dd HH:mm');

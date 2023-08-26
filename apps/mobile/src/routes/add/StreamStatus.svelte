@@ -18,6 +18,9 @@
   }
 </script>
 
+<input name="stream[{streamIndex}].id" value={stream.id} type="hidden" />
+<input name="stream[{streamIndex}].type" value={editMode ? 'edit' : 'skip'} type="hidden" />
+
 {#if editMode}
   <PointInput
     {stream}
@@ -27,7 +30,7 @@
   />
 {:else}
   <button class="container" on:click|preventDefault={handleClick}>
-    <label>{stream.name}</label>
+    <div class="label">{stream.name}</div>
     <div class="current-value">
       {#each defaultPointLabels as label}
         {label.icon ?? ''} {label.name}
@@ -42,15 +45,22 @@
 <style>
   .container {
     padding: 0 var(--size-3);
-    background: var(--color-grey-100);
+    background: var(--theme-background);
+    border: none;
+    color: var(--theme-text-main);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
 
     display: flex;
     justify-content: space-between;
     line-height: var(--line-xl);
-    border-bottom: 1px solid var(--color-grey-300);
+    border-bottom: 1px solid var(--theme-border);
+  }
+  .container:hover {
+    background-color: var(--theme-background-alt);
   }
 
-  label {
+  .label {
     font-weight: var(--weight-bold);
   }
 </style>
