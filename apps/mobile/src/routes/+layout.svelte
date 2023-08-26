@@ -19,6 +19,7 @@
       <a href="/log">Log</a>
       <a href="/calendar/day">Calendar</a>
       <a href="/label">Labels</a>
+      <a href="/stats">Stats</a>
       <a href="/sync">Sync</a>
     </div>
     <button

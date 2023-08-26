@@ -28,7 +28,7 @@ const load = (async () => {
 		streamList,
 		currentPointMap,
 		streamLabelRecord,
-    timeZone,
+		timeZone
 	};
 }) satisfies PageLoad;
 
