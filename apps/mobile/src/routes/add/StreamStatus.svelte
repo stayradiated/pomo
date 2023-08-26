@@ -13,11 +13,6 @@
   const currentPointLabelList = (currentPoint?.labelIdList ?? []).map((id) => labelRecord[id])
 
   $: editMode = false
-
-  const handleClick = () => {
-    console.log('hello world')
-    editMode = true
-  }
 </script>
 
 <input name="stream[{streamIndex}].id" value={stream.id} type="hidden" />
@@ -29,9 +24,10 @@
     {streamIndex}
     defaultPoint={currentPoint}
     labelRecord={labelRecord}
+    onReset={() => editMode = false}
   />
 {:else}
-  <button class="container" on:click|preventDefault={handleClick}>
+  <button class="container" on:click|preventDefault={() => editMode = true}>
     <div class="label">{stream.name}</div>
     <div class="value">
       {#if currentPointLabelList.length === 0}

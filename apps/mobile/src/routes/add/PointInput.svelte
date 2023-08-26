@@ -6,6 +6,7 @@
   export let stream: Stream
   export let defaultPoint: Point | undefined
   export let labelRecord: Record<string, Label>
+  export let onReset: () => void
 
   let pointValue = defaultPoint?.value ?? ''
 
@@ -58,7 +59,12 @@
 </script>
 
 <div class="container">
-  <label for={textareaId}>{stream.name}</label>
+  <div class="row">
+    <label for={textareaId}>{stream.name}</label>
+    <button class="reset-button" on:click|preventDefault={onReset}>
+      Reset
+    </button>
+  </div>
 
   <Select
     on:change={handleChange}
@@ -127,6 +133,11 @@
     padding-bottom: 1rem;
   }
 
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+
   label {
     font-weight: bold;
     line-height: 2rem;
@@ -145,5 +156,18 @@
   }
   textarea:focus {
     outline: var(--size-px) solid var(--theme-focus);
+  }
+
+  .reset-button {
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    font-size: var(--scale-000);
+    cursor: pointer;
+    color: var(--theme-text-muted);
+    font-weight: var(--weight-bold);
+  }
+  .reset-button:hover {
+    color: var(--theme-text-main);
   }
 </style>
