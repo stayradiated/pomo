@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.41.0](https://github.com/stayradiated/pomo/releases/tag/v0.41.0) - 2023-08-26
+
+- [`5d420a0`](https://github.com/stayradiated/pomo/commit/5d420a09bc1722602f11c867ef2039024db7a7a8) feat(mobile): /add - reset sections, and experiment with date/time input
+
 ## [v0.40.0](https://github.com/stayradiated/pomo/releases/tag/v0.40.0) - 2023-08-26
 
 - [`25a6893`](https://github.com/stayradiated/pomo/commit/25a68932753031ddda95604c3ecb8dd67fa9e790) feat(mobile): /add display duration of current point
