@@ -1,3 +1,7 @@
+## [v0.40.0](https://github.com/stayradiated/pomo/releases/tag/v0.40.0) - 2023-08-26
+
+- [`25a6893`](https://github.com/stayradiated/pomo/commit/25a68932753031ddda95604c3ecb8dd67fa9e790) feat(mobile): /add display duration of current point
+
 ## [v0.39.0](https://github.com/stayradiated/pomo/releases/tag/v0.39.0) - 2023-08-26
 
 - [`4611b63`](https://github.com/stayradiated/pomo/commit/4611b632868a5d0308c0ab5d7bfc7d399f760f4c) feat(mobile): wip styles for /add
