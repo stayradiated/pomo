@@ -1,3 +1,7 @@
+## [v0.44.0](https://github.com/stayradiated/pomo/releases/tag/v0.44.0) - 2023-08-27
+
+- [`d08a36e`](https://github.com/stayradiated/pomo/commit/d08a36eb062293cee9d43b3a30c1a29a8ab2efd8) feat(mobile): better UX for /add
+
 ## [v0.43.0](https://github.com/stayradiated/pomo/releases/tag/v0.43.0) - 2023-08-27
 
 ## [v0.42.0](https://github.com/stayradiated/pomo/releases/tag/v0.42.0) - 2023-08-26
