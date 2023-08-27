@@ -1,3 +1,5 @@
+## [v0.43.0](https://github.com/stayradiated/pomo/releases/tag/v0.43.0) - 2023-08-27
+
 ## [v0.42.0](https://github.com/stayradiated/pomo/releases/tag/v0.42.0) - 2023-08-26
 
 - [`dde686b`](https://github.com/stayradiated/pomo/commit/dde686b0fec96218a9ef7da96bc0863d3ca01a65) feat(mobile): add /stats page
