@@ -1,3 +1,7 @@
+## [v0.46.0](https://github.com/stayradiated/pomo/releases/tag/v0.46.0) - 2023-08-27
+
+- [`70b7c13`](https://github.com/stayradiated/pomo/commit/70b7c138d067f82e529b69a607e44b09fec43d59) feat(mobile): tweak styles
+
 ## [v0.45.0](https://github.com/stayradiated/pomo/releases/tag/v0.45.0) - 2023-08-27
 
 - [`ca03fc1`](https://github.com/stayradiated/pomo/commit/ca03fc10b4a1b212b4c96f9795efbb0ee6ce6ec4) feat(mobile): make time/date input required
