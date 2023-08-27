@@ -15,7 +15,8 @@ import { z } from 'zod';
 import { markDocAsStale } from '$lib/sync.js';
 
 const $FormDataSchema = zfd.formData({
-	startedAtLocal: zfd.text(),
+	startedAtDate: zfd.text(),
+	startedAtTime: zfd.text(),
 	stream: zfd.repeatable(
 		z.array(
 			z.discriminatedUnion('type', [
@@ -56,10 +57,10 @@ const handleFormSubmit = async (options: HandleFormSubmitOptions) => {
 	const { doc, formData: rawFormData } = options;
 
 	const formData = $FormDataSchema.parse(rawFormData);
-	const { startedAtLocal, stream: streamValueList } = formData;
+	const { startedAtDate, startedAtTime, stream: streamValueList } = formData;
 
 	const timeZone = getUserTimeZone({ doc });
-	const startedAt = toDate(startedAtLocal, { timeZone }).getTime();
+	const startedAt = toDate(`${startedAtDate}T${startedAtTime}`, { timeZone }).getTime();
 
 	const streamIdList = getStreamList({ doc }).map((stream) => stream.id);
 	const currentPointMap = getCurrentPointMap({

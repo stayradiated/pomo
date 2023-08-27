@@ -8,9 +8,8 @@ import { formatInTimeZone } from 'date-fns-tz';
   export let data: PageData
   const { startedAtLocal: defaultStartedAtLocal, streamList, currentPointMap, streamLabelRecord } = data
 
-  $: startedAtLocal = defaultStartedAtLocal
-  $: currentTime = new Date(startedAtLocal).getTime()
-  $: [tmpDate, tmpTime] = startedAtLocal.split('T')
+  $: [startedAtDate, startedAtTime] = defaultStartedAtLocal.split('T')
+  $: currentTime = new Date(`${startedAtDate}T${startedAtTime}`).getTime()
 
   const handleSubmit = async (event: SubmitEvent) => {
     const form = event.target as HTMLFormElement
@@ -19,7 +18,9 @@ import { formatInTimeZone } from 'date-fns-tz';
   }
 
   const handleNow = () => {
-    startedAtLocal = formatInTimeZone(Date.now(), data.timeZone, "yyyy-MM-dd'T'HH:mm");
+    const [date, time] = formatInTimeZone(Date.now(), data.timeZone, "yyyy-MM-dd'T'HH:mm").split('T')
+    startedAtDate = date
+    startedAtTime = time
   }
 </script>
 
@@ -38,10 +39,8 @@ import { formatInTimeZone } from 'date-fns-tz';
     {/each}
 
     <div class="datetime-row">
-      <input class="datetime-input" type="datetime-local" name="startedAtLocal" bind:value={startedAtLocal} />
-
-      <input type="date" value={tmpDate} />
-      <input type="time" value={tmpTime} />
+      <input type="date" class="date-input" name="startedAtDate" bind:value={startedAtDate} />
+      <input type="time" class="time-input" name="startedAtTime" bind:value={startedAtTime} />
 
       <p class="datetime-relative">{dateFns.formatDistanceToNow(currentTime, { includeSeconds: true, addSuffix: true })}</p>
       <button class="now-button" on:click|preventDefault={handleNow}>Now</button>
@@ -86,12 +85,15 @@ import { formatInTimeZone } from 'date-fns-tz';
   .datetime-row {
     display: grid;
     grid-template-areas:
-      "datetime-input now"
-      "datetime-relative datetime-relative"
+      "date-input time-input now"
+      "datetime-relative datetime-relative datetime-relative"
   }
 
-  .datetime-input {
-    grid-area: datetime-input;
+  .date-input {
+    grid-area: date-input;
+  }
+  .time-input {
+    grid-area: time-input;
   }
 
   .datetime-relative {

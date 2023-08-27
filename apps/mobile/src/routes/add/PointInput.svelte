@@ -67,6 +67,9 @@
   </div>
 
   <Select
+    focused
+    listOpen
+
     on:change={handleChange}
     multiple
     on:filter={handleFilter}
