@@ -9,9 +9,11 @@
   <ul class="grid">
     {#each labelIdList as labelId}
       {@const label = labelRecord[labelId]}
-      {@const { colorFg, colorBg, colorOp } = getUiColor(label.color ?? undefined)}
+      {@const { colorFg, colorBg, colorOp } = getUiColor(label.color ?? '#eee')}
       <li class="label" style="--colorFg: {colorFg}; --colorBg: {colorBg}; --colorOp: {colorOp}">
-        <span class="label-icon">{label.icon ?? ''}</span>
+        {#if label.icon}
+          <span class="label-icon">{label.icon}</span>
+        {/if}
         <span class="label-name">{labelRecord[labelId].name}</span>
         <span class="label-parent-list">
           {#if label.parentId}
@@ -54,11 +56,11 @@
 
     background-color: rgb(var(--colorBg));
     color: rgb(var(--colorFg));
+    box-shadow: var(--shadow-sm);
   }
 
   .label-icon {
     font-size: 3rem;
-    background-color: rgba(var(--colorFg), 0.2);
     border-radius: 50%;
     padding: 0.5rem;
     width: 3.5rem;

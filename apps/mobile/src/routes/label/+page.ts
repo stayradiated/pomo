@@ -4,7 +4,8 @@ import { getLabelRecord, getStreamList } from '@stayradiated/pomo-doc';
 import type { Label } from '@stayradiated/pomo-doc';
 import type { PageLoad } from './$types';
 
-const load = (async () => {
+const load = (async ({ url }) => {
+
 	const doc = await getDoc();
 	if (doc instanceof Error) {
 		throw error(500, doc.message);
@@ -14,14 +15,14 @@ const load = (async () => {
 	const labelRecord = getLabelRecord({ doc });
 	const labelList = Object.values(labelRecord);
 
-	const streamLabelListMap = new Map<string, Map<string | null, Label[]>>();
-	for (const label of labelList) {
-		const streamId = label.streamId;
+  const streamId = url.searchParams.get('stream') ?? streamList[0].id
+  const stream = streamList.find((stream) => stream.id === streamId);
 
-		if (!streamLabelListMap.has(streamId)) {
-			streamLabelListMap.set(streamId, new Map());
-		}
-		const streamLabelMap = streamLabelListMap.get(streamId)!;
+	const streamLabelMap = new Map<string | null, Label[]>();
+	for (const label of labelList) {
+    if (label.streamId !== streamId) {
+      continue;
+    }
 
 		if (!streamLabelMap.has(label.parentId)) {
 			streamLabelMap.set(label.parentId, []);
@@ -31,17 +32,16 @@ const load = (async () => {
 		labelList.push(label);
 	}
 
-	for (const streamLabelMap of streamLabelListMap.values()) {
-		for (const labelList of streamLabelMap.values()) {
-			labelList.sort((a, b) => a.name.localeCompare(b.name));
-		}
-	}
+  for (const labelList of streamLabelMap.values()) {
+    labelList.sort((a, b) => a.name.localeCompare(b.name));
+  }
 
 	return {
 		doc,
+    stream,
 		streamList,
 		labelRecord,
-		streamLabelListMap
+		streamLabelMap
 	};
 }) satisfies PageLoad;
 
