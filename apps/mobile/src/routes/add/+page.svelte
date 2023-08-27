@@ -39,8 +39,8 @@ import { formatInTimeZone } from 'date-fns-tz';
     {/each}
 
     <div class="datetime-row">
-      <input type="date" class="date-input" name="startedAtDate" bind:value={startedAtDate} />
-      <input type="time" class="time-input" name="startedAtTime" bind:value={startedAtTime} />
+      <input required type="date" class="date-input" name="startedAtDate" bind:value={startedAtDate} />
+      <input required type="time" class="time-input" name="startedAtTime" bind:value={startedAtTime} />
 
       <p class="datetime-relative">{dateFns.formatDistanceToNow(currentTime, { includeSeconds: true, addSuffix: true })}</p>
       <button class="now-button" on:click|preventDefault={handleNow}>Now</button>
