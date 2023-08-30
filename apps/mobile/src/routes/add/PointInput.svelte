@@ -1,6 +1,7 @@
 <script lang="ts">
   import Select from 'svelte-select'
   import type { Stream, Point, Label } from '@stayradiated/pomo-doc'
+  import { offset, shift } from '@floating-ui/dom';
 
   export let streamIndex: number
   export let stream: Stream
@@ -69,7 +70,7 @@
   <Select
     focused
     listOpen
-    floatingConfig={{placement: "bottom"}}
+    floatingConfig={{middleware: [ offset(5), shift(), /* flip() */ ]}}
 
     on:change={handleChange}
     multiple

@@ -32,6 +32,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@floating-ui/dom": "1.5.1",
 		"@stayradiated/error-boundary": "4.2.1",
 		"@stayradiated/pomo-core": "workspace:*",
 		"@stayradiated/pomo-doc": "workspace:*",
