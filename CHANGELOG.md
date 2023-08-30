@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.47.0](https://github.com/stayradiated/pomo/releases/tag/v0.47.0) - 2023-08-30
+
+- [`4092aef`](https://github.com/stayradiated/pomo/commit/4092aefffdf40fc7319362ee166596c2e9112a0a) feat(mobile): always display select dropdown underneath input
+
 ## [v0.46.0](https://github.com/stayradiated/pomo/releases/tag/v0.46.0) - 2023-08-27
 
 - [`70b7c13`](https://github.com/stayradiated/pomo/commit/70b7c138d067f82e529b69a607e44b09fec43d59) feat(mobile): tweak styles
