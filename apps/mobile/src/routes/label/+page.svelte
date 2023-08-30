@@ -52,10 +52,4 @@
   h2 {
     margin: 0;
   }
-
-  main {
-    max-width: var(--width-md);
-    margin: 0 auto;
-  }
-
 </style>

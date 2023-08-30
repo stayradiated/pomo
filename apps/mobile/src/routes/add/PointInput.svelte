@@ -69,6 +69,7 @@
   <Select
     focused
     listOpen
+    floatingConfig={{placement: "bottom"}}
 
     on:change={handleChange}
     multiple
@@ -76,6 +77,7 @@
     bind:filterText
     bind:value
     {items}
+
     --background="var(--theme-background-alt)"
     --border-radius="var(--radius-xs)"
     --border="1px solid transparent"
@@ -119,13 +121,18 @@
     </svelte:fragment>
   </Select>
 
-  <textarea
-    rows="1"
-    name="stream[{streamIndex}].value"
-    id={textareaId}
-    value={pointValue}
-    placeholder="Add description…"
-  />
+  <div class="textarea-container">
+    <textarea
+      rows="1"
+      name="stream[{streamIndex}].value"
+      id={textareaId}
+      bind:value={pointValue}
+      placeholder="Add description…"
+    />
+    {#if pointValue.length > 0}
+      <button class="clear-value-button" on:click|preventDefault={() => pointValue = ''}>X</button>
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -147,7 +154,14 @@
     color: var(--theme-text-main);
   }
 
+  .textarea-container {
+    display: flex;
+    gap: var(--size-2);
+    padding-top: var(--size-2);
+  }
+
   textarea {
+    flex: 1;
     background: var(--theme-background);
     color: var(--theme-text-main);
     border: none;
@@ -155,10 +169,22 @@
     line-height: var(--line-xl);
     resize: none;
     padding: var(--size-1) var(--size-3);
-    margin-top: var(--size-2);
   }
   textarea:focus {
     outline: var(--size-px) solid var(--theme-focus);
+  }
+
+  .clear-value-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: var(--size-10);
+    font-weight: var(--weight-bold);
+    background: var(--theme-background);
+    border-radius: var(--radius-xs);
+  }
+  .clear-value-button:hover {
+    background: var(--theme-background-alt);
   }
 
   .reset-button {
@@ -173,4 +199,5 @@
   .reset-button:hover {
     color: var(--theme-text-main);
   }
+
 </style>

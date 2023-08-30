@@ -86,7 +86,8 @@ import { formatInTimeZone } from 'date-fns-tz';
     display: grid;
     grid-template-areas:
       "date-input time-input now"
-      "datetime-relative datetime-relative datetime-relative"
+    "datetime-relative datetime-relative datetime-relative";
+    gap: var(--size-2);
   }
 
   .date-input {

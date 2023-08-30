@@ -5,7 +5,6 @@ import type { Label } from '@stayradiated/pomo-doc';
 import type { PageLoad } from './$types';
 
 const load = (async ({ url }) => {
-
 	const doc = await getDoc();
 	if (doc instanceof Error) {
 		throw error(500, doc.message);
@@ -15,14 +14,18 @@ const load = (async ({ url }) => {
 	const labelRecord = getLabelRecord({ doc });
 	const labelList = Object.values(labelRecord);
 
-  const streamId = url.searchParams.get('stream') ?? streamList[0].id
-  const stream = streamList.find((stream) => stream.id === streamId);
+	const streamId = url.searchParams.get('stream') ?? streamList[0].id;
+	const stream = streamList.find((stream) => stream.id === streamId);
+
+  if (!stream) {
+    throw error(404, 'Stream not found');
+  }
 
 	const streamLabelMap = new Map<string | null, Label[]>();
 	for (const label of labelList) {
-    if (label.streamId !== streamId) {
-      continue;
-    }
+		if (label.streamId !== streamId) {
+			continue;
+		}
 
 		if (!streamLabelMap.has(label.parentId)) {
 			streamLabelMap.set(label.parentId, []);
@@ -32,13 +35,13 @@ const load = (async ({ url }) => {
 		labelList.push(label);
 	}
 
-  for (const labelList of streamLabelMap.values()) {
-    labelList.sort((a, b) => a.name.localeCompare(b.name));
-  }
+	for (const labelList of streamLabelMap.values()) {
+		labelList.sort((a, b) => a.name.localeCompare(b.name));
+	}
 
 	return {
 		doc,
-    stream,
+		stream,
 		streamList,
 		labelRecord,
 		streamLabelMap
