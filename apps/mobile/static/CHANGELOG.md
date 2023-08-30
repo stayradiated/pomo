@@ -1,3 +1,7 @@
+## [v0.47.1](https://github.com/stayradiated/pomo/releases/tag/v0.47.1) - 2023-08-30
+
+- [`34b984c`](https://github.com/stayradiated/pomo/commit/34b984c6b16061f698ff727b5bbb56e49c3f7891) fix(mobile): do not flip() select dropdown
+
 ## [v0.47.0](https://github.com/stayradiated/pomo/releases/tag/v0.47.0) - 2023-08-30
 
 - [`4092aef`](https://github.com/stayradiated/pomo/commit/4092aefffdf40fc7319362ee166596c2e9112a0a) feat(mobile): always display select dropdown underneath input
