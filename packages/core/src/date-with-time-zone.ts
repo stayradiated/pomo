@@ -6,15 +6,16 @@ import {
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,
+  eachWeekOfInterval,
 } from 'date-fns'
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz'
 
-type DayWithTimeZoneOptions = {
+type WithTimeZoneOptions = {
   timeZone: string
   instant: number
 }
 
-const startOfDayWithTimeZone = (options: DayWithTimeZoneOptions): Date => {
+const startOfDayWithTimeZone = (options: WithTimeZoneOptions): Date => {
   const { timeZone, instant } = options
   const instantZoned = utcToZonedTime(instant, timeZone)
   const dayStartZoned = startOfDay(instantZoned)
@@ -22,7 +23,7 @@ const startOfDayWithTimeZone = (options: DayWithTimeZoneOptions): Date => {
   return dayStart
 }
 
-const endOfDayWithTimeZone = (options: DayWithTimeZoneOptions): Date => {
+const endOfDayWithTimeZone = (options: WithTimeZoneOptions): Date => {
   const { timeZone, instant } = options
   const instantZoned = utcToZonedTime(instant, timeZone)
   const dayEndZoned = endOfDay(instantZoned)
@@ -30,9 +31,7 @@ const endOfDayWithTimeZone = (options: DayWithTimeZoneOptions): Date => {
   return dayEnd
 }
 
-type WeekWithTimeZoneOptions = {
-  timeZone: string
-  instant: number
+type WeekWithTimeZoneOptions = WithTimeZoneOptions & {
   weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
 }
 
@@ -52,12 +51,7 @@ const endOfWeekWithTimeZone = (options: WeekWithTimeZoneOptions): Date => {
   return dayEnd
 }
 
-type MonthWithTimeZoneOptions = {
-  timeZone: string
-  instant: number
-}
-
-const startOfMonthWithTimeZone = (options: MonthWithTimeZoneOptions): Date => {
+const startOfMonthWithTimeZone = (options: WithTimeZoneOptions): Date => {
   const { timeZone, instant } = options
   const instantZoned = utcToZonedTime(instant, timeZone)
   const dayStartZoned = startOfMonth(instantZoned)
@@ -65,7 +59,7 @@ const startOfMonthWithTimeZone = (options: MonthWithTimeZoneOptions): Date => {
   return dayStart
 }
 
-const endOfMonthWithTimeZone = (options: MonthWithTimeZoneOptions): Date => {
+const endOfMonthWithTimeZone = (options: WithTimeZoneOptions): Date => {
   const { timeZone, instant } = options
   const instantZoned = utcToZonedTime(instant, timeZone)
   const dayEndZoned = endOfMonth(instantZoned)
@@ -73,14 +67,14 @@ const endOfMonthWithTimeZone = (options: MonthWithTimeZoneOptions): Date => {
   return dayEnd
 }
 
-type EachDayOfIntervalWithTimeZoneOptions = {
+type IntervalWithTimeZoneOptions = {
   timeZone: string
   startDate: number
   endDate: number
 }
 
 const eachDayOfIntervalWithTimeZone = (
-  options: EachDayOfIntervalWithTimeZoneOptions,
+  options: IntervalWithTimeZoneOptions,
 ): Date[] => {
   const { timeZone, startDate, endDate } = options
   const startDateZoned = utcToZonedTime(startDate, timeZone)
@@ -95,6 +89,31 @@ const eachDayOfIntervalWithTimeZone = (
   return dayList
 }
 
+type EachWeekOfIntervalWithTimeZoneOptions = IntervalWithTimeZoneOptions & {
+  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+}
+
+const eachWeekOfIntervalWithTimeZone = (
+  options: EachWeekOfIntervalWithTimeZoneOptions,
+): Date[] => {
+  const { timeZone, startDate, endDate, weekStartsOn } = options
+  const startDateZoned = utcToZonedTime(startDate, timeZone)
+  const endDateZoned = utcToZonedTime(endDate, timeZone)
+  const weekListZoned = eachWeekOfInterval(
+    {
+      start: startDateZoned,
+      end: endDateZoned,
+    },
+    {
+      weekStartsOn,
+    },
+  )
+  const weekList = weekListZoned.map((weekZoned) =>
+    zonedTimeToUtc(weekZoned, timeZone),
+  )
+  return weekList
+}
+
 export {
   startOfWeekWithTimeZone,
   endOfWeekWithTimeZone,
@@ -103,4 +122,5 @@ export {
   startOfMonthWithTimeZone,
   endOfMonthWithTimeZone,
   eachDayOfIntervalWithTimeZone,
+  eachWeekOfIntervalWithTimeZone,
 }

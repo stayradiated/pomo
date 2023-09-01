@@ -1,4 +1,5 @@
 import type { PageLoad } from './$types';
+import { listOrError } from '@stayradiated/error-boundary';
 import { getDoc } from '$lib/doc.js';
 import {
 	getStreamByName,
@@ -7,12 +8,12 @@ import {
 	retrievePointList
 } from '@stayradiated/pomo-doc';
 import {
-	startOfWeekWithTimeZone,
-	endOfWeekWithTimeZone,
+	startOfDayWithTimeZone,
+	endOfDayWithTimeZone,
 	mapPointListToLineList,
-	clampAndGroupLineListByDay,
-	formatDurationRough
+	clampAndGroupLineListByDay
 } from '@stayradiated/pomo-core';
+import * as dateFns from 'date-fns';
 
 const load = (async () => {
 	const doc = await getDoc();
@@ -22,23 +23,28 @@ const load = (async () => {
 
 	const timeZone = getUserTimeZone({ doc });
 	const instant = Date.now();
-	const startDate = startOfWeekWithTimeZone({ timeZone, instant }).getTime();
-	const endDate = endOfWeekWithTimeZone({ timeZone, instant }).getTime();
+	const rangeStartDate = dateFns
+		.subDays(startOfDayWithTimeZone({ timeZone, instant }), 30)
+		.getTime();
+	const rangeEndDate = endOfDayWithTimeZone({ timeZone, instant }).getTime();
 
 	const stream = getStreamByName({ doc, name: 'project' });
 	if (stream instanceof Error) {
 		throw stream;
 	}
 
-	const label = getLabelByName({ doc, streamId: stream.id, name: 'Runn' });
-	if (label instanceof Error) {
-		throw label;
+	const labelList = listOrError([
+		getLabelByName({ doc, streamId: stream.id, name: 'Product.app' }),
+		getLabelByName({ doc, streamId: stream.id, name: 'Bowline' })
+	]);
+	if (labelList instanceof Error) {
+		throw labelList;
 	}
 
 	const fullPointList = retrievePointList({
 		doc,
-		startDate,
-		endDate,
+		startDate: rangeStartDate,
+		endDate: rangeEndDate,
 		where: { streamIdList: [stream.id] }
 	});
 	const fullLineList = mapPointListToLineList(fullPointList);
@@ -48,11 +54,13 @@ const load = (async () => {
 
 	const dayList = clampAndGroupLineListByDay({
 		lineList: fullLineList.filter((line) => {
-			return line.labelIdList.includes(label.id);
+			return line.labelIdList.some((labelId) => {
+				return labelList.find((haystack) => haystack.id === labelId);
+			});
 		}),
 		currentTime: Date.now(),
-		startDate,
-		endDate,
+		startDate: rangeStartDate,
+		endDate: rangeEndDate,
 		timeZone
 	});
 
@@ -65,17 +73,14 @@ const load = (async () => {
 		})
 	);
 
-	for (const [date, durationMs] of sumMap.entries()) {
-		const dateStr = new Date(date).toISOString().slice(0, 10);
-		console.log(`${dateStr} ${formatDurationRough(durationMs)}`);
-	}
-
-	const total = [...sumMap.values()].reduce((sum, durationMs) => {
-		return sum + durationMs;
-	}, 0);
-	console.log(`Total: ${formatDurationRough(total)}`);
-
-	return {};
+	return {
+		sumMap,
+		stream,
+		labelList,
+		rangeStartDate,
+		rangeEndDate,
+		timeZone
+	};
 }) satisfies PageLoad;
 
 export { load };
