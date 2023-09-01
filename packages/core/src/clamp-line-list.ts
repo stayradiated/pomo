@@ -1,11 +1,13 @@
 import type { Line } from './types.js'
 
-const clampLineList = (options: {
+type ClampLineListOptions = {
   lineList: Line[]
   currentTime: number
   startDate: number
   endDate: number
-}): Line[] => {
+}
+
+const clampLineList = (options: ClampLineListOptions): Line[] => {
   const { lineList, currentTime, startDate, endDate } = options
 
   return lineList

@@ -21,6 +21,7 @@ import {
   upsertStream,
   upsertLabel,
   transact,
+  NotFoundError,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
 import { listOrError } from '@stayradiated/error-boundary'
@@ -51,6 +52,10 @@ const getCurrentText = (
       const labelNames = currentPoint.labelIdList.map((labelId) => {
         const label = getLabelById({ doc, labelId })
         if (label instanceof Error) {
+          if (label instanceof NotFoundError) {
+            return 'err_label_not_found'
+          }
+
           throw label
         }
 

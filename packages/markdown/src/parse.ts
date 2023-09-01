@@ -16,7 +16,7 @@ const parse = (input: string): ParsedItem[] => {
     .use(remarkParse)
     .use(function () {
       Object.assign(this, {
-        compiler(tree: Node) {
+        Compiler(tree: Node) {
           let currentItem: ParsedItem
           const output = [] as ParsedItem[]
 
