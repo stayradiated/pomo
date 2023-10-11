@@ -2,6 +2,7 @@ import { CliCommand } from 'cilly'
 import {
   getStreamByName,
   getLabelByName,
+  getLabelByRef,
   mergeLabels,
   transact,
 } from '@stayradiated/pomo-doc'
@@ -10,6 +11,10 @@ import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const mergeCmd = new CliCommand('merge')
   .withDescription('Merge two labels')
+  .withOptions({
+    name: ['-r', '--as-ref'],
+    description: 'Use refs instead of names',
+  })
   .withArguments(
     {
       name: 'stream',
@@ -27,8 +32,9 @@ const mergeCmd = new CliCommand('merge')
       required: true,
     },
   )
-  .withHandler(async (args) => {
+  .withHandler(async (args, options) => {
     const { stream: streamName, src: srcName, dest: destName } = args
+    const { asRef } = options
 
     const doc = await getDoc()
     if (doc instanceof Error) {
@@ -44,16 +50,16 @@ const mergeCmd = new CliCommand('merge')
       throw stream
     }
 
-    const srcLabel = getLabelByName({ doc, streamId: stream.id, name: srcName })
+    const srcLabel = asRef
+     ? getLabelByRef({ doc, ref: srcName })
+     : getLabelByName({ doc, streamId: stream.id, name: srcName })
     if (srcLabel instanceof Error) {
       throw srcLabel
     }
 
-    const destLabel = getLabelByName({
-      doc,
-      streamId: stream.id,
-      name: destName,
-    })
+    const destLabel = asRef
+      ? getLabelByRef({ doc, ref: destName })
+      : getLabelByName({ doc, streamId: stream.id, name: destName })
     if (destLabel instanceof Error) {
       throw destLabel
     }

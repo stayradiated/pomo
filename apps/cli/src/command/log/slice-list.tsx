@@ -41,8 +41,8 @@ const SliceList = (props: SliceListProps) => {
 
     const cells: Cell[] = [
       {
-        content: lineList[0]?.id.slice(0, 7),
-        width: 7,
+        content: lineList[0]?.id.slice(0, 10),
+        width: 10,
       },
       {
         content: dateFns.format(startedAt, 'HH:mm'),

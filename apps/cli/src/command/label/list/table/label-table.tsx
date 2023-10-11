@@ -59,8 +59,8 @@ const LabelTable = (props: LabelTableProps) => {
 
     const cells: Cell[] = [
       {
-        content: label.id.slice(0, 7),
-        width: 7,
+        content: label.id.slice(0, 10),
+        width: 10,
       },
       {
         content: label.name,

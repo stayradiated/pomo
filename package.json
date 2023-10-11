@@ -9,7 +9,7 @@
     "update-all": "pnpm -r exec -- ncu -u --cache"
   },
   "devDependencies": {
-    "npm-check-updates": "16.11.1",
-    "turbo": "1.10.12"
+    "npm-check-updates": "16.14.5",
+    "turbo": "1.10.15"
   }
 }

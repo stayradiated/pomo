@@ -58,7 +58,7 @@ const extractPhoneCallInfo = async (
     },
   ]
 
-  const functionList: OpenAI.Chat.Completions.CompletionCreateParams.Function[] =
+  const functionList: OpenAI.Chat.Completions.ChatCompletionCreateParams['functions'] =
     [
       {
         name: 'extract_phone_call_info',
