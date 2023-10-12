@@ -70,10 +70,10 @@
   <Select
     focused
     listOpen
+    multiple
     floatingConfig={{middleware: [ offset(5), shift(), /* flip() */ ]}}
 
     on:change={handleChange}
-    multiple
     on:filter={handleFilter}
     bind:filterText
     bind:value

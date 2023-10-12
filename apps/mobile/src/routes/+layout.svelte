@@ -20,6 +20,7 @@
       <a href="/calendar/day">Calendar</a>
       <a href="/label">Labels</a>
       <a href="/stats">Stats</a>
+      <a href="/goals">Goals</a>
       <a href="/sync">Sync</a>
     </div>
     <button
