@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.47.2](https://github.com/stayradiated/pomo/releases/tag/v0.47.2) - 2023-10-12
+
+- [`0cd3d49`](https://github.com/stayradiated/pomo/commit/0cd3d49a6748e1f978dff08e4b125987b0615ab5) fix(sync): automatically sync doc
+- [`7d51f2d`](https://github.com/stayradiated/pomo/commit/7d51f2d9c61b2cca013eaae334241740da818a4c) chore: bump dependencies
+- [`8ffebce`](https://github.com/stayradiated/pomo/commit/8ffebce95d67947cbf0b757bce135641f90f216b) ci(uplift): uplifted for version v0.47.1
+- [`db00f41`](https://github.com/stayradiated/pomo/commit/db00f41c48a966a66e3f756fdc11be1dda89b49d) ci(uplift): uplifted for version v0.47.1
+
 ## [v0.47.1](https://github.com/stayradiated/pomo/releases/tag/v0.47.1) - 2023-08-30
 
 - [`34b984c`](https://github.com/stayradiated/pomo/commit/34b984c6b16061f698ff727b5bbb56e49c3f7891) fix(mobile): do not flip() select dropdown
