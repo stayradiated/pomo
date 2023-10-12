@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.48.0](https://github.com/stayradiated/pomo/releases/tag/v0.48.0) - 2023-10-12
+
+- [`6beda63`](https://github.com/stayradiated/pomo/commit/6beda630c69a0ea378083a59d0937ea4055926a2) feat: Add experimental new goals page (#1)
+- [`a0fe3f1`](https://github.com/stayradiated/pomo/commit/a0fe3f1ba4959849ca5cb565ea8f6e46bfea0024) ci(uplift): uplifted for version v0.47.2
+- [`f79ca33`](https://github.com/stayradiated/pomo/commit/f79ca33db78a2439beb8fe424703d431ede04cfe) ci(uplift): uplifted for version v0.47.2
+
 ## [v0.47.2](https://github.com/stayradiated/pomo/releases/tag/v0.47.2) - 2023-10-12
 
 - [`0cd3d49`](https://github.com/stayradiated/pomo/commit/0cd3d49a6748e1f978dff08e4b125987b0615ab5) fix(sync): automatically sync doc
