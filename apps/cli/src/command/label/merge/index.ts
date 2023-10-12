@@ -51,8 +51,8 @@ const mergeCmd = new CliCommand('merge')
     }
 
     const srcLabel = asRef
-     ? getLabelByRef({ doc, ref: srcName })
-     : getLabelByName({ doc, streamId: stream.id, name: srcName })
+      ? getLabelByRef({ doc, ref: srcName })
+      : getLabelByName({ doc, streamId: stream.id, name: srcName })
     if (srcLabel instanceof Error) {
       throw srcLabel
     }

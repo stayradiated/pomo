@@ -27,6 +27,7 @@ const transport = async (
 		return response.formData();
 	});
 	if (body instanceof Error) {
+		console.error(body);
 		return new Error(`Could not POST form data to ${remoteUrl}`, { cause: body });
 	}
 
@@ -73,6 +74,7 @@ const forceSyncWithServer = async (doc: Doc): Promise<void | Error> => {
 		})
 	);
 	if (remoteDataPartB instanceof Error) {
+		console.error(remoteDataPartB);
 		return new Error('Failed to sync with server while fetching part B', {
 			cause: remoteDataPartB
 		});

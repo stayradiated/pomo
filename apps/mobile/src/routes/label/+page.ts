@@ -17,9 +17,9 @@ const load = (async ({ url }) => {
 	const streamId = url.searchParams.get('stream') ?? streamList[0].id;
 	const stream = streamList.find((stream) => stream.id === streamId);
 
-  if (!stream) {
-    throw error(404, 'Stream not found');
-  }
+	if (!stream) {
+		throw error(404, 'Stream not found');
+	}
 
 	const streamLabelMap = new Map<string | null, Label[]>();
 	for (const label of labelList) {

@@ -1,23 +1,24 @@
 <script lang="ts">
-  import { createDoc } from '@stayradiated/pomo-doc';
-  import { IndexeddbPersistence } from '$lib/y-indexeddb';
-  import { markDocAsStale, syncLogs } from '$lib/sync.js';
+  import { syncLogs } from '$lib/sync.js';
+  import * as dateFns from 'date-fns'
+  import type { PageData } from './$types.js';
 
-  const doc = createDoc()
-  const provider = new IndexeddbPersistence('pomo', doc)
-  provider.on('synced', () => {
-    console.log('content from the database is loaded')
-  })
-
-  const handleSync = async () => {
-    await markDocAsStale(doc)
-  }
+  export let data: PageData
 </script>
 
 <h1>Sync</h1>
 
-<button on:click={handleSync}>Sync</button>
+<button on:click={data.handleSync}>Sync</button>
 
-<pre>
-  <code>{JSON.stringify($syncLogs, null, 2)}</code>
-</pre>
+<ul>
+  {#each $syncLogs as log}
+    {@const ts = dateFns.format(log.ts, 'pp')}
+    <li><strong>{ts}</strong><pre>{log.message}</pre></li>
+  {/each}
+</ul>
+
+<style>
+  pre {
+    white-space: pre-wrap;
+  }
+</style>

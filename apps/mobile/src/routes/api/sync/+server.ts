@@ -39,6 +39,9 @@ const POST = async ({ request }: RequestEvent) => {
 	await saveDoc();
 
 	const responseFormData = new FormData();
+	// chrome will throw an error if form data is empty
+	responseFormData.append('status', 'success');
+
 	if (result.diff) {
 		responseFormData.append('diff', new Blob([result.diff]));
 	}

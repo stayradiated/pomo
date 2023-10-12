@@ -1,10 +1,10 @@
-import * as Y from 'yjs'
 import type { Doc } from './types.js'
 import { createDoc } from './create-doc.js'
+import { applyUpdate } from './apply-update.js'
 
 const loadDoc = (byteArray: Uint8Array): Doc => {
   const doc = createDoc()
-  Y.applyUpdateV2(doc as Y.Doc, byteArray)
+  applyUpdate(doc, byteArray)
   return doc
 }
 

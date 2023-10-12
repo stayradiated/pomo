@@ -5,6 +5,10 @@
 
 import { build, files, version } from '$service-worker';
 
+const log = (...args) => {
+	console.info('[SW]', ...args);
+};
+
 // Create a unique cache name for this deployment
 const CACHE = `cache-${version}`;
 
@@ -45,7 +49,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
 	// ignore POST requests etc
 	if (event.request.method !== 'GET') {
-		console.log(`Passing through ${event.request.method} request`);
+		log(`Passing through ${event.request.method} request`);
 		return;
 	}
 
@@ -55,13 +59,13 @@ self.addEventListener('fetch', (event) => {
 
 		// `build`/`files` can always be served from the cache
 		if (ASSETS.includes(url.pathname)) {
-			console.log(`Resolving cached asset: ${url.pathname}`);
+			log(`Resolving cached asset: ${url.pathname}`);
 			return cache.match(url.pathname);
 		}
 
 		// api requests must always be served from the network
 		if (url.pathname.startsWith('/api')) {
-			console.log(`Passing through API request: ${url.pathname}`);
+			log(`Passing through API request: ${url.pathname}`);
 			return fetch(event.request);
 		}
 
@@ -69,10 +73,10 @@ self.addEventListener('fetch', (event) => {
 		// fall back to the cache if we're offline
 		try {
 			const response = await fetch(event.request);
-			console.log(`Passing through API : GET ${url.pathname}`);
+			log(`Passing through API : GET ${url.pathname}`);
 
 			if (response.status === 200) {
-				console.log(`Caching response: ${url.pathname}`);
+				log(`Caching response: ${url.pathname}`);
 				cache.put(event.request, response.clone());
 			}
 
@@ -80,10 +84,10 @@ self.addEventListener('fetch', (event) => {
 		} catch {
 			const match = await cache.match(event.request);
 			if (match) {
-				console.log(`Resolve response from cache: ${url.pathname}`);
+				log(`Resolve response from cache: ${url.pathname}`);
 				return match;
 			}
-			console.log(`No response found in cache: ${url.pathname}`);
+			log(`No response found in cache: ${url.pathname}`);
 			return undefined;
 		}
 	};
