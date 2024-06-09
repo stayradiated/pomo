@@ -7,7 +7,7 @@ ENV PNPM_HOME=/app/.pnpm
 ENV PATH=$PNPM_HOME:$PATH
 RUN set -e; \
   mkdir -p $PNPM_HOME ; \
-  pnpm install --global turbo;
+  pnpm install --global turbo@1;
 
 FROM devbase as pruner
 COPY . .
