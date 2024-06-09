@@ -142,7 +142,7 @@ Output:
 
   const rawResponse = await errorBoundary(async () =>
     openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0613',
+      model: 'gpt-3.5-turbo',
       messages: messageList,
       functions: functionList,
       function_call: 'auto',
