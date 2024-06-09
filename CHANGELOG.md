@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.48.1](https://github.com/stayradiated/pomo/releases/tag/v0.48.1) - 2024-06-10
+
+- [`9814386`](https://github.com/stayradiated/pomo/commit/9814386f7b04406dd610131c544a136368059970) fix(core): switch GPT model to newer version
+- [`75ed152`](https://github.com/stayradiated/pomo/commit/75ed152fe647156740c21d359bf8f4ca7b3e5025) ci(uplift): uplifted for version v0.48.0
+- [`fdcfdd8`](https://github.com/stayradiated/pomo/commit/fdcfdd817c6d63892d36635990419c2bd1fc5350) ci(uplift): uplifted for version v0.48.0
+
 ## [v0.48.0](https://github.com/stayradiated/pomo/releases/tag/v0.48.0) - 2023-10-12
 
 - [`6beda63`](https://github.com/stayradiated/pomo/commit/6beda630c69a0ea378083a59d0937ea4055926a2) feat: Add experimental new goals page (#1)
