@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.48.2](https://github.com/stayradiated/pomo/releases/tag/v0.48.2) - 2024-06-10
+
+- [`ca2bc2e`](https://github.com/stayradiated/pomo/commit/ca2bc2e4d609886cdec896ec6b95d818b7147c1a) fix(Dockerfile): pin turbo version to 1 🚀
+- [`b10f889`](https://github.com/stayradiated/pomo/commit/b10f889fc586fd8d37301db40ebd92e3a992a5de) ci(uplift): uplifted for version v0.48.1
+- [`10ed8db`](https://github.com/stayradiated/pomo/commit/10ed8dbade25a5dba71acab6bec6f5b826db6e95) ci(uplift): uplifted for version v0.48.1
+
 ## [v0.48.1](https://github.com/stayradiated/pomo/releases/tag/v0.48.1) - 2024-06-10
 
 - [`9814386`](https://github.com/stayradiated/pomo/commit/9814386f7b04406dd610131c544a136368059970) fix(core): switch GPT model to newer version
