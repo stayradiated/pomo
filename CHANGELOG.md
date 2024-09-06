@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.49.0](https://github.com/stayradiated/pomo/releases/tag/v0.49.0) - 2024-09-07
+
+- [`8521e07`](https://github.com/stayradiated/pomo/commit/8521e077d26e2fbbc1a4ab25f2b10cfa418c10c2) feat: Add stats command with days subcommand 📊
+- [`f06ffbd`](https://github.com/stayradiated/pomo/commit/f06ffbd3aa7a951d3e8aef0872868b9aca69a955) ci(uplift): uplifted for version v0.48.2
+- [`de8aff1`](https://github.com/stayradiated/pomo/commit/de8aff127269e5da124a9b5994371a9ff1bd9e7e) ci(uplift): uplifted for version v0.48.2
+
 ## [v0.48.2](https://github.com/stayradiated/pomo/releases/tag/v0.48.2) - 2024-06-10
 
 - [`ca2bc2e`](https://github.com/stayradiated/pomo/commit/ca2bc2e4d609886cdec896ec6b95d818b7147c1a) fix(Dockerfile): pin turbo version to 1 🚀
