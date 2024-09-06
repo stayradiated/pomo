@@ -10,6 +10,7 @@ import { migrateCmd } from './command/migrate.js'
 import { pointCmd } from './command/point/index.js'
 import { pullStravaCmd } from './command/pull-strava.js'
 import { schemaCmd } from './command/schema/index.js'
+import { statsCmd } from './command/stats/index.js'
 import { statusCmd } from './command/status.js'
 import { streamCmd } from './command/stream/index.js'
 import { summaryCmd } from './command/summary.js'
@@ -31,6 +32,7 @@ export const cli = new CliCommand('pomo')
     pointCmd,
     pullStravaCmd,
     schemaCmd,
+    statsCmd,
     statusCmd,
     streamCmd,
     summaryCmd,
