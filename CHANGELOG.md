@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.50.0](https://github.com/stayradiated/pomo/releases/tag/v0.50.0) - 2024-09-09
+
+- [`a07b605`](https://github.com/stayradiated/pomo/commit/a07b6055d65e5eed829c6511062d4d3ce39f049e) feat: Improve day counting for multi-day activities 📅
+- [`2668d1a`](https://github.com/stayradiated/pomo/commit/2668d1a537091cf641f7ada169a0b19f646c7d8f) ci(uplift): uplifted for version v0.49.0
+- [`d29187b`](https://github.com/stayradiated/pomo/commit/d29187b9b51d814105ec9fd8a03a92b790c79dbe) ci(uplift): uplifted for version v0.49.0
+
 ## [v0.49.0](https://github.com/stayradiated/pomo/releases/tag/v0.49.0) - 2024-09-07
 
 - [`8521e07`](https://github.com/stayradiated/pomo/commit/8521e077d26e2fbbc1a4ab25f2b10cfa418c10c2) feat: Add stats command with days subcommand 📊
