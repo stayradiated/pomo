@@ -9,6 +9,10 @@ import {
 } from '@stayradiated/pomo-doc'
 import { utcToZonedTime } from 'date-fns-tz'
 import type { Doc } from '@stayradiated/pomo-doc'
+import {
+  mapPointListToLineList,
+  eachDayOfIntervalWithTimeZone,
+} from '@stayradiated/pomo-core'
 import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
@@ -32,16 +36,34 @@ const handler = (options: HandlerOptions): void | Error => {
     },
   })
 
+  const lineList = mapPointListToLineList(pointList)
+  if (lineList instanceof Error) {
+    return lineList
+  }
+
   const daySet = new Set<string>()
 
-  for (const point of pointList) {
-    if (!point.labelIdList.includes(where.labelId)) {
+  for (const line of lineList) {
+    if (!line.labelIdList.includes(where.labelId)) {
       continue
     }
 
-    const startedAt = utcToZonedTime(point.startedAt, timeZone)
-    const formattedDate = dateFns.format(startedAt, 'yyyy-MM-dd')
-    daySet.add(formattedDate)
+    if (line.stoppedAt) {
+      for (const date of eachDayOfIntervalWithTimeZone({
+        timeZone,
+        startDate: line.startedAt,
+        endDate: line.stoppedAt,
+      })) {
+        const formattedDate = dateFns.format(date, 'yyyy-MM-dd')
+        daySet.add(formattedDate)
+      }
+    } else {
+      const formattedDate = dateFns.format(
+        utcToZonedTime(line.startedAt, timeZone),
+        'yyyy-MM-dd',
+      )
+      daySet.add(formattedDate)
+    }
   }
 
   const dayList = Array.from(daySet).sort()
