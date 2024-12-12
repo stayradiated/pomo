@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.51.1](https://github.com/stayradiated/pomo/releases/tag/v0.51.1) - 2024-12-13
+
+- [`4dd1ee0`](https://github.com/stayradiated/pomo/commit/4dd1ee09571d7256800056b43b832282f2539a8c) fix: Improve script portability and resolve symlink handling 🐛
+- [`e5eaf55`](https://github.com/stayradiated/pomo/commit/e5eaf552eb316d51f868bb759baec67306c5e51c) ci(uplift): uplifted for version v0.51.0
+- [`7822f37`](https://github.com/stayradiated/pomo/commit/7822f3702e201df935c64ca4d5f963255709e247) ci(uplift): uplifted for version v0.51.0
+
 ## [v0.51.0](https://github.com/stayradiated/pomo/releases/tag/v0.51.0) - 2024-12-13
 
 - [`dcaf094`](https://github.com/stayradiated/pomo/commit/dcaf0948b3017967ff835bba27c03c0e720ba05f) feat: Remove undici dependency and adjust network timeout 🚀
