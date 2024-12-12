@@ -56,16 +56,28 @@
         "./src/routes/**/+{layout,page,server,error}{,.server}.{svelte,ts}",
         "./svelte.config.js"
       ],
-      "project": ["./src/**/*.ts"]
+      "project": [
+        "./src/**/*.ts"
+      ]
     },
     "paths": {
-      "$lib/*": ["src/lib/*"],
-      "$app/*": ["node_modules/@sveltejs/kit/src/runtime/app/*"],
-      "$env/*": ["node_modules/@sveltejs/kit/src/runtime/env/*"]
+      "$lib/*": [
+        "src/lib/*"
+      ],
+      "$app/*": [
+        "node_modules/@sveltejs/kit/src/runtime/app/*"
+      ],
+      "$env/*": [
+        "node_modules/@sveltejs/kit/src/runtime/env/*"
+      ]
     },
-    "ignore": ["pollen.config.js"],
+    "ignore": [
+      "pollen.config.js"
+    ],
     "ignoreDependencies": [],
-    "ignoreBinaries": ["sed"],
+    "ignoreBinaries": [
+      "sed"
+    ],
     "ignoreExportsUsedInFile": true
   }
 }

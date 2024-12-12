@@ -1,5 +1,4 @@
 import { URL } from 'node:url'
-import { fetch } from 'undici'
 import { z } from 'zod'
 import { paginateAll } from './paginate-all.js'
 

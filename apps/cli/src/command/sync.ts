@@ -1,7 +1,6 @@
 import { syncWithRemote } from '@stayradiated/pomo-doc'
 import type { SyncTransportData } from '@stayradiated/pomo-doc'
 import { CliCommand } from 'cilly'
-import { FormData, fetch } from 'undici'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const transport = async (

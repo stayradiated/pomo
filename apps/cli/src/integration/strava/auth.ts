@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process'
 import http from 'node:http'
 import { URL } from 'node:url'
-import { fetch } from 'undici'
 import { z } from 'zod'
 import type { Session } from './types.js'
 
