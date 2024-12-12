@@ -1,9 +1,23 @@
-#!/usr/bin/env zsh
+#!/bin/sh
 
 # get absolute path to script, resolve symlinks
-DIR=$(cd "$(dirname "$0:A")"; pwd -P)
+resolve_link() {
+    filepath="$1"
+    while [ -L "$filepath" ]; do
+        dir=$(dirname "$filepath")
+        filepath="$(readlink "$filepath")"
+        case "$filepath" in
+            /*) ;;
+            *) filepath="$dir/$filepath" ;;
+        esac
+    done
+    echo "$filepath"
+}
+
+SCRIPT_PATH=$(resolve_link "$0")
+DIR=$(cd "$(dirname "$SCRIPT_PATH")"; pwd -P)
 
 # we override the default connection timeout to handle slow networks
 exec node \
   --network-family-autoselection-attempt-timeout=5000 \
-  $DIR/../dist/cli.js $@
+  "$DIR/../dist/cli.js" "$@"
