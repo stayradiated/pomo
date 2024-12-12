@@ -55,6 +55,7 @@ const logCmd = new CliCommand('log')
         timezone: timeZone,
       })
       ?.getTime()
+
     if (typeof instant !== 'number') {
       throw new Error(`Could not parse date: ${options.date}`)
     }

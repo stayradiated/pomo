@@ -160,10 +160,13 @@ const summaryCmd = new CliCommand('summary')
 
     const timeZone = getUserTimeZone({ doc })
 
-    const instant = chrono.parseDate(options.date, {
-      instant: new Date(),
-      timezone: timeZone,
-    })
+    const instant = chrono
+      .parseDate(options.date, {
+        instant: new Date(),
+        timezone: timeZone,
+      })
+      ?.getTime()
+
     if (typeof instant !== 'number') {
       throw new Error(`Could not parse date: ${options.date}`)
     }

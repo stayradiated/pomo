@@ -38,5 +38,8 @@ export const cli = new CliCommand('pomo')
     togglCmd,
     userCmd,
   )
+  .withHandler(() => {
+    cli.help()
+  })
 
 cli.process(process.argv)
