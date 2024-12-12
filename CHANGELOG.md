@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.51.0](https://github.com/stayradiated/pomo/releases/tag/v0.51.0) - 2024-12-13
+
+- [`dcaf094`](https://github.com/stayradiated/pomo/commit/dcaf0948b3017967ff835bba27c03c0e720ba05f) feat: Remove undici dependency and adjust network timeout 🚀
+- [`f5473bc`](https://github.com/stayradiated/pomo/commit/f5473bcd3e2037d266ab21b8d0c4f8bcedb3082e) update dependencies (#2)
+- [`ca31bec`](https://github.com/stayradiated/pomo/commit/ca31becb90edb7f594a3507ae2e89e54a9284276) ci(uplift): uplifted for version v0.50.0
+- [`4bd7b75`](https://github.com/stayradiated/pomo/commit/4bd7b758379cc3889154804934440d04b350b44b) ci(uplift): uplifted for version v0.50.0
+
 ## [v0.50.0](https://github.com/stayradiated/pomo/releases/tag/v0.50.0) - 2024-09-09
 
 - [`a07b605`](https://github.com/stayradiated/pomo/commit/a07b6055d65e5eed829c6511062d4d3ce39f049e) feat: Improve day counting for multi-day activities 📅
