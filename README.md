@@ -19,12 +19,10 @@ Not easy at the moment.
 ```bash
 pnpm install
 
-export POMO_DATABASE_URL=file:./pomo.db
 pnpm exec prisma db push
 
 mkdir -p $HOME/.local/share/pomo
 mv pomo.db $HOME/.local/share/pomo
-export POMO_DATABASE_URL=$HOME/.local/share/pomo/pomo.db
 
 pnpm run build
 sudo ln -s $(pwd)/dist/index.js /usr/local/bin/pomo 
