@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import type { Doc, JsonDoc, YUser, YStream, YPoint, YLabel } from './types.js'
+import type { Doc, JsonDoc, YLabel, YPoint, YStream, YUser } from './types.js'
 
 const createDocWithData = (data: Partial<JsonDoc>): Doc => {
   const doc = new Y.Doc() as Doc

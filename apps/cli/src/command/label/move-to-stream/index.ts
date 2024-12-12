@@ -1,12 +1,12 @@
-import { CliCommand } from 'cilly'
 import {
-  getStreamByName,
   getLabelByName,
-  updateLabelStream,
+  getStreamByName,
   transact,
+  updateLabelStream,
 } from '@stayradiated/pomo-doc'
-import { confirmDialog } from './confirm-dialog.js'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
+import { confirmDialog } from './confirm-dialog.js'
 
 const moveToStreamCmd = new CliCommand('move-to-stream')
   .withDescription('Move a label to a different stream')
@@ -28,9 +28,9 @@ const moveToStreamCmd = new CliCommand('move-to-stream')
     },
   )
   .withHandler(async (args) => {
-    const labelName = args['label']
-    const srcStreamName = args['src']
-    const destStreamName = args['dest']
+    const labelName = args.label
+    const srcStreamName = args.src
+    const destStreamName = args.dest
 
     const doc = await getDoc()
     if (doc instanceof Error) {

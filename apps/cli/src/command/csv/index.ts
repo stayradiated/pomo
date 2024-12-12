@@ -1,11 +1,11 @@
-import * as chrono from 'chrono-node'
-import * as dateFns from 'date-fns'
-import { CliCommand } from 'cilly'
-import z from 'zod'
-import { getUserTimeZone, getStreamByName } from '@stayradiated/pomo-doc'
 import { startOfDayWithTimeZone } from '@stayradiated/pomo-core'
-import { exportAsCsv } from './export.js'
+import { getStreamByName, getUserTimeZone } from '@stayradiated/pomo-doc'
+import * as chrono from 'chrono-node'
+import { CliCommand } from 'cilly'
+import * as dateFns from 'date-fns'
+import z from 'zod'
 import { getDoc } from '#src/lib/doc.js'
+import { exportAsCsv } from './export.js'
 
 const $Options = z.object({
   stream: z.string(),
@@ -64,13 +64,19 @@ const exportCmd = new CliCommand('export')
     const currentTime = Date.now()
     const timeZone = getUserTimeZone({ doc })
 
+    const instant = chrono
+      .parseDate(options.date, {
+        instant: new Date(),
+        timezone: timeZone,
+      })
+      ?.getTime()
+
+    if (typeof instant !== 'number') {
+      throw new Error(`Could not parse date: ${options.date}`)
+    }
+
     const startDate = startOfDayWithTimeZone({
-      instant: chrono
-        .parseDate(options.date, {
-          instant: new Date(),
-          timezone: timeZone,
-        })
-        .getTime(),
+      instant,
       timeZone,
     }).getTime()
 

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Text, Box, type TextProps } from 'ink'
+import { Box, Text, type TextProps } from 'ink'
+import type React from 'react'
 
 type Column = {
   name: string

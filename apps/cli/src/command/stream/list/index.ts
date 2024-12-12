@@ -1,6 +1,6 @@
 import { CliCommand } from 'cilly'
-import { listStreams } from './list-streams.js'
 import { getDoc } from '#src/lib/doc.js'
+import { listStreams } from './list-streams.js'
 
 const listCmd = new CliCommand('list')
   .withDescription('List all streams')

@@ -1,7 +1,7 @@
-import { test, expect } from 'vitest'
 import * as dateFnsTz from 'date-fns-tz'
-import type { Line } from './types.js'
+import { expect, test } from 'vitest'
 import { clampAndGroupLineListByDay } from './clamp-and-group-line-list-by-day.js'
+import type { Line } from './types.js'
 
 test('group some lines', () => {
   const timeZone = 'Europe/London'

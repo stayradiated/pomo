@@ -1,10 +1,10 @@
-import * as chrono from 'chrono-node'
-import * as dateFns from 'date-fns'
 import { startOfDayWithTimeZone } from '@stayradiated/pomo-core'
+import { getStreamByName, getUserTimeZone } from '@stayradiated/pomo-doc'
+import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
-import { getUserTimeZone, getStreamByName } from '@stayradiated/pomo-doc'
-import { renderLog } from './log.js'
+import * as dateFns from 'date-fns'
 import { getDoc } from '#src/lib/doc.js'
+import { renderLog } from './log.js'
 
 const logCmd = new CliCommand('log')
   .withDescription('Show a log of all points')
@@ -49,21 +49,27 @@ const logCmd = new CliCommand('log')
 
     const timeZone = getUserTimeZone({ doc })
 
+    const instant = chrono
+      .parseDate(options.date, {
+        instant: new Date(),
+        timezone: timeZone,
+      })
+      ?.getTime()
+
+    if (typeof instant !== 'number') {
+      throw new Error(`Could not parse date: ${options.date}`)
+    }
+
     const startDate = startOfDayWithTimeZone({
-      instant: chrono
-        .parseDate(options['date'], {
-          instant: new Date(),
-          timezone: timeZone,
-        })
-        .getTime(),
+      instant,
       timeZone,
     }).getTime()
 
-    const endDate = dateFns.addDays(startDate, options['span']).getTime()
+    const endDate = dateFns.addDays(startDate, options.span).getTime()
 
     let whereStreamId: string | undefined
-    if (options['stream']) {
-      const stream = getStreamByName({ doc, name: options['stream'] })
+    if (options.stream) {
+      const stream = getStreamByName({ doc, name: options.stream })
       if (stream instanceof Error) {
         throw stream
       }

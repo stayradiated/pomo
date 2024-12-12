@@ -1,5 +1,5 @@
+import { getStreamByName, transact, upsertLabel } from '@stayradiated/pomo-doc'
 import { CliCommand } from 'cilly'
-import { upsertLabel, getStreamByName, transact } from '@stayradiated/pomo-doc'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const addCmd = new CliCommand('add')
@@ -16,8 +16,8 @@ const addCmd = new CliCommand('add')
     },
   )
   .withHandler(async (args) => {
-    const streamName = args['stream']
-    const name = args['name']
+    const streamName = args.stream
+    const name = args.name
 
     const doc = await getDoc()
     if (doc instanceof Error) {

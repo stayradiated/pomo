@@ -1,5 +1,5 @@
 import type { Doc } from '@stayradiated/pomo-doc'
-import { updateLabel, transact } from '@stayradiated/pomo-doc'
+import { transact, updateLabel } from '@stayradiated/pomo-doc'
 
 type RenameLabelOptions = {
   doc: Doc
@@ -7,7 +7,7 @@ type RenameLabelOptions = {
   name: string
 }
 
-const renameLabel = (options: RenameLabelOptions): void | Error => {
+const renameLabel = (options: RenameLabelOptions): undefined | Error => {
   const { doc, labelId, name } = options
 
   const result = transact(doc, () => updateLabel({ doc, labelId, name }))

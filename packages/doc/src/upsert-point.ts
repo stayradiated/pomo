@@ -1,7 +1,7 @@
 import * as Y from 'yjs'
-import { randomUlid } from './utils/ulid.js'
-import { find } from './utils/find.js'
 import type { Doc, YPoint } from './types.js'
+import { find } from './utils/find.js'
+import { randomUlid } from './utils/ulid.js'
 
 type UpsertPointOptions = {
   doc: Doc

@@ -1,5 +1,5 @@
+import { getStreamByName, transact, updateStream } from '@stayradiated/pomo-doc'
 import { CliCommand } from 'cilly'
-import { getStreamByName, updateStream, transact } from '@stayradiated/pomo-doc'
 import z from 'zod'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
@@ -26,10 +26,10 @@ const setCmd = new CliCommand('set')
     },
   )
   .withHandler(async (args) => {
-    const streamName = args['stream']
+    const streamName = args.stream
     const { key, value } = $KeyValue.parse({
-      key: args['key'],
-      value: args['value'],
+      key: args.key,
+      value: args.value,
     })
 
     const doc = await getDoc()

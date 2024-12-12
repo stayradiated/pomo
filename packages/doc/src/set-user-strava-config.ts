@@ -1,7 +1,7 @@
 import * as Y from 'yjs'
-import { randomUlid } from './utils/ulid.js'
-import { head } from './utils/head.js'
 import type { Doc, YUser } from './types.js'
+import { head } from './utils/head.js'
+import { randomUlid } from './utils/ulid.js'
 
 type SetUserStravaConfigOptions = {
   doc: Doc
@@ -13,7 +13,7 @@ type SetUserStravaConfigOptions = {
 
 const setUserStravaConfig = (
   options: SetUserStravaConfigOptions,
-): void | Error => {
+): undefined | Error => {
   const { doc, stravaConfig } = options
 
   if (!doc._transaction) {
@@ -39,6 +39,8 @@ const setUserStravaConfig = (
     user.set('updatedAt', now)
     rootUserMap.set(userId, user)
   }
+
+  return
 }
 
 export { setUserStravaConfig }

@@ -1,13 +1,13 @@
 import {
-  getUserRecord,
-  getStreamRecord,
-  getPointRecord,
   getLabelRecord,
+  getPointRecord,
+  getStreamRecord,
+  getUserRecord,
 } from '@stayradiated/pomo-doc'
 import type { JsonDoc } from '@stayradiated/pomo-doc'
 import { getDoc } from '#src/lib/doc.js'
 
-const exportAsJson = async (): Promise<void | Error> => {
+const exportAsJson = async (): Promise<undefined | Error> => {
   const doc = await getDoc()
   if (doc instanceof Error) {
     return doc

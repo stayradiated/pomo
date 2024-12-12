@@ -1,18 +1,18 @@
-import * as dateFns from 'date-fns'
-import { CliCommand } from 'cilly'
-import z from 'zod'
 import {
-  getUserTimeZone,
-  getStreamByName,
+  eachDayOfIntervalWithTimeZone,
+  mapPointListToLineList,
+} from '@stayradiated/pomo-core'
+import {
   getLabelByName,
+  getStreamByName,
+  getUserTimeZone,
   retrievePointList,
 } from '@stayradiated/pomo-doc'
-import { utcToZonedTime } from 'date-fns-tz'
 import type { Doc } from '@stayradiated/pomo-doc'
-import {
-  mapPointListToLineList,
-  eachDayOfIntervalWithTimeZone,
-} from '@stayradiated/pomo-core'
+import { CliCommand } from 'cilly'
+import * as dateFns from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
+import z from 'zod'
 import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
@@ -24,7 +24,7 @@ type HandlerOptions = {
   }
 }
 
-const handler = (options: HandlerOptions): void | Error => {
+const handler = (options: HandlerOptions): undefined | Error => {
   const { doc, timeZone, where } = options
 
   const pointList = retrievePointList({
@@ -59,7 +59,7 @@ const handler = (options: HandlerOptions): void | Error => {
       }
     } else {
       const formattedDate = dateFns.format(
-        utcToZonedTime(line.startedAt, timeZone),
+        toZonedTime(line.startedAt, timeZone),
         'yyyy-MM-dd',
       )
       daySet.add(formattedDate)

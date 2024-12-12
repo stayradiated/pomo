@@ -1,7 +1,7 @@
 import { applyUpdate } from './apply-update.js'
+import { diffUpdate } from './diff-update.js'
 import { encodeStateAsUpdate } from './encode-state-as-update.js'
 import { encodeStateVectorFromUpdate } from './encode-state-vector-from-update.js'
-import { diffUpdate } from './diff-update.js'
 import { mergeUpdates } from './merge-updates.js'
 import type { Doc } from './types.js'
 

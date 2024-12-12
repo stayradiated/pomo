@@ -1,7 +1,7 @@
-import { describe, test, expect } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
-import { makeDoc } from './test-utils/make-doc.js'
+import { describe, expect, test } from 'vitest'
 import { deleteLabels } from './delete-labels.js'
+import { makeDoc } from './test-utils/make-doc.js'
 import { transact } from './transact.js'
 
 describe('deleteLabels', () => {

@@ -1,6 +1,6 @@
-import { head } from './utils/head.js'
-import type { Doc } from './types.js'
 import { NotFoundError } from './error.js'
+import type { Doc } from './types.js'
+import { head } from './utils/head.js'
 
 type GetUserStravaSessionOptions = {
   doc: Doc

@@ -1,3 +1,8 @@
+import {
+  clampLineList,
+  formatDurationHMS,
+  mapPointListToLineList,
+} from '@stayradiated/pomo-core'
 import type { Doc } from '@stayradiated/pomo-doc'
 import {
   getLabelRecord,
@@ -5,11 +10,6 @@ import {
   getUserTimeZone,
   retrievePointList,
 } from '@stayradiated/pomo-doc'
-import {
-  mapPointListToLineList,
-  clampLineList,
-  formatDurationHMS,
-} from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 import * as dateFnsTz from 'date-fns-tz'
 import type { TimeEntry } from './types.js'
@@ -113,7 +113,7 @@ const exportTimeEntries = (
       continue
     }
 
-    const startedAt = dateFnsTz.utcToZonedTime(line.startedAt, timeZone)
+    const startedAt = dateFnsTz.toZonedTime(line.startedAt, timeZone)
     const startTime = dateFnsTz.format(startedAt, 'HH:mm:ss')
     const startDate = dateFnsTz.format(startedAt, 'yyyy-MM-dd')
     const duration = formatDurationHMS(line.durationMs)

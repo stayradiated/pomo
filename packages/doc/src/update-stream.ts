@@ -8,7 +8,7 @@ type UpdateStreamOptions = {
   parentId?: string | null
 }
 
-const updateStream = (options: UpdateStreamOptions): void | Error => {
+const updateStream = (options: UpdateStreamOptions): undefined | Error => {
   const { doc, streamId, name, index, parentId } = options
 
   if (!doc._transaction) {
@@ -45,6 +45,8 @@ const updateStream = (options: UpdateStreamOptions): void | Error => {
   }
 
   stream.set('updatedAt', Date.now())
+
+  return
 }
 
 export { updateStream }

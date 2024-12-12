@@ -5,7 +5,7 @@ type DeleteLabelsOptions = {
   pointIdList: string[]
 }
 
-const deletePoints = (options: DeleteLabelsOptions): void | Error => {
+const deletePoints = (options: DeleteLabelsOptions): undefined | Error => {
   const { doc, pointIdList } = options
 
   if (!doc._transaction) {
@@ -25,6 +25,8 @@ const deletePoints = (options: DeleteLabelsOptions): void | Error => {
   for (const pointId of pointIdList) {
     pointMap.delete(pointId)
   }
+
+  return
 }
 
 export { deletePoints }

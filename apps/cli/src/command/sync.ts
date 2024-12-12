@@ -1,7 +1,7 @@
-import { CliCommand } from 'cilly'
 import { syncWithRemote } from '@stayradiated/pomo-doc'
 import type { SyncTransportData } from '@stayradiated/pomo-doc'
-import { fetch, FormData } from 'undici'
+import { CliCommand } from 'cilly'
+import { FormData, fetch } from 'undici'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const transport = async (
@@ -48,7 +48,7 @@ type HandlerOptions = {
   remoteUrl: string
 }
 
-const handler = async (options: HandlerOptions): Promise<void | Error> => {
+const handler = async (options: HandlerOptions): Promise<undefined | Error> => {
   const { remoteUrl } = options
 
   const doc = await getDoc()

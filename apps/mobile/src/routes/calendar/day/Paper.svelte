@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="row" />
+<div class="row"></div>
 <div class="row"><span class="label">01:00</span></div>
 <div class="row"><span class="label">02:00</span></div>
 <div class="row"><span class="label">03:00</span></div>
@@ -27,19 +27,19 @@
 <div class="row"><span class="label">23:00</span></div>
 
 <style>
-  .row {
-    position: relative;
-    box-sizing: border-box;
-    border-bottom: 1px solid #ccc;
-    height: calc(60px * 4);
-  }
-  .row:first-of-type {
-    border-top: 1px solid #ccc;
-  }
+	.row {
+		position: relative;
+		box-sizing: border-box;
+		border-bottom: 1px solid #ccc;
+		height: calc(60px * 4);
+	}
+	.row:first-of-type {
+		border-top: 1px solid #ccc;
+	}
 
-  .label {
-    position: absolute;
-    top: -8px;
-    line-height: 1;
-  }
+	.label {
+		position: absolute;
+		top: -8px;
+		line-height: 1;
+	}
 </style>

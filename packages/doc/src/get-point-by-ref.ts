@@ -1,5 +1,5 @@
+import { MultipleFoundError, NotFoundError } from './error.js'
 import type { Doc, Point } from './types.js'
-import { NotFoundError, MultipleFoundError } from './error.js'
 
 type GetPointByRefOptions = {
   doc: Doc

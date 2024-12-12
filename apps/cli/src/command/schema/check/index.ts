@@ -1,5 +1,5 @@
-import { CliCommand } from 'cilly'
 import { validate } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
 import { ZodError } from 'zod'
 import { getDoc } from '#src/lib/doc.js'
 

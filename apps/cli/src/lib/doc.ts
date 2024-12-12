@@ -1,8 +1,8 @@
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
+import { errorBoundary } from '@stayradiated/error-boundary'
 import * as pomoDoc from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
-import { errorBoundary } from '@stayradiated/error-boundary'
 import { getEnv } from './env.js'
 
 type GetDocFn = () => Promise<Doc | Error>

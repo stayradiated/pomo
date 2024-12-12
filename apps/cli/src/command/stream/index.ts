@@ -1,7 +1,7 @@
 import { CliCommand } from 'cilly'
-import { setCmd } from './set/index.js'
-import { listCmd } from './list/index.js'
 import { addCmd } from './add/index.js'
+import { listCmd } from './list/index.js'
+import { setCmd } from './set/index.js'
 
 const streamCmd = new CliCommand('stream')
   .withDescription('Commands related to streams')

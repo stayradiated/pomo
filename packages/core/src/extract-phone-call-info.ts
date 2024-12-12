@@ -1,6 +1,6 @@
+import { errorBoundary, errorBoundarySync } from '@stayradiated/error-boundary'
 import OpenAI from 'openai'
 import { z } from 'zod'
-import { errorBoundary, errorBoundarySync } from '@stayradiated/error-boundary'
 
 const getOpenAi = (apiKey: string) => {
   return new OpenAI({
@@ -47,10 +47,11 @@ const extractPhoneCallInfo = async (
 
   const openai = getOpenAi(openaiApiKey)
 
-  const messageList: OpenAI.Chat.Completions.ChatCompletionMessage[] = [
+  const messageList: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     {
       role: 'system',
-      content: `Please extract the name and call log from the information that the user provides you.`,
+      content:
+        'Please extract the name and call log from the information that the user provides you.',
     },
     {
       role: 'user',

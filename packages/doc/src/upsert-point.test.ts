@@ -1,8 +1,8 @@
-import { describe, test, expect } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
-import { upsertPoint } from './upsert-point.js'
+import { describe, expect, test } from 'vitest'
 import { createDoc } from './create-doc.js'
 import { transact } from './transact.js'
+import { upsertPoint } from './upsert-point.js'
 
 describe('upsertPoint', () => {
   test('insert new point', () => {

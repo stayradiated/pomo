@@ -5,7 +5,7 @@ type MigrateOptions = {
   doc: Doc
 }
 
-const migrate = (options: MigrateOptions): void | Error => {
+const migrate = (options: MigrateOptions): undefined | Error => {
   const { doc } = options
 
   if (!doc._transaction) {
@@ -82,6 +82,8 @@ const migrate = (options: MigrateOptions): void | Error => {
       label.set('parentId', null)
     }
   }
+
+  return
 }
 
 export { migrate }

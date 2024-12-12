@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
 import TextInput from 'ink-text-input'
+import React, { useCallback } from 'react'
 import yn from 'yn'
 
 const noop = () => {}

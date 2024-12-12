@@ -1,11 +1,12 @@
-import React, { Fragment } from 'react'
-import { render, Box, Text } from 'ink'
 import type { Doc, Label } from '@stayradiated/pomo-doc'
 import {
   getLabelRecord,
   getPointList,
   getStreamRecord,
 } from '@stayradiated/pomo-doc'
+import { Box, Text, render } from 'ink'
+import type React from 'react'
+import { Fragment } from 'react'
 import { LabelTable } from './label-table.js'
 
 type ListLabelsOptions = {
@@ -13,7 +14,7 @@ type ListLabelsOptions = {
   streamId?: string
 }
 
-const listLabelsAsTable = (options: ListLabelsOptions): void | Error => {
+const listLabelsAsTable = (options: ListLabelsOptions): undefined | Error => {
   const { doc, streamId: whereStreamId } = options
 
   const streamRecord = getStreamRecord({ doc })
@@ -77,7 +78,7 @@ const listLabelsAsTable = (options: ListLabelsOptions): void | Error => {
     )
   }
 
-  render(<>{children}</>)
+  render(children)
 }
 
 export { listLabelsAsTable }

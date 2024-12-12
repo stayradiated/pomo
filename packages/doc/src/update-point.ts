@@ -8,7 +8,7 @@ type UpdatePointOptions = {
   labelIdList?: string[]
 }
 
-const updatePoint = (options: UpdatePointOptions): void | Error => {
+const updatePoint = (options: UpdatePointOptions): undefined | Error => {
   const { doc, pointId, value, labelIdList } = options
 
   if (!doc._transaction) {
@@ -36,6 +36,8 @@ const updatePoint = (options: UpdatePointOptions): void | Error => {
   }
 
   point.set('updatedAt', Date.now())
+
+  return
 }
 
 export { updatePoint }

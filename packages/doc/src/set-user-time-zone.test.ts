@@ -1,10 +1,10 @@
-import { describe, test, expect } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
-import { head } from './utils/head.js'
-import { setUserTimeZone } from './set-user-time-zone.js'
-import { createDoc } from './create-doc.js'
+import { describe, expect, test } from 'vitest'
 import { createDocWithData } from './create-doc-with-data.js'
+import { createDoc } from './create-doc.js'
+import { setUserTimeZone } from './set-user-time-zone.js'
 import { transact } from './transact.js'
+import { head } from './utils/head.js'
 
 describe('setUserTimeZone', () => {
   test('should create a new user', async () => {

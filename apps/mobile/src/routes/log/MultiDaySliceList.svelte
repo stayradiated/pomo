@@ -1,19 +1,24 @@
 <script lang="ts">
-  import type { Slice } from '@stayradiated/pomo-core'
-  import type { Stream, Label } from '@stayradiated/pomo-doc'
-  import { format } from 'date-fns'
-  import { utcToZonedTime } from 'date-fns-tz'
+import type { Slice } from '@stayradiated/pomo-core'
+import type { Stream, Label } from '@stayradiated/pomo-doc'
+import { format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 
-  import SliceList from './SliceList.svelte'
+import SliceList from './SliceList.svelte'
 
-  export let streamList: Stream[]
-  export let sliceList: Slice[]
-  export let timeZone: string
-  export let labelRecord: Record<string, Label>
+interface Props {
+  streamList: Stream[]
+  sliceList: Slice[]
+  timeZone: string
+  labelRecord: Record<string, Label>
+}
 
-  $: sliceListByDay = sliceList.reduce<Map<string, Slice[]>>((acc, slice) => {
+let { streamList, sliceList, timeZone, labelRecord }: Props = $props()
+
+let sliceListByDay = $derived(
+  sliceList.reduce<Map<string, Slice[]>>((acc, slice) => {
     const { startedAt: startedAtUTC } = slice
-    const startedAt = utcToZonedTime(startedAtUTC, timeZone)
+    const startedAt = toZonedTime(startedAtUTC, timeZone)
 
     // Format as Friday 02 June 2023
     const day = format(startedAt, 'EEEE dd MMMM yyyy')
@@ -22,20 +27,21 @@
     list.push(slice)
     acc.set(day, list)
     return acc
-  }, new Map())
+  }, new Map()),
+)
 </script>
 
 {#each Array.from(sliceListByDay.entries()) as [day, sliceList]}
-  <div class="container">
-    <h2>{day}</h2>
-    <SliceList {streamList} {sliceList} {timeZone} {labelRecord} />
-  </div>
+	<div class="container">
+		<h2>{day}</h2>
+		<SliceList {streamList} {sliceList} {timeZone} {labelRecord} />
+	</div>
 {/each}
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-  }
+	.container {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 1rem;
+	}
 </style>

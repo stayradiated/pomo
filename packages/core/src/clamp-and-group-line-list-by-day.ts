@@ -1,8 +1,8 @@
-import type { Line } from './types.js'
 import {
-  endOfDayWithTimeZone,
   eachDayOfIntervalWithTimeZone,
+  endOfDayWithTimeZone,
 } from './date-with-time-zone.js'
+import type { Line } from './types.js'
 
 type ClampAndGroupLineListByDayOptions = {
   lineList: Line[]

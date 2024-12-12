@@ -9,7 +9,7 @@ type UpdatePointStartedAtOptions = {
 
 const updatePointStartedAt = (
   options: UpdatePointStartedAtOptions,
-): void | Error => {
+): undefined | Error => {
   const { doc, pointIdList, startedAt } = options
 
   if (!doc._transaction) {
@@ -38,6 +38,8 @@ const updatePointStartedAt = (
     point.set('startedAt', startedAt)
     point.set('updatedAt', now)
   }
+
+  return
 }
 
 export { updatePointStartedAt }

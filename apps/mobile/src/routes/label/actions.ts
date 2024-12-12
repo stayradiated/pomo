@@ -1,34 +1,36 @@
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
-import { deleteLabels, transact } from '@stayradiated/pomo-doc';
-import type { Doc } from '@stayradiated/pomo-doc';
-import { markDocAsStale } from '$lib/sync.js';
-import { goto } from '$app/navigation';
+import { zfd } from 'zod-form-data'
+import { z } from 'zod'
+import { deleteLabels, transact } from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { markDocAsStale } from '$lib/sync.js'
+import { goto } from '$app/navigation'
 
 const $DeleteFormDataSchema = zfd.formData({
-	stream: zfd.text(),
-	label: zfd.repeatable(z.array(zfd.text()))
-});
+  stream: zfd.text(),
+  label: zfd.repeatable(z.array(zfd.text())),
+})
 
 type HandleDeleteFormSubmitOptions = {
-	doc: Doc;
-	formData: FormData;
-};
+  doc: Doc
+  formData: FormData
+}
 
 const handleDeleteFormSubmit = (options: HandleDeleteFormSubmitOptions) => {
-	const { doc, formData: rawFormData } = options;
+  const { doc, formData: rawFormData } = options
 
-	const formData = $DeleteFormDataSchema.parse(rawFormData);
-	const { label: labelIdList, stream: streamId } = formData;
+  const formData = $DeleteFormDataSchema.parse(rawFormData)
+  const { label: labelIdList, stream: streamId } = formData
 
-	const result = transact(doc, () => deleteLabels({ doc, streamId, labelIdList }));
-	if (result instanceof Error) {
-		throw result;
-	}
+  const result = transact(doc, () =>
+    deleteLabels({ doc, streamId, labelIdList }),
+  )
+  if (result instanceof Error) {
+    throw result
+  }
 
-	void markDocAsStale(doc);
+  void markDocAsStale(doc)
 
-	goto('/label');
-};
+  goto('/label')
+}
 
-export { handleDeleteFormSubmit };
+export { handleDeleteFormSubmit }

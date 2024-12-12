@@ -1,3 +1,8 @@
+import {
+  clampLineList,
+  mapPointListToLineList,
+  stripComments,
+} from '@stayradiated/pomo-core'
 import type { Doc } from '@stayradiated/pomo-doc'
 import {
   getLabelRecord,
@@ -5,11 +10,6 @@ import {
   getUserTimeZone,
   retrievePointList,
 } from '@stayradiated/pomo-doc'
-import {
-  mapPointListToLineList,
-  clampLineList,
-  stripComments,
-} from '@stayradiated/pomo-core'
 import * as dateFns from 'date-fns'
 import * as dateFnsTz from 'date-fns-tz'
 import type { Event } from './types.js'
@@ -113,11 +113,11 @@ const exportEventList = (options: ExportEventListOptions): Event[] | Error => {
       continue
     }
 
-    const startedAt = dateFnsTz.utcToZonedTime(line.startedAt, timeZone)
+    const startedAt = dateFnsTz.toZonedTime(line.startedAt, timeZone)
     const startTime = dateFnsTz.format(startedAt, 'HH:mm a')
     const startDate = dateFnsTz.format(startedAt, 'MM/dd/yyyy')
 
-    const stoppedAt = dateFnsTz.utcToZonedTime(line.stoppedAt!, timeZone)
+    const stoppedAt = dateFnsTz.toZonedTime(line.stoppedAt!, timeZone)
     const endTime = dateFnsTz.format(stoppedAt, 'HH:mm a')
     const endDate = dateFnsTz.format(stoppedAt, 'MM/dd/yyyy')
 

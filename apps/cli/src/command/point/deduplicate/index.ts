@@ -1,16 +1,16 @@
-import { CliCommand } from 'cilly'
 import {
+  mapLineListToVerboseSliceList,
+  mapPointListToLineList,
+} from '@stayradiated/pomo-core'
+import {
+  deletePoints,
+  getLabelRecord,
   getPointList,
   getStreamRecord,
-  getLabelRecord,
   getUserTimeZone,
-  deletePoints,
   transact,
 } from '@stayradiated/pomo-doc'
-import {
-  mapPointListToLineList,
-  mapLineListToVerboseSliceList,
-} from '@stayradiated/pomo-core'
+import { CliCommand } from 'cilly'
 import * as dateFnsTz from 'date-fns-tz'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 

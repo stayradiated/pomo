@@ -1,13 +1,13 @@
-import { CliCommand } from 'cilly'
+import { listOrError } from '@stayradiated/error-boundary'
+import { firstLine, stripComments } from '@stayradiated/pomo-core'
 import type { Doc } from '@stayradiated/pomo-doc'
 import {
   getPointList,
+  transact,
   upsertLabel,
   upsertPointLabel,
-  transact,
 } from '@stayradiated/pomo-doc'
-import { stripComments, firstLine } from '@stayradiated/pomo-core'
-import { listOrError } from '@stayradiated/error-boundary'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const extractLabelsFromQuote = (value: string): string[] => {
@@ -45,7 +45,7 @@ type Options = {
 
 const extractLabelsFromAllPoints = async (
   options: Options,
-): Promise<void | Error> => {
+): Promise<undefined | Error> => {
   const { doc } = options
 
   const pointList = getPointList({ doc })

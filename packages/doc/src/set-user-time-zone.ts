@@ -1,14 +1,16 @@
 import * as Y from 'yjs'
-import { randomUlid } from './utils/ulid.js'
-import { head } from './utils/head.js'
 import type { Doc, YUser } from './types.js'
+import { head } from './utils/head.js'
+import { randomUlid } from './utils/ulid.js'
 
 type SetUserTimeZoneOptions = {
   doc: Doc
   timeZone: string
 }
 
-const setUserTimeZone = (options: SetUserTimeZoneOptions): void | Error => {
+const setUserTimeZone = (
+  options: SetUserTimeZoneOptions,
+): undefined | Error => {
   const { doc, timeZone } = options
 
   if (!doc._transaction) {
@@ -32,6 +34,8 @@ const setUserTimeZone = (options: SetUserTimeZoneOptions): void | Error => {
     user.set('updatedAt', now)
     rootUserMap.set(userId, user)
   }
+
+  return
 }
 
 export { setUserTimeZone }
