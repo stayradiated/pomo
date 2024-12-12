@@ -1,24 +1,31 @@
 <script lang="ts">
-  import { syncLogs } from '$lib/sync.js';
-  import * as dateFns from 'date-fns'
-  import type { PageData } from './$types.js';
+import { syncLogs } from '$lib/sync.js'
+import * as dateFns from 'date-fns'
+import type { PageData } from './$types.js'
 
-  export let data: PageData
+interface Props {
+  data: PageData
+}
+
+let { data }: Props = $props()
 </script>
 
 <h1>Sync</h1>
 
-<button on:click={data.handleSync}>Sync</button>
+<button onclick={data.handleSync}>Sync</button>
 
 <ul>
-  {#each $syncLogs as log}
-    {@const ts = dateFns.format(log.ts, 'pp')}
-    <li><strong>{ts}</strong><pre>{log.message}</pre></li>
-  {/each}
+	{#each $syncLogs as log}
+		{@const ts = dateFns.format(log.ts, 'pp')}
+		<li>
+			<strong>{ts}</strong>
+			<pre>{log.message}</pre>
+		</li>
+	{/each}
 </ul>
 
 <style>
-  pre {
-    white-space: pre-wrap;
-  }
+	pre {
+		white-space: pre-wrap;
+	}
 </style>

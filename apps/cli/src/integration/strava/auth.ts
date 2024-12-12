@@ -1,6 +1,6 @@
-import { URL } from 'node:url'
-import http from 'node:http'
 import { spawn } from 'node:child_process'
+import http from 'node:http'
+import { URL } from 'node:url'
 import { fetch } from 'undici'
 import { z } from 'zod'
 import type { Session } from './types.js'
@@ -77,7 +77,7 @@ const openAuthPage = async (options: OpenAuthPageOptions) => {
       }
 
       const code = url.searchParams.get('code')
-      console.log(`Received authorization code :)`)
+      console.log('Received authorization code :)')
 
       const response = await fetch(OAUTH_TOKEN_URL, {
         method: 'POST',
@@ -159,12 +159,11 @@ const refreshSession = async (
 
   if ('errors' in responseBody) {
     throw new Error(JSON.stringify(responseBody.errors))
-  } else {
-    return {
-      accessToken: responseBody.access_token,
-      refreshToken: responseBody.refresh_token,
-      expiresAt: responseBody.expires_at,
-    }
+  }
+  return {
+    accessToken: responseBody.access_token,
+    refreshToken: responseBody.refresh_token,
+    expiresAt: responseBody.expires_at,
   }
 }
 

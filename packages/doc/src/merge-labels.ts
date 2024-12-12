@@ -7,7 +7,7 @@ type MergeLabelsOptions = {
   destLabelId: string
 }
 
-const mergeLabels = (options: MergeLabelsOptions): void | Error => {
+const mergeLabels = (options: MergeLabelsOptions): undefined | Error => {
   const { doc, streamId, srcLabelId, destLabelId } = options
 
   if (!doc._transaction) {
@@ -62,6 +62,8 @@ const mergeLabels = (options: MergeLabelsOptions): void | Error => {
   }
 
   labelMap.delete(srcLabelId)
+
+  return
 }
 
 export { mergeLabels }

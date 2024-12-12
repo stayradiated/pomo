@@ -10,25 +10,7 @@ pomo isn't just for work, you can track anything
 
 ## Usage
 
-```bash
-pomo
-```
-
-Opens up your editor with a markdown file.
-
-Heading names (lines starting with `#`) represent a stream.
-
-Content under the heading is the current state.
-
-You can track multiple streams concurrently.
-
-For example:
-
-- country
-- location
-- activity
-- project
-- task
+There is a web app.
 
 ## Installation
 

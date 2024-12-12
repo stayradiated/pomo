@@ -1,16 +1,16 @@
-import { CliCommand } from 'cilly'
 import {
-  getPointList,
+  mapLineListToVerboseSliceList,
+  mapPointListToLineList,
+} from '@stayradiated/pomo-core'
+import {
   getLabelRecord,
+  getPointList,
   getStreamRecord,
-  updateLabel,
   transact,
+  updateLabel,
 } from '@stayradiated/pomo-doc'
 import type { Label } from '@stayradiated/pomo-doc'
-import {
-  mapPointListToLineList,
-  mapLineListToVerboseSliceList,
-} from '@stayradiated/pomo-core'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const migrateCmd = new CliCommand('migrate')

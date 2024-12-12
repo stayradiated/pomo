@@ -6,7 +6,9 @@ type UpsertPointLabelOptions = {
   labelId: string
 }
 
-const upsertPointLabel = (options: UpsertPointLabelOptions): void | Error => {
+const upsertPointLabel = (
+  options: UpsertPointLabelOptions,
+): undefined | Error => {
   const { doc, pointId, labelId } = options
 
   if (!doc._transaction) {
@@ -26,6 +28,8 @@ const upsertPointLabel = (options: UpsertPointLabelOptions): void | Error => {
     labelIdList.push([labelId])
     point.set('updatedAt', Date.now())
   }
+
+  return
 }
 
 export { upsertPointLabel }

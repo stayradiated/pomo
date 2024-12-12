@@ -1,5 +1,5 @@
-import type { Doc, Point } from './types.js'
 import { NotFoundError } from './error.js'
+import type { Doc, Point } from './types.js'
 
 type GetPointByIdOptions = {
   doc: Doc

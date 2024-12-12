@@ -1,5 +1,5 @@
 import { colord, extend } from 'colord'
-import type { RgbColor, Plugin } from 'colord'
+import type { Plugin, RgbColor } from 'colord'
 import a11yPlugin from 'colord/plugins/a11y'
 
 extend([a11yPlugin as unknown as Plugin])

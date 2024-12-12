@@ -1,5 +1,5 @@
-import type { Doc, Label } from './types.js'
 import { NotFoundError } from './error.js'
+import type { Doc, Label } from './types.js'
 
 type GetLabelByIdOptions = {
   doc: Doc

@@ -1,8 +1,8 @@
-import React from 'react'
-import { Box, Text } from 'ink'
-import type { Stream } from '@stayradiated/pomo-doc'
 import type { Tree } from '@stayradiated/pomo-core'
 import { getTree } from '@stayradiated/pomo-core'
+import type { Stream } from '@stayradiated/pomo-doc'
+import { Box, Text } from 'ink'
+import React from 'react'
 
 type StreamTreeProps = {
   streamTree: Tree<Stream>

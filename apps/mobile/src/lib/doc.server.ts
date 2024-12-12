@@ -1,58 +1,58 @@
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import * as pomoDoc from '@stayradiated/pomo-doc';
-import type { Doc } from '@stayradiated/pomo-doc';
-import { errorBoundary } from '@stayradiated/error-boundary';
-import { getEnv } from './env.js';
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
+import * as pomoDoc from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { errorBoundary } from '@stayradiated/error-boundary'
+import { getEnv } from './env.js'
 
-type GetDocFn = () => Promise<Doc | Error>;
+type GetDocFn = () => Promise<Doc | Error>
 
 type Ref = {
-	doc: Doc | undefined;
-};
+  doc: Doc | undefined
+}
 
 const ref: Ref = {
-	doc: undefined
-};
+  doc: undefined,
+}
 
 const getDocFilePath = (): string => {
-	const env = getEnv();
-	return path.join(env.POMO_DIR, 'state');
-};
+  const env = getEnv()
+  return path.join(env.POMO_DIR, 'state')
+}
 
 const getDoc: GetDocFn = async (): Promise<Doc | Error> => {
-	if (ref.doc) {
-		return ref.doc;
-	}
+  if (ref.doc) {
+    return ref.doc
+  }
 
-	const inputFilePath = getDocFilePath();
+  const inputFilePath = getDocFilePath()
 
-	const exists = await errorBoundary(async () => fs.stat(inputFilePath));
-	if (exists instanceof Error && 'code' in exists) {
-		if (exists.code === 'ENOENT') {
-			return pomoDoc.createDoc();
-		}
+  const exists = await errorBoundary(async () => fs.stat(inputFilePath))
+  if (exists instanceof Error && 'code' in exists) {
+    if (exists.code === 'ENOENT') {
+      return pomoDoc.createDoc()
+    }
 
-		return exists;
-	}
+    return exists
+  }
 
-	const byteArray = await fs.readFile(inputFilePath);
-	const doc = pomoDoc.loadDoc(byteArray);
+  const byteArray = await fs.readFile(inputFilePath)
+  const doc = pomoDoc.loadDoc(byteArray)
 
-	ref.doc = doc;
+  ref.doc = doc
 
-	return doc;
-};
+  return doc
+}
 
 const saveDoc = async () => {
-	const doc = ref.doc;
-	if (!doc) {
-		throw new Error('No doc');
-	}
+  const doc = ref.doc
+  if (!doc) {
+    throw new Error('No doc')
+  }
 
-	const filePath = getDocFilePath();
-	const byteArray = pomoDoc.encodeStateAsUpdate(doc);
-	await fs.writeFile(filePath, byteArray);
-};
+  const filePath = getDocFilePath()
+  const byteArray = pomoDoc.encodeStateAsUpdate(doc)
+  await fs.writeFile(filePath, byteArray)
+}
 
-export { getDoc, saveDoc };
+export { getDoc, saveDoc }

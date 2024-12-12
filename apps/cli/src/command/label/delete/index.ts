@@ -1,4 +1,3 @@
-import { CliCommand } from 'cilly'
 import {
   deleteLabels,
   getLabelByName,
@@ -6,8 +5,9 @@ import {
   getStreamByName,
   transact,
 } from '@stayradiated/pomo-doc'
-import { confirmDialog } from './confirm-dialog.js'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
+import { confirmDialog } from './confirm-dialog.js'
 
 const deleteCmd = new CliCommand('delete')
   .withDescription('Delete label')
@@ -24,8 +24,8 @@ const deleteCmd = new CliCommand('delete')
     },
   )
   .withHandler(async (args) => {
-    const streamName = args['stream']
-    const labelName = args['label']
+    const streamName = args.stream
+    const labelName = args.label
 
     const doc = await getDoc()
     if (doc instanceof Error) {

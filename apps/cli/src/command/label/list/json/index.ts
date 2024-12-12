@@ -10,7 +10,7 @@ type ListLabelsOptions = {
   streamId?: string
 }
 
-const listLabelsAsJson = (options: ListLabelsOptions): void | Error => {
+const listLabelsAsJson = (options: ListLabelsOptions): undefined | Error => {
   const { doc, streamId: whereStreamId } = options
 
   const streamRecord = getStreamRecord({ doc })

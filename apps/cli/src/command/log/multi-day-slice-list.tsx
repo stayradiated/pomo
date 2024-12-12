@@ -1,8 +1,8 @@
-import React from 'react'
-import * as dateFns from 'date-fns'
-import { Text, Box } from 'ink'
 import type { Slice } from '@stayradiated/pomo-core'
-import { utcToZonedTime } from 'date-fns-tz'
+import * as dateFns from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
+import { Box, Text } from 'ink'
+import React from 'react'
 import { SliceList } from './slice-list.js'
 import type { SliceListProps } from './slice-list.js'
 
@@ -14,7 +14,7 @@ const MultiDaySliceList = (props: MultiDaySliceListProps) => {
   const sliceListByDay = sliceList.reduce<Map<string, Slice[]>>(
     (acc, slice) => {
       const { startedAt: startedAtUTC } = slice
-      const startedAt = utcToZonedTime(startedAtUTC, timeZone)
+      const startedAt = toZonedTime(startedAtUTC, timeZone)
 
       // Format as Friday 02 June 2023
       const day = dateFns.format(startedAt, 'EEEE dd MMMM yyyy')
@@ -28,9 +28,9 @@ const MultiDaySliceList = (props: MultiDaySliceListProps) => {
 
   return (
     <>
-      {Array.from(sliceListByDay.entries()).map(([day, sliceList], index) => {
+      {Array.from(sliceListByDay.entries()).map(([day, sliceList]) => {
         return (
-          <Box key={index} flexDirection="column" marginBottom={1}>
+          <Box key={day} flexDirection="column" marginBottom={1}>
             <Text color="#888">{day}</Text>
             <SliceList {...props} sliceList={sliceList} />
           </Box>

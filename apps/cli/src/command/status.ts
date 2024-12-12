@@ -1,13 +1,13 @@
-import { CliCommand } from 'cilly'
-import * as dateFns from 'date-fns'
 import { mapPointListToLineList } from '@stayradiated/pomo-core'
 import {
-  retrievePointList,
-  getStreamByName,
-  getStreamById,
   getLabelById,
+  getStreamById,
+  getStreamByName,
+  retrievePointList,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
+import * as dateFns from 'date-fns'
 import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
@@ -16,7 +16,7 @@ type HandlerOptions = {
   currentTime: number
 }
 
-const handler = async (options: HandlerOptions): Promise<void | Error> => {
+const handler = async (options: HandlerOptions): Promise<undefined | Error> => {
   const { doc, currentTime, where } = options
 
   const pointList = retrievePointList({
@@ -57,13 +57,12 @@ const handler = async (options: HandlerOptions): Promise<void | Error> => {
 
           return label.name
         }),
-        elapsed:
-          dateFns.formatDuration(elapsed, {
-            format:
-              elapsed.hours || elapsed.minutes
-                ? ['hours', 'minutes']
-                : ['seconds'],
-          }) + ' ago',
+        elapsed: `${dateFns.formatDuration(elapsed, {
+          format:
+            elapsed.hours || elapsed.minutes
+              ? ['hours', 'minutes']
+              : ['seconds'],
+        })} ago`,
       }),
     )
   }
@@ -83,8 +82,8 @@ const statusCmd = new CliCommand('status')
     }
 
     let whereStreamId: string | undefined
-    if (options['stream']) {
-      const stream = getStreamByName({ doc, name: options['stream'] })
+    if (options.stream) {
+      const stream = getStreamByName({ doc, name: options.stream })
       if (stream instanceof Error) {
         throw stream
       }

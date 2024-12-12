@@ -1,10 +1,10 @@
-import { CliCommand } from 'cilly'
 import {
   getUserStravaConfig,
   getUserStravaSession,
   setUserStravaSession,
   transact,
 } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
 import { pullStravaActivities } from '#src/integration/strava/index.js'
 import type { Session } from '#src/integration/strava/index.js'
 import { getDoc, saveDoc } from '#src/lib/doc.js'

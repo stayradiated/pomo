@@ -1,17 +1,17 @@
+import { listOrError } from '@stayradiated/error-boundary'
 import {
-  getPointByStartedAt,
-  upsertStream,
-  upsertPoint,
-  upsertLabel,
-  transact,
   NotFoundError,
+  getPointByStartedAt,
+  transact,
+  upsertLabel,
+  upsertPoint,
+  upsertStream,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
-import { listOrError } from '@stayradiated/error-boundary'
 import * as dateFns from 'date-fns'
-import type { Session } from './types.js'
 import { getOrRefreshSession } from './auth.js'
 import { getAllActivities } from './get-all-activities.js'
+import type { Session } from './types.js'
 
 const MAX_MATCHED_ACTIVITIES = 10
 
@@ -140,4 +140,4 @@ const pullStravaActivities = async (
 
 export { pullStravaActivities }
 
-export { type Session } from './types.js'
+export type { Session } from './types.js'

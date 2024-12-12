@@ -1,6 +1,5 @@
 import { CliCommand } from 'cilly'
 import { csvCmd } from './command/csv/index.js'
-import { editCmd } from './command/edit.js'
 import { extractLabelsCmd } from './command/extract-labels.js'
 import { gcalCmd } from './command/gcal/index.js'
 import { jsonCmd } from './command/json/index.js'
@@ -22,7 +21,6 @@ export const cli = new CliCommand('pomo')
   .withDescription('Get your program to your users easily')
   .withSubCommands(
     csvCmd,
-    editCmd,
     extractLabelsCmd,
     gcalCmd,
     jsonCmd,
@@ -40,8 +38,5 @@ export const cli = new CliCommand('pomo')
     togglCmd,
     userCmd,
   )
-  .withHandler(() => {
-    editCmd.process(process.argv)
-  })
 
 cli.process(process.argv)

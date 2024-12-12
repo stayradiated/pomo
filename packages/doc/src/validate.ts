@@ -5,7 +5,7 @@ type ValidateOptions = {
   doc: Doc
 }
 
-const validate = (options: ValidateOptions): void | Error => {
+const validate = (options: ValidateOptions): undefined | Error => {
   const { doc } = options
 
   const result = $JsonDoc.safeParse({

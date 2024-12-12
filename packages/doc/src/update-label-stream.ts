@@ -7,7 +7,9 @@ type UpdateLabelStreamOptions = {
   labelId: string
 }
 
-const updateLabelStream = (options: UpdateLabelStreamOptions): void | Error => {
+const updateLabelStream = (
+  options: UpdateLabelStreamOptions,
+): undefined | Error => {
   const { doc, streamId, labelId } = options
 
   if (!doc._transaction) {
@@ -49,6 +51,8 @@ const updateLabelStream = (options: UpdateLabelStreamOptions): void | Error => {
 
   label.set('streamId', streamId)
   label.set('updatedAt', Date.now())
+
+  return
 }
 
 export { updateLabelStream }

@@ -1,8 +1,8 @@
-import { describe, expect, test } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
-import { updateLabelStream } from './update-label-stream.js'
+import { describe, expect, test } from 'vitest'
 import { makeDoc } from './test-utils/make-doc.js'
 import { transact } from './transact.js'
+import { updateLabelStream } from './update-label-stream.js'
 
 describe('updateLabelStream', () => {
   test('should update the label streamId', () => {

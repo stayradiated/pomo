@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react'
-import { render, Box, Text } from 'ink'
-import type { Instance } from 'ink'
 import type { Label } from '@stayradiated/pomo-doc'
+import { Box, Text, render } from 'ink'
+import type { Instance } from 'ink'
+import React, { useCallback, useState } from 'react'
 import { ConfirmInput } from '#src/components/confirm-input.js'
 
 type MergeQuestionProps = {
@@ -27,7 +27,7 @@ const MergeQuestion = (props: MergeQuestionProps) => {
       setAnswer('Merging labels!')
       onSubmit(true)
     },
-    [setAnswer],
+    [onSubmit],
   )
 
   return (
@@ -76,14 +76,12 @@ const confirmDialog = async (
   const { srcLabel, destLabel } = options
 
   return new Promise((resolve) => {
-    let instance: Instance
-
     const onSubmit = (value: boolean) => {
       resolve(value)
       instance.unmount()
     }
 
-    instance = render(
+    const instance = render(
       <MergeQuestion
         srcLabel={srcLabel}
         destLabel={destLabel}

@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
+import { describe, expect, test } from 'vitest'
 import { mergeLabels } from './merge-labels.js'
 import { makeDoc } from './test-utils/make-doc.js'
 import { transact } from './transact.js'

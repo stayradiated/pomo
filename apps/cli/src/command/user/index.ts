@@ -1,6 +1,6 @@
 import { CliCommand } from 'cilly'
-import { setCmd } from './set/index.js'
 import { getCmd } from './get/index.js'
+import { setCmd } from './set/index.js'
 
 const userCmd = new CliCommand('user')
   .withDescription('Manage user info')

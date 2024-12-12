@@ -3,9 +3,6 @@ import * as process from 'node:process'
 import { describe, expect, test } from 'vitest'
 import { extractPhoneCallInfo } from './extract-phone-call-info.js'
 
-const openaiApiKey = process.env['OPENAI_API_KEY']
-assert(openaiApiKey, 'OPENAI_API_KEY environment variable is required')
-
 type Example = {
   description: string
   content: string
@@ -311,6 +308,9 @@ Messages and calls are endsto-end`,
 
 describe('[INTEGRATION] extractPhoneCallInfo', () => {
   test.each(exampleList)('$description', async (example) => {
+    const openaiApiKey = process.env.OPENAI_API_KEY
+    assert(openaiApiKey, 'OPENAI_API_KEY environment variable is required')
+
     const actual = await extractPhoneCallInfo({
       openaiApiKey,
       input: example.content,

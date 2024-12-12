@@ -15,6 +15,6 @@ export default function (pollen) {
         // extraBold: 800,
         // black: 900
       },
-    }
+    },
   }
 }

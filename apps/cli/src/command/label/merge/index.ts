@@ -1,13 +1,13 @@
-import { CliCommand } from 'cilly'
 import {
-  getStreamByName,
   getLabelByName,
   getLabelByRef,
+  getStreamByName,
   mergeLabels,
   transact,
 } from '@stayradiated/pomo-doc'
-import { confirmDialog } from './confirm-dialog.js'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
+import { confirmDialog } from './confirm-dialog.js'
 
 const mergeCmd = new CliCommand('merge')
   .withDescription('Merge two labels')
@@ -65,7 +65,7 @@ const mergeCmd = new CliCommand('merge')
     }
 
     if (srcLabel.streamId !== destLabel.streamId) {
-      throw new Error(`Labels must be in the same stream`)
+      throw new Error('Labels must be in the same stream')
     }
 
     const confirm = await confirmDialog({

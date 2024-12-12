@@ -9,7 +9,7 @@ type UpdateLabelOptions = {
   parentId?: string | null
 }
 
-const updateLabel = (options: UpdateLabelOptions): void | Error => {
+const updateLabel = (options: UpdateLabelOptions): undefined | Error => {
   const { doc, labelId, name, color, icon, parentId } = options
 
   if (!doc._transaction) {
@@ -53,6 +53,8 @@ const updateLabel = (options: UpdateLabelOptions): void | Error => {
   }
 
   label.set('updatedAt', Date.now())
+
+  return
 }
 
 export { updateLabel }

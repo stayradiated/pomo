@@ -1,12 +1,12 @@
-import React from 'react'
-import * as dateFns from 'date-fns'
-import { Text, Newline } from 'ink'
 import { durationLocale } from '@stayradiated/pomo-core'
 import type { Slice } from '@stayradiated/pomo-core'
-import type { Stream, Label } from '@stayradiated/pomo-doc'
-import { utcToZonedTime } from 'date-fns-tz'
+import type { Label, Stream } from '@stayradiated/pomo-doc'
+import * as dateFns from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
+import { Newline, Text } from 'ink'
+import React from 'react'
 import { FlexTable } from '#src/components/flex-table.js'
-import type { Cell, Row, Column } from '#src/components/flex-table.js'
+import type { Cell, Column, Row } from '#src/components/flex-table.js'
 
 type SliceListProps = {
   streamList: Stream[]
@@ -37,7 +37,7 @@ const SliceList = (props: SliceListProps) => {
   const rows = sliceList.map((slice) => {
     const { lineList, startedAt: startedAtUTC } = slice
 
-    const startedAt = utcToZonedTime(startedAtUTC, timeZone)
+    const startedAt = toZonedTime(startedAtUTC, timeZone)
 
     const cells: Cell[] = [
       {
@@ -70,11 +70,11 @@ const SliceList = (props: SliceListProps) => {
           .join(', ')
 
         const content = (
-          <>
+          <React.Fragment key={stream.id}>
             {text}
             <Newline />
             <Text color="blueBright">{duration}</Text>
-          </>
+          </React.Fragment>
         )
 
         return {

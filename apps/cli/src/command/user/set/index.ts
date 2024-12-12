@@ -1,11 +1,11 @@
-import { CliCommand } from 'cilly'
-import { z } from 'zod'
 import { isValidTimeZone } from '@stayradiated/pomo-core'
 import {
-  setUserTimeZone,
   setUserStravaConfig,
+  setUserTimeZone,
   transact,
 } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
+import { z } from 'zod'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const $StravaConfig = z
@@ -42,8 +42,8 @@ const setCmd = new CliCommand('set')
   )
   .withHandler(async (args, _options, _extra) => {
     const { key, value } = $KeyValue.parse({
-      key: args['key'],
-      value: args['value'],
+      key: args.key,
+      value: args.value,
     })
 
     const doc = await getDoc()

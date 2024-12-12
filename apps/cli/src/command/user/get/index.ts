@@ -1,10 +1,10 @@
-import { CliCommand } from 'cilly'
-import { z } from 'zod'
 import {
-  getUserTimeZone,
   getUserStravaConfig,
   getUserStravaSession,
+  getUserTimeZone,
 } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
+import { z } from 'zod'
 import { getDoc } from '#src/lib/doc.js'
 
 const $Key = z.enum(['timezone', 'strava-config', 'strava-session'])
@@ -16,7 +16,7 @@ const getCmd = new CliCommand('get')
     required: true,
   })
   .withHandler(async (args, _options, _extra) => {
-    const key = $Key.parse(args['key'].toLowerCase())
+    const key = $Key.parse(args.key.toLowerCase())
 
     const doc = await getDoc()
     if (doc instanceof Error) {

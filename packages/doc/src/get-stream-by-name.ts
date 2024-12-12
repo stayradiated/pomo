@@ -1,5 +1,5 @@
+import { MultipleFoundError, NotFoundError } from './error.js'
 import type { Doc, Stream } from './types.js'
-import { NotFoundError, MultipleFoundError } from './error.js'
 
 type GetStreamByNameOptions = {
   doc: Doc

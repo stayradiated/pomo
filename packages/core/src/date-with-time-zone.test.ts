@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest'
 import * as dateFnsTz from 'date-fns-tz'
+import { describe, expect, test } from 'vitest'
 import { eachDayOfIntervalWithTimeZone } from './date-with-time-zone.js'
 
 describe('eachDayOfIntervalWithTimeZone', () => {

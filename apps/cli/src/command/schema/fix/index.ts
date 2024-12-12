@@ -1,5 +1,5 @@
-import { CliCommand } from 'cilly'
 import { migrate, transact } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
 const fixCmd = new CliCommand('fix')

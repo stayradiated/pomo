@@ -1,6 +1,6 @@
+import { NotFoundError } from './error.js'
 import type { Doc, Point } from './types.js'
 import { find } from './utils/find.js'
-import { NotFoundError } from './error.js'
 
 type GetPointByStartedAtOptions = {
   doc: Doc

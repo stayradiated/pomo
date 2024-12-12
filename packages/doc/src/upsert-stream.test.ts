@@ -1,9 +1,9 @@
-import { describe, test, expect } from 'vitest'
 import { assertOk } from '@stayradiated/error-boundary'
-import { upsertStream } from './upsert-stream.js'
+import { describe, expect, test } from 'vitest'
 import { createDoc } from './create-doc.js'
 import { makeDoc } from './test-utils/make-doc.js'
 import { transact } from './transact.js'
+import { upsertStream } from './upsert-stream.js'
 
 describe('upsertStream', () => {
   test('insert new stream', () => {

@@ -1,6 +1,6 @@
-import { describe, test, expect } from 'vitest'
-import type { Line } from './types.js'
+import { describe, expect, test } from 'vitest'
 import { mapLineListToSliceList } from './map-line-list-to-slice-list.js'
+import type { Line } from './types.js'
 
 describe('mapLineListToSliceList', () => {
   test('two points at the same time', () => {

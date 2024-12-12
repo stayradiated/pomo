@@ -1,11 +1,11 @@
-import { CliCommand } from 'cilly'
 import {
-  getStreamByName,
-  getLabelByName,
   NotFoundError,
+  getLabelByName,
+  getStreamByName,
 } from '@stayradiated/pomo-doc'
-import { renameLabel } from './rename-label.js'
+import { CliCommand } from 'cilly'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
+import { renameLabel } from './rename-label.js'
 
 const renameCmd = new CliCommand('rename')
   .withDescription('Rename a label')

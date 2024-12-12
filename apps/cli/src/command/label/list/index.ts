@@ -1,9 +1,9 @@
-import { CliCommand } from 'cilly'
 import { getStreamByName } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
 import z from 'zod'
-import { listLabelsAsTable } from './table/index.js'
-import { listLabelsAsJson } from './json/index.js'
 import { getDoc } from '#src/lib/doc.js'
+import { listLabelsAsJson } from './json/index.js'
+import { listLabelsAsTable } from './table/index.js'
 
 const $Options = z.object({
   stream: z.string().optional(),

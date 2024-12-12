@@ -1,5 +1,5 @@
-import type { Doc, Stream } from './types.js'
 import { NotFoundError } from './error.js'
+import type { Doc, Stream } from './types.js'
 
 type GetStreamByIdOptions = {
   doc: Doc

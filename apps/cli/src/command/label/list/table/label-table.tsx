@@ -1,9 +1,9 @@
-import React from 'react'
-import { Text } from 'ink'
-import type { Label } from '@stayradiated/pomo-doc'
 import { getColorContrast } from '@stayradiated/pomo-core'
+import type { Label } from '@stayradiated/pomo-doc'
+import { Text } from 'ink'
+import React from 'react'
 import { FlexTable } from '#src/components/flex-table.js'
-import type { Cell, Row, Column } from '#src/components/flex-table.js'
+import type { Cell, Column, Row } from '#src/components/flex-table.js'
 
 type LabelTableProps = {
   labelList: Label[]

@@ -6,7 +6,7 @@ type DeleteLabelsOptions = {
   labelIdList: string[]
 }
 
-const deleteLabels = (options: DeleteLabelsOptions): void | Error => {
+const deleteLabels = (options: DeleteLabelsOptions): undefined | Error => {
   const { doc, streamId, labelIdList } = options
 
   if (!doc._transaction) {
@@ -51,6 +51,8 @@ const deleteLabels = (options: DeleteLabelsOptions): void | Error => {
   for (const labelId of labelIdList) {
     labelMap.delete(labelId)
   }
+
+  return
 }
 
 export { deleteLabels }

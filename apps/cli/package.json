@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest --watch=false",
-    "tidy": "xo --fix",
-    "build": "rm -rf dist && tsc",
-    "dev": "live-tsc --watch --src ./src/ --dest ./dist",
+    "tidy": "biome check --write --unsafe",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "check": "tsc --noEmit"
   },
   "keywords": [],
@@ -22,48 +22,31 @@
     }
   },
   "dependencies": {
-    "@fast-csv/format": "4.3.5",
-    "@stayradiated/error-boundary": "4.2.1",
+    "@fast-csv/format": "5.0.2",
+    "@stayradiated/error-boundary": "4.3.0",
     "@stayradiated/pomo-core": "workspace:*",
     "@stayradiated/pomo-doc": "workspace:*",
-    "@stayradiated/pomo-markdown": "workspace:*",
-    "@types/better-sqlite3": "7.6.5",
-    "better-sqlite3": "9.0.0",
-    "chrono-node": "2.7.0",
+    "@types/better-sqlite3": "7.6.12",
+    "better-sqlite3": "11.7.0",
+    "chrono-node": "2.7.7",
     "cilly": "1.0.25",
-    "date-fns": "2.30.0",
-    "date-fns-tz": "2.0.0",
+    "date-fns": "4.1.0",
+    "date-fns-tz": "3.2.0",
     "external-editor": "3.1.0",
-    "ink": "4.4.1",
-    "ink-select-input": "5.0.0",
-    "ink-text-input": "5.0.1",
-    "meow": "12.1.1",
-    "react": "18.2.0",
-    "undici": "5.26.3",
+    "ink": "5.1.0",
+    "ink-select-input": "6.0.0",
+    "ink-text-input": "6.0.0",
+    "meow": "13.2.0",
+    "react": "18.3.1",
+    "undici": "7.1.0",
     "yn": "5.0.0",
-    "zod": "3.22.4"
+    "zod": "3.24.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.28",
-    "live-tsc": "1.6.2",
-    "react-devtools-core": "4.28.4",
-    "typescript": "5.2.2",
-    "vitest": "0.34.6",
-    "xo": "0.56.0"
-  },
-  "__comment": "The following configs are managed by `@stayradiated/jsconfig`",
-  "xo": {
-    "space": true,
-    "semicolon": false,
-    "prettier": true
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "bracketSpacing": true,
-    "semi": false,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "all",
-    "useTabs": false
+    "@biomejs/biome": "1.9.4",
+    "@types/react": "18.3.16",
+    "tsup": "8.3.5",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
   }
 }

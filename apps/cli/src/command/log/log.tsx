@@ -1,15 +1,15 @@
-import { Box, render } from 'ink'
-import React from 'react'
 import {
-  mapPointListToLineList,
   mapLineListToSliceList,
+  mapPointListToLineList,
 } from '@stayradiated/pomo-core'
 import type { Doc } from '@stayradiated/pomo-doc'
 import {
-  retrievePointList,
-  getStreamList,
   getLabelRecord,
+  getStreamList,
+  retrievePointList,
 } from '@stayradiated/pomo-doc'
+import { Box, render } from 'ink'
+import React from 'react'
 import { MultiDaySliceList } from './multi-day-slice-list.js'
 
 type HandlerOptions = {
@@ -22,7 +22,7 @@ type HandlerOptions = {
   timeZone: string
 }
 
-const renderLog = (options: HandlerOptions): void | Error => {
+const renderLog = (options: HandlerOptions): undefined | Error => {
   const { doc, startDate, endDate, where, timeZone } = options
 
   const pointList = retrievePointList({

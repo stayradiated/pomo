@@ -1,10 +1,10 @@
-import { CliCommand } from 'cilly'
 import {
-  getStreamByName,
   getLabelByName,
-  updateLabel,
+  getStreamByName,
   transact,
+  updateLabel,
 } from '@stayradiated/pomo-doc'
+import { CliCommand } from 'cilly'
 import z from 'zod'
 import { getDoc, saveDoc } from '#src/lib/doc.js'
 
@@ -40,8 +40,8 @@ const setCmd = new CliCommand('set')
     const { label: labelName, stream: streamName } = args
 
     const { key, value } = $KeyValue.parse({
-      key: args['key'],
-      value: args['value'],
+      key: args.key,
+      value: args.value,
     })
 
     const doc = await getDoc()

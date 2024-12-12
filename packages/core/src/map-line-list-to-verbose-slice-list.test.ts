@@ -1,8 +1,8 @@
-import { describe, test, expect } from 'vitest'
-import type { Line } from './types.js'
+import { describe, expect, test } from 'vitest'
 import { mapLineListToVerboseSliceList } from './map-line-list-to-verbose-slice-list.js'
+import type { Line } from './types.js'
 
-describe.only('mapLineListToVerboseSliceList', () => {
+describe('mapLineListToVerboseSliceList', () => {
   test('two points at the same time', () => {
     const lineList: Line[] = [
       {

@@ -1,12 +1,12 @@
-import type { Doc } from '@stayradiated/pomo-doc'
+import { format as createCsvStream } from '@fast-csv/format'
 import type { Line } from '@stayradiated/pomo-core'
-import { retrievePointList, getLabelRecord } from '@stayradiated/pomo-doc'
 import {
-  mapPointListToLineList,
   clampLineList,
   formatDurationHMS,
+  mapPointListToLineList,
 } from '@stayradiated/pomo-core'
-import { format as createCsvStream } from '@fast-csv/format'
+import type { Doc } from '@stayradiated/pomo-doc'
+import { getLabelRecord, retrievePointList } from '@stayradiated/pomo-doc'
 import { formatInTimeZone } from 'date-fns-tz'
 
 type ExportAsCsvOptions = {
@@ -20,7 +20,7 @@ type ExportAsCsvOptions = {
 
 const exportAsCsv = async (
   options: ExportAsCsvOptions,
-): Promise<void | Error> => {
+): Promise<undefined | Error> => {
   const { doc, streamId, currentTime, startDate, endDate, timeZone } = options
 
   const pointList = retrievePointList({
@@ -86,6 +86,8 @@ const exportAsCsv = async (
   }
 
   stream.end()
+
+  return
 }
 
 export { exportAsCsv }

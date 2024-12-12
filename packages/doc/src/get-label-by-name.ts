@@ -1,5 +1,5 @@
+import { MultipleFoundError, NotFoundError } from './error.js'
 import type { Doc, Label } from './types.js'
-import { NotFoundError, MultipleFoundError } from './error.js'
 
 type GetLabelByNameOptions = {
   doc: Doc

@@ -1,8 +1,8 @@
 import * as fs from 'node:fs/promises'
 import {
+  $JsonDoc,
   createDocWithData,
   encodeStateAsUpdate,
-  $JsonDoc,
 } from '@stayradiated/pomo-doc'
 
 type ImportFromJsonOptions = {
@@ -12,7 +12,7 @@ type ImportFromJsonOptions = {
 
 const importFromJson = async (
   options: ImportFromJsonOptions,
-): Promise<void | Error> => {
+): Promise<undefined | Error> => {
   const { srcFilePath, destFilePath } = options
 
   const content = await fs.readFile(srcFilePath, 'utf8')
@@ -23,6 +23,8 @@ const importFromJson = async (
 
   const byteArray = encodeStateAsUpdate(doc)
   await fs.writeFile(destFilePath, byteArray)
+
+  return
 }
 
 export { importFromJson }

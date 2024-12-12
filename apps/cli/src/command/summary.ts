@@ -1,21 +1,21 @@
+import {
+  clampLineList,
+  durationLocale,
+  mapPointListToLineList,
+  startOfDayWithTimeZone,
+} from '@stayradiated/pomo-core'
+import {
+  getLabelById,
+  getLabelByName,
+  getStreamById,
+  getStreamByName,
+  getUserTimeZone,
+  retrievePointList,
+} from '@stayradiated/pomo-doc'
+import type { Doc } from '@stayradiated/pomo-doc'
 import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
 import * as dateFns from 'date-fns'
-import {
-  mapPointListToLineList,
-  startOfDayWithTimeZone,
-  durationLocale,
-  clampLineList,
-} from '@stayradiated/pomo-core'
-import {
-  getLabelByName,
-  getLabelById,
-  getStreamByName,
-  getStreamById,
-  retrievePointList,
-  getUserTimeZone,
-} from '@stayradiated/pomo-doc'
-import type { Doc } from '@stayradiated/pomo-doc'
 import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
@@ -28,7 +28,7 @@ type HandlerOptions = {
   endDate: number
 }
 
-const handler = (options: HandlerOptions): void | Error => {
+const handler = (options: HandlerOptions): undefined | Error => {
   const { doc, where, startDate, endDate } = options
 
   const pointList = retrievePointList({
@@ -160,24 +160,27 @@ const summaryCmd = new CliCommand('summary')
 
     const timeZone = getUserTimeZone({ doc })
 
+    const instant = chrono.parseDate(options.date, {
+      instant: new Date(),
+      timezone: timeZone,
+    })
+    if (typeof instant !== 'number') {
+      throw new Error(`Could not parse date: ${options.date}`)
+    }
+
     const startDate = startOfDayWithTimeZone({
-      instant: chrono
-        .parseDate(options['date'], {
-          instant: new Date(),
-          timezone: timeZone,
-        })
-        .getTime(),
+      instant,
       timeZone,
     }).getTime()
 
     const endDate = Math.min(
-      dateFns.addDays(startDate, options['span']).getTime(),
+      dateFns.addDays(startDate, options.span).getTime(),
       Date.now(),
     )
 
     let whereStreamId: string | undefined
-    if (options['stream']) {
-      const stream = getStreamByName({ doc, name: options['stream'] })
+    if (options.stream) {
+      const stream = getStreamByName({ doc, name: options.stream })
       if (stream instanceof Error) {
         throw stream
       }
@@ -186,14 +189,14 @@ const summaryCmd = new CliCommand('summary')
     }
 
     let whereLabelId: string | undefined
-    if (options['label']) {
+    if (options.label) {
       if (!whereStreamId) {
         throw new Error('Cannot filter by label without a stream')
       }
 
       const label = getLabelByName({
         doc,
-        name: options['label'],
+        name: options.label,
         streamId: whereStreamId,
       })
       if (label instanceof Error) {
@@ -203,8 +206,8 @@ const summaryCmd = new CliCommand('summary')
       whereLabelId = label.id
     }
 
-    if (options['label'] && !whereLabelId) {
-      throw new Error(`Label not found: ${options['label']}`)
+    if (options.label && !whereLabelId) {
+      throw new Error(`Label not found: ${options.label}`)
     }
 
     const result = handler({

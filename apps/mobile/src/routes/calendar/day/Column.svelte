@@ -1,21 +1,25 @@
 <script lang="ts">
-  import type { Line } from '@stayradiated/pomo-core'
-  import type { Label } from '@stayradiated/pomo-doc'
-  import Cell from './Cell.svelte'
+import type { Line } from '@stayradiated/pomo-core'
+import type { Label } from '@stayradiated/pomo-doc'
+import Cell from './Cell.svelte'
 
-  export let lineList: Line[]
-  export let labelRecord: Record<string, Label>
+interface Props {
+  lineList: Line[]
+  labelRecord: Record<string, Label>
+}
+
+let { lineList, labelRecord }: Props = $props()
 </script>
 
 <div class="grid">
-  {#each lineList as line}
-    <Cell {line} {labelRecord} />
-  {/each}
+	{#each lineList as line}
+		<Cell {line} {labelRecord} />
+	{/each}
 </div>
 
 <style>
-  .grid {
-    display: flex;
-    flex-direction: column;
-  }
+	.grid {
+		display: flex;
+		flex-direction: column;
+	}
 </style>
