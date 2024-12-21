@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/react": "18.3.16",
+    "@types/react": "18.3.18",
     "tsup": "8.3.5",
     "typescript": "5.7.2",
     "vitest": "2.1.8"
