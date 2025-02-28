@@ -15,7 +15,7 @@ let { data }: Props = $props()
 <button onclick={data.handleSync}>Sync</button>
 
 <ul>
-	{#each $syncLogs as log}
+	{#each $syncLogs as log, index (index)}
 		{@const ts = dateFns.format(log.ts, 'pp')}
 		<li>
 			<strong>{ts}</strong>

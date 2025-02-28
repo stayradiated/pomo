@@ -108,14 +108,14 @@ const handleChange = (_event: CustomEvent<Record<string, never>>) => {
 		--multi-item-clear-icon-color="var(--theme-links)"
 	>
   <svelte:fragment slot="item" let:item>
-    <div  >
-    {item.created ? 'Add new: ' : ''}
-    {item.label}
-  </div>
+    <div>
+      {item.created ? 'Add new: ' : ''}
+      {item.label}
+    </div>
   </svelte:fragment>
 	<svelte:fragment slot="input-hidden" let:value>
 			{#if Array.isArray(value)}
-				{#each value as item, index}
+				{#each value as item, index (item.value.id)}
 					<input
 						type="hidden"
 						name="stream[{streamIndex}].label[{index}].type"

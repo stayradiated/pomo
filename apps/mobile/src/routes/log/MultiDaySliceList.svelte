@@ -31,7 +31,7 @@ let sliceListByDay = $derived(
 )
 </script>
 
-{#each Array.from(sliceListByDay.entries()) as [day, sliceList]}
+{#each Array.from(sliceListByDay.entries()) as [day, sliceList] (day)}
 	<div class="container">
 		<h2>{day}</h2>
 		<SliceList {streamList} {sliceList} {timeZone} {labelRecord} />

@@ -1,7 +1,7 @@
 {
   "version": "0.52.0",
   "private": true,
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@10.5.2",
   "scripts": {
     "build": "turbo build --no-daemon",
     "test": "turbo test --no-daemon",
@@ -9,7 +9,7 @@
     "update-all": "pnpm -r exec -- ncu -u --cache"
   },
   "devDependencies": {
-    "npm-check-updates": "17.1.11",
-    "turbo": "2.3.3"
+    "npm-check-updates": "17.1.15",
+    "turbo": "2.4.4"
   }
 }

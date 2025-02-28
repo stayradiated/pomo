@@ -12,7 +12,7 @@ let { lineList, labelRecord }: Props = $props()
 </script>
 
 <div class="grid">
-	{#each lineList as line}
+	{#each lineList as line (line.id)}
 		<Cell {line} {labelRecord} />
 	{/each}
 </div>

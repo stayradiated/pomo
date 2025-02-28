@@ -17,7 +17,9 @@ type HandlerOptions = {
   startDate: number
   endDate: number
   where: {
-    streamId: string | undefined
+    streamId?: {
+      in: string[]
+    }
   }
   timeZone: string
 }
@@ -30,7 +32,7 @@ const renderLog = (options: HandlerOptions): undefined | Error => {
     startDate,
     endDate,
     where: {
-      streamIdList: where.streamId ? [where.streamId] : undefined,
+      streamIdList: where.streamId?.in,
     },
   })
 
@@ -44,7 +46,12 @@ const renderLog = (options: HandlerOptions): undefined | Error => {
     return sliceList
   }
 
-  const streamList = getStreamList({ doc })
+  const streamList = getStreamList({ doc }).filter((stream) => {
+    if (where.streamId) {
+      return where.streamId.in.includes(stream.id)
+    }
+    return true
+  })
   const labelRecord = getLabelRecord({ doc })
 
   render(

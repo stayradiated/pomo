@@ -26,10 +26,13 @@ onMount(() => {
   const dateTime = defaultStartedAtLocal.split('T')
   startedAtDate = dateTime.at(0)
   startedAtTime = dateTime.at(1)
+  console.log({ startedAtDate, startedAtTime })
 })
 
 let currentTime = $derived(
-  new Date(`${startedAtDate}T${startedAtTime}`).getTime(),
+  (typeof startedAtDate === 'string' && typeof startedAtTime === 'string')
+    ? new Date(`${startedAtDate}T${startedAtTime}`).getTime()
+    : undefined
 )
 
 const handleSubmit = async (event: SubmitEvent) => {
@@ -53,9 +56,10 @@ const handleNow = (event: MouseEvent) => {
 }
 </script>
 
+{#if currentTime}
 <main>
 	<form onsubmit={handleSubmit}>
-		{#each streamList as stream, streamIndex}
+		{#each streamList as stream, streamIndex (stream.id)}
 			{@const point = currentPointMap.get(stream.id)}
 			<StreamStatus
 				{stream}
@@ -91,6 +95,7 @@ const handleNow = (event: MouseEvent) => {
 		<button class="save-button">Save</button>
 	</form>
 </main>
+{/if}
 
 <style>
 	main {

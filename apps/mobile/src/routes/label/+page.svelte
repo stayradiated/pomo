@@ -15,7 +15,7 @@ let { streamList, stream, labelRecord, streamLabelMap, doc } = $derived(data)
 <h2>Labels</h2>
 
 <nav>
-	{#each streamList as stream}
+	{#each streamList as stream (stream.id)}
 		<a
 			href={`?stream=${stream.id}`}
 			class:active={$page.url.searchParams.get('stream') === stream.id}>{stream.name}</a

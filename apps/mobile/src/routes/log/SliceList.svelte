@@ -33,18 +33,18 @@ const formatDuration = (ms: number): string => {
 	<thead>
 		<tr>
 			<th>time</th>
-			{#each streamList as stream}
+			{#each streamList as stream (stream.id)}
 				<th>{stream.name}</th>
 			{/each}
 		</tr>
 	</thead>
 
 	<tbody>
-		{#each sliceList as slice}
+		{#each sliceList as slice, index (index)}
 			<tr>
 				<td><a href="/edit?ref={slice.lineList[0]?.id}">{formatTime(slice.startedAt)}</a></td>
 
-				{#each streamList as stream}
+				{#each streamList as stream (stream.id)}
 					{@const line = slice.lineList.find((line) => line.streamId === stream.id)}
 
 					<td>

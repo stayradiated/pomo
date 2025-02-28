@@ -58,7 +58,7 @@ const handleRight = (_detail: ShortcutEventDetails) => {
 <a href="?">Today</a>
 <a href="?date={nextWeek}">&gt;</a>
 
-{#each streamList as stream}
+{#each streamList as stream (stream.id)}
 	<input type="checkbox" bind:group={visibleStreamIdList} value={stream.id} id={stream.id} />
 	<label for={stream.id}>{stream.name}</label>
 {/each}
@@ -68,9 +68,9 @@ const handleRight = (_detail: ShortcutEventDetails) => {
 <div class="container">
 	<Paper {numberOfDaysInWeek} {startOfWeek} />
 	<div class="inner">
-		{#each Array.from(streamLineListByDate.values()) as streamLineList}
+		{#each Array.from(streamLineListByDate.values()) as streamLineList, index (index)}
 			<div class="day">
-				{#each visibleStreamIdList as streamId}
+				{#each visibleStreamIdList as streamId (streamId)}
 					{@const lineList = streamLineList.get(streamId) ?? []}
 					<Column {lineList} {labelRecord} />
 				{/each}

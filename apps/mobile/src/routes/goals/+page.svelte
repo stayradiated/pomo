@@ -37,7 +37,7 @@ let weekRange = $derived(
 <h3>Labels: {labelList.map((label) => label.name).join(', ')}</h3>
 
 <ol>
-	{#each weekRange as weekStart}
+	{#each weekRange as weekStart (weekStart.getTime())}
 		{@const weekEnd = dateFns.addDays(weekStart, 6)}
 		{@const dateRange = eachDayOfIntervalWithTimeZone({
 			timeZone,
@@ -46,7 +46,7 @@ let weekRange = $derived(
 		})}
 		<li>
 			<ol>
-				{#each dateRange as date}
+				{#each dateRange as date (date.getTime())}
 					{@const entry = sumMap.get(date.getTime()) ?? 0}
 					<li>
 						{dateFnsTz.formatInTimeZone(date, timeZone, 'PPPP')}: {formatDurationHMS(entry)} ({formatDurationRough(

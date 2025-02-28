@@ -51,7 +51,7 @@ const handleRight = (_detail: ShortcutEventDetails) => {
 <div class="container">
 	<Paper />
 	<div class="inner">
-		{#each data.streamList as stream}
+		{#each data.streamList as stream (stream.id)}
 			<Column
 				lineList={data.streamLineListMap.get(stream.id) ?? []}
 				labelRecord={data.labelRecord}

@@ -20,10 +20,10 @@ let dateList = $derived(
 </script>
 
 <div class="column-container">
-	{#each dateList as { dayOfWeek, dayOfMonth }}
+  {#each dateList as date, index (index)}
 		<div class="column">
-			<div class="day-of-week">{dayOfWeek}</div>
-			<div class="day-of-month">{dayOfMonth}</div>
+			<div class="day-of-week">{date.dayOfWeek}</div>
+			<div class="day-of-month">{date.dayOfMonth}</div>
 		</div>
 	{/each}
 </div>

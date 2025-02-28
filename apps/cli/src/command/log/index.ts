@@ -4,7 +4,7 @@ import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
 import * as dateFns from 'date-fns'
 import { getDoc } from '#src/lib/doc.js'
-import { renderLog } from './log.js'
+import { renderLog } from './render-log.js'
 
 const logCmd = new CliCommand('log')
   .withDescription('Show a log of all points')
@@ -13,7 +13,12 @@ const logCmd = new CliCommand('log')
       name: ['-s', '--stream'],
       description: 'Filter points by a Stream ',
       args: [
-        { name: 'name', description: 'Name of the stream', required: true },
+        {
+          name: 'name',
+          description: 'Name of the stream',
+          required: true,
+          variadic: true,
+        },
       ],
     },
     {
@@ -65,16 +70,19 @@ const logCmd = new CliCommand('log')
       timeZone,
     }).getTime()
 
-    const endDate = dateFns.addDays(startDate, options.span).getTime()
+    const endDate = dateFns
+      .addDays(startDate, Number.parseInt(options.span, 10))
+      .getTime()
 
-    let whereStreamId: string | undefined
-    if (options.stream) {
-      const stream = getStreamByName({ doc, name: options.stream })
-      if (stream instanceof Error) {
-        throw stream
+    const whereStreamId: string[] = []
+    if (Array.isArray(options.stream)) {
+      for (const streamName of options.stream) {
+        const stream = getStreamByName({ doc, name: streamName })
+        if (stream instanceof Error) {
+          throw stream
+        }
+        whereStreamId.push(stream.id)
       }
-
-      whereStreamId = stream.id
     }
 
     const result = renderLog({
@@ -82,7 +90,9 @@ const logCmd = new CliCommand('log')
       startDate,
       endDate,
       timeZone,
-      where: { streamId: whereStreamId },
+      where: {
+        streamId: whereStreamId.length ? { in: whereStreamId } : undefined,
+      },
     })
     if (result instanceof Error) {
       throw result

@@ -19,7 +19,7 @@ const handleSubmit = (event: SubmitEvent) => {
 </script>
 
 <ul>
-	{#each pointList as point}
+	{#each pointList as point (point.id)}
 		<li>
 			<strong>{streamRecord[point.streamId]?.name}</strong>
 			<code>{point.value}</code>
@@ -28,7 +28,7 @@ const handleSubmit = (event: SubmitEvent) => {
 </ul>
 
 <form onsubmit={handleSubmit}>
-	{#each pointList as point}
+	{#each pointList as point (point.id)}
 		<input type="hidden" name="pointId" value={point.id} />
 	{/each}
 	<input type="datetime-local" name="startedAtLocal" value={startedAtLocal} />

@@ -47,7 +47,7 @@ const pullStravaActivities = async (
     session: initialSession,
   })
 
-  const streamId = transact(doc, () => upsertStream({ doc, name: 'Strava' }))
+  const streamId = transact(doc, () => upsertStream({ doc, name: 'strava' }))
   if (streamId instanceof Error) {
     return new Error('Could not create stream')
   }

@@ -20,13 +20,13 @@ let streamLabelList = $derived(
 
 <form method="GET">
 	<select name="stream" placeholder="Stream" bind:value={selectedStreamId}>
-		{#each data.streamList as stream}
+		{#each data.streamList as stream (stream.id)}
 			<option value={stream.id}>{stream.name}</option>
 		{/each}
 	</select>
 
 	<select name="label" placeholder="Label" bind:value={selectedLabelId}>
-		{#each streamLabelList as streamLabel}
+		{#each streamLabelList as streamLabel, index (index)}
 			<option value={streamLabel.id}>{streamLabel.name}</option>
 		{/each}
 	</select>

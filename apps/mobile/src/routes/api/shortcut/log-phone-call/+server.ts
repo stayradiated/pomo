@@ -42,7 +42,7 @@ const POST = async ({ request }: RequestEvent) => {
   const streamId = transact(doc, () =>
     upsertStream({
       doc,
-      name: 'Phone',
+      name: 'phone',
     }),
   )
   if (streamId instanceof Error) {

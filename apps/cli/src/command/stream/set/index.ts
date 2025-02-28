@@ -6,6 +6,7 @@ import { getDoc, saveDoc } from '#src/lib/doc.js'
 const $KeyValue = z.discriminatedUnion('key', [
   z.object({ key: z.literal('index'), value: z.coerce.number() }),
   z.object({ key: z.literal('parent'), value: z.string() }),
+  z.object({ key: z.literal('name'), value: z.string() }),
 ])
 
 const setCmd = new CliCommand('set')
@@ -45,6 +46,16 @@ const setCmd = new CliCommand('set')
     const streamId = stream.id
 
     switch (key) {
+      case 'name': {
+        const error = transact(doc, () =>
+          updateStream({ doc, streamId, name: value }),
+        )
+        if (error) {
+          throw error
+        }
+        break
+      }
+
       case 'index': {
         const error = transact(doc, () =>
           updateStream({ doc, streamId, index: value }),

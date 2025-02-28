@@ -59,13 +59,13 @@ const handleSubmit = async (event: SubmitEvent) => {
 			/>
 			<label for={toggleHtmlId}><strong>Select All</strong></label>
 		</li>
-		{#each Array.from(labelListMap.entries()) as [parentId, labelList]}
+		{#each Array.from(labelListMap.entries()) as [parentId, labelList] (parentId)}
 			{#if typeof parentId === 'string'}
 				{@const parent = labelRecord[parentId]}
 				<h3>{parent.name}</h3>
 			{/if}
 
-			{#each labelList as label}
+			{#each labelList as label (label.id)}
 				{@const htmlId = `stream-${stream.id}-label-${label.id}`}
 				<li>
 					<input

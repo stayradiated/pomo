@@ -11,7 +11,7 @@ let { labelRecord, labelIdList }: Props = $props()
 </script>
 
 <ul class="grid">
-	{#each labelIdList as labelId}
+	{#each labelIdList as labelId (labelId)}
 		{@const label = labelRecord[labelId]}
 		{@const { colorFg, colorBg, colorOp } = getUiColor(label.color ?? '#eee')}
 		<li class="label" style="--colorFg: {colorFg}; --colorBg: {colorBg}; --colorOp: {colorOp}">

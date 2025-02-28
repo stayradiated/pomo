@@ -45,7 +45,7 @@ const handleEdit = (event: MouseEvent) => {
 			{#if currentPointLabelList.length === 0}
 				--
 			{:else}
-				{#each currentPointLabelList as label}
+				{#each currentPointLabelList as label (label.id)}
 					{label.icon ?? ''} {label.name}
 				{/each}
 			{/if}
