@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.54.1](https://github.com/stayradiated/pomo/releases/tag/v0.54.1) - 2025-02-28
+
+- [`859f870`](https://github.com/stayradiated/pomo/commit/859f870303beea53dae096f54b896fcdeddd366f) fix: update turbo CLI flags from scope to filter 🔧
+- [`718fde2`](https://github.com/stayradiated/pomo/commit/718fde29008d653e0cabf7cd6f39fdb77f64923c) ci(uplift): uplifted for version v0.54.0
+- [`ab7363f`](https://github.com/stayradiated/pomo/commit/ab7363f868e74b7c465019548ab4206e03848f76) ci(uplift): uplifted for version v0.54.0
+
 ## [v0.54.0](https://github.com/stayradiated/pomo/releases/tag/v0.54.0) - 2025-02-28
 
 - [`a3b024f`](https://github.com/stayradiated/pomo/commit/a3b024f831fa28010e8a6576dd5b5ab063d1191e) feat: add section for outdated documentation in README 📝
