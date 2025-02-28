@@ -9,9 +9,9 @@ RUN set -e; \
   mkdir -p $PNPM_HOME ; \
   pnpm install --global turbo@2;
 
-FROM devbase as pruner
+FROM devbase AS pruner
 COPY . .
-RUN turbo prune --filter=mobile --docker --out-dir /exports
+RUN turbo prune --docker --out-dir=/exports 'mobile'
 
 # /exports/json - the pruned workspace's package.jsons
 #
@@ -31,13 +31,13 @@ RUN pnpm install
 FROM devbase AS builder
 COPY --from=pruner /exports/full/ .
 COPY --from=installer /app/ .
-RUN turbo run build --filter=mobile
+RUN turbo run build --filter='mobile'
 
-FROM base as runner
+FROM base AS runner
 COPY --from=pruner /exports/json/ .
 COPY --from=pruner /exports/pnpm-lock.yaml .
 RUN pnpm install --prod
 COPY --from=builder /app/apps/mobile/build /app/apps/mobile/build
 WORKDIR /app/apps/mobile/build
 EXPOSE 3000
-CMD node index.js
+CMD ["node", "index.js"]
