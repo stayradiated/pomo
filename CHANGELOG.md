@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.53.0](https://github.com/stayradiated/pomo/releases/tag/v0.53.0) - 2025-02-28
+
+- [`647d2e8`](https://github.com/stayradiated/pomo/commit/647d2e8b5faf245c8ea1c7a126e6c1d1b1a0e943) feat: update dependencies and improve calendar functionality 🔄
+- [`b7c79d2`](https://github.com/stayradiated/pomo/commit/b7c79d28ce407e335e4653797dcd8fba36a2d099) chore: update dependencies across workspace 📦
+- [`90b3e06`](https://github.com/stayradiated/pomo/commit/90b3e069e837eee296969a6171c1969c7f2f51a2) ci(uplift): uplifted for version v0.52.0
+- [`e12c470`](https://github.com/stayradiated/pomo/commit/e12c47068f186875fc5d48e4f51e2f744b51279c) ci(uplift): uplifted for version v0.52.0
+
 ## [v0.52.0](https://github.com/stayradiated/pomo/releases/tag/v0.52.0) - 2024-12-13
 
 - [`212717e`](https://github.com/stayradiated/pomo/commit/212717e6862ff4f114f0f1d3b3427c769aaba693) feat: Update database and environment configuration 🔧
