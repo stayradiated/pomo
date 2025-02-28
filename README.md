@@ -2,6 +2,8 @@
 
 > where does the time go?
 
+## Outdated Documentation
+
 ### streams
 
 many time tracking tools are based around work
