@@ -30,9 +30,9 @@ onMount(() => {
 })
 
 let currentTime = $derived(
-  (typeof startedAtDate === 'string' && typeof startedAtTime === 'string')
+  typeof startedAtDate === 'string' && typeof startedAtTime === 'string'
     ? new Date(`${startedAtDate}T${startedAtTime}`).getTime()
-    : undefined
+    : undefined,
 )
 
 const handleSubmit = async (event: SubmitEvent) => {
