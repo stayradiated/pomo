@@ -11,7 +11,7 @@ RUN set -e; \
 
 FROM devbase as pruner
 COPY . .
-RUN turbo prune --scope=mobile --docker --out-dir /exports
+RUN turbo prune --filter=mobile --docker --out-dir /exports
 
 # /exports/json - the pruned workspace's package.jsons
 #
@@ -31,8 +31,8 @@ RUN pnpm install
 FROM devbase AS builder
 COPY --from=pruner /exports/full/ .
 COPY --from=installer /app/ .
-RUN turbo run build --scope=mobile
- 
+RUN turbo run build --filter=mobile
+
 FROM base as runner
 COPY --from=pruner /exports/json/ .
 COPY --from=pruner /exports/pnpm-lock.yaml .
