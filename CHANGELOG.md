@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.56.0](https://github.com/stayradiated/pomo/releases/tag/v0.56.0) - 2025-02-28
+
+- [`ebe14e1`](https://github.com/stayradiated/pomo/commit/ebe14e18988beebc84d721df13009b459c55ce2c) feat: Update README with clearer project description and docs 📝
+- [`a6ba0db`](https://github.com/stayradiated/pomo/commit/a6ba0dba8d6a9c041bcda202308ef11587ba9425) chore: Update .dockerignore file patterns 🔧
+- [`5024cbd`](https://github.com/stayradiated/pomo/commit/5024cbdfea9d3347d074e49291ece1466de9803e) ci(uplift): uplifted for version v0.55.0
+- [`73c3d6b`](https://github.com/stayradiated/pomo/commit/73c3d6bec7f96e39d4b3dcb8818945e60ccd9023) ci(uplift): uplifted for version v0.55.0
+
 ## [v0.55.0](https://github.com/stayradiated/pomo/releases/tag/v0.55.0) - 2025-02-28
 
 - [`df48218`](https://github.com/stayradiated/pomo/commit/df4821830077fe34399815f2084bb5f4a40ec33a) feat: optimize Docker build stages and commands 🔨
