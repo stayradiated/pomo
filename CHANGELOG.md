@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.56.1](https://github.com/stayradiated/pomo/releases/tag/v0.56.1) - 2025-02-28
+
+- [`debdae8`](https://github.com/stayradiated/pomo/commit/debdae818f0fcba6e62798ff98937fbf73875f82) fix: downgrade React to v18 and fix date parsing logic 🔧
+- [`e200560`](https://github.com/stayradiated/pomo/commit/e2005606153e73f1ec804f2f2b2b5796914b9b8e) ci(uplift): uplifted for version v0.56.0
+- [`b36c068`](https://github.com/stayradiated/pomo/commit/b36c0685e2bcb9d3f07418e696d6decdd19986a5) ci(uplift): uplifted for version v0.56.0
+
 ## [v0.56.0](https://github.com/stayradiated/pomo/releases/tag/v0.56.0) - 2025-02-28
 
 - [`ebe14e1`](https://github.com/stayradiated/pomo/commit/ebe14e18988beebc84d721df13009b459c55ce2c) feat: Update README with clearer project description and docs 📝
