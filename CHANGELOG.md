@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.54.0](https://github.com/stayradiated/pomo/releases/tag/v0.54.0) - 2025-02-28
+
+- [`a3b024f`](https://github.com/stayradiated/pomo/commit/a3b024f831fa28010e8a6576dd5b5ab063d1191e) feat: add section for outdated documentation in README 📝
+- [`f024268`](https://github.com/stayradiated/pomo/commit/f024268b0062a4115cb32f2d69e6393b41c3ba96) chore: upgrade Turbo to v2 in mobile Dockerfile 🔧
+- [`333a8bb`](https://github.com/stayradiated/pomo/commit/333a8bbabbacb639782b0ff0ec362eac2281e6a1) ci(uplift): uplifted for version v0.53.0
+- [`cd6e8d7`](https://github.com/stayradiated/pomo/commit/cd6e8d7b7b6143bd6f3fe8b9075a2ae878e28424) ci(uplift): uplifted for version v0.53.0
+
 ## [v0.53.0](https://github.com/stayradiated/pomo/releases/tag/v0.53.0) - 2025-02-28
 
 - [`647d2e8`](https://github.com/stayradiated/pomo/commit/647d2e8b5faf245c8ea1c7a126e6c1d1b1a0e943) feat: update dependencies and improve calendar functionality 🔄
