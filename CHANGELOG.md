@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.55.0](https://github.com/stayradiated/pomo/releases/tag/v0.55.0) - 2025-02-28
+
+- [`df48218`](https://github.com/stayradiated/pomo/commit/df4821830077fe34399815f2084bb5f4a40ec33a) feat: optimize Docker build stages and commands 🔨
+- [`206aa7f`](https://github.com/stayradiated/pomo/commit/206aa7f7bebaf498a3b69fd1bca31c262575b05a) ci(uplift): uplifted for version v0.54.1
+- [`eb34d7d`](https://github.com/stayradiated/pomo/commit/eb34d7d7ac79716a7d9d669d38867e05ced1ed0b) ci(uplift): uplifted for version v0.54.1
+
 ## [v0.54.1](https://github.com/stayradiated/pomo/releases/tag/v0.54.1) - 2025-02-28
 
 - [`859f870`](https://github.com/stayradiated/pomo/commit/859f870303beea53dae096f54b896fcdeddd366f) fix: update turbo CLI flags from scope to filter 🔧
