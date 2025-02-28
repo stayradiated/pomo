@@ -1,5 +1,5 @@
 {
-  "version": "0.53.0",
+  "version": "0.54.0",
   "private": true,
   "packageManager": "pnpm@10.5.2",
   "scripts": {
