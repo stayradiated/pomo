@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.58.0](https://github.com/stayradiated/pomo/releases/tag/v0.58.0) - 2025-03-01
+
+- [`a5495c5`](https://github.com/stayradiated/pomo/commit/a5495c53efd0e2ec474424877d5d47a0650cbd87) feat: enhance time tracking report with percentages and total duration 📊
+- [`fc59862`](https://github.com/stayradiated/pomo/commit/fc59862da587523c02bb81225eb9081944bba6ab) ci(uplift): uplifted for version v0.57.0
+- [`c85de31`](https://github.com/stayradiated/pomo/commit/c85de317fbaa1c2f3f565fd8952f19ceffd86780) ci(uplift): uplifted for version v0.57.0
+
 ## [v0.57.0](https://github.com/stayradiated/pomo/releases/tag/v0.57.0) - 2025-03-01
 
 - [`2988e1b`](https://github.com/stayradiated/pomo/commit/2988e1b1f99f8fee8b30068964e1201ead01ce97) feat: add when and where-did-the-time-go commands ✨
