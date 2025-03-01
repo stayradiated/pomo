@@ -1,8 +1,8 @@
 import {
   clampLineList,
-  durationLocale,
   mapPointListToLineList,
   startOfDayWithTimeZone,
+  formatDurationRough,
 } from '@stayradiated/pomo-core'
 import type { Line } from '@stayradiated/pomo-core'
 import {
@@ -16,6 +16,7 @@ import type { Doc } from '@stayradiated/pomo-doc'
 import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
 import * as dateFns from 'date-fns'
+
 import { getDoc } from '#src/lib/doc.js'
 
 type HandlerOptions = {
@@ -148,22 +149,32 @@ const handler = (options: HandlerOptions): undefined | Error => {
     }
   }
 
+  // Calculate total duration
+  let totalDurationMs = 0
+  for (const duration of labelDurationMap.values()) {
+    totalDurationMs += duration
+  }
+
+  // Format the total duration
+  const totalDuration = formatDurationRough(totalDurationMs)
+
+  // Display total duration
+  console.log(`Total time spent: ${totalDuration}\n`)
+
   // Sort labels by duration (descending)
   const sortedLabels = [...labelDurationMap.entries()].sort(
     (a, b) => b[1] - a[1],
   )
 
-  // Display results
+  // Display results with percentages
   for (const [labelName, durationMs] of sortedLabels) {
-    const duration = dateFns.formatDuration(
-      dateFns.intervalToDuration({ start: 0, end: durationMs }),
-      {
-        format: ['days', 'hours', 'minutes'],
-        locale: durationLocale,
-      },
-    )
+    const duration = formatDurationRough(durationMs)
 
-    console.log(`- ${labelName}: ${duration}`)
+    // Calculate and format percentage
+    const percentage = (durationMs / totalDurationMs) * 100
+    const formattedPercentage = percentage.toFixed(1)
+
+    console.log(`- ${labelName}: ${duration} (${formattedPercentage}%)`)
   }
 
   return undefined
@@ -231,23 +242,37 @@ const whereDidTheTimeGoCmd = new CliCommand('where-did-the-time-go')
 
     const timeZone = getUserTimeZone({ doc })
 
-    // Parse dates from YYYY.MM.DD format
-    const startDateParts = options.startDate.split('.')
-    const endDateParts = options.endDate.split('.')
+    const startDateInstant = chrono
+      .parseDate(options.startDate, {
+        instant: new Date(),
+        timezone: timeZone,
+      })
+      ?.getTime()
 
-    if (startDateParts.length !== 3 || endDateParts.length !== 3) {
-      throw new Error('Dates should be in format YYYY.MM.DD')
+    if (typeof startDateInstant !== 'number') {
+      throw new Error(`Could not parse start date: ${options.startDate}`)
     }
 
-    const startDateStr = `${startDateParts[0]}-${startDateParts[1]}-${startDateParts[2]}`
-    const endDateStr = `${endDateParts[0]}-${endDateParts[1]}-${endDateParts[2]}`
+    const endDateInstant = chrono
+      .parseDate(options.endDate, {
+        instant: new Date(),
+        timezone: timeZone,
+      })
+      ?.getTime()
+
+    if (typeof endDateInstant !== 'number') {
+      throw new Error(`Could not parse end date: ${options.endDate}`)
+    }
 
     const startDate = startOfDayWithTimeZone({
-      instant: new Date(startDateStr).getTime(),
+      instant: startDateInstant,
       timeZone,
     }).getTime()
 
-    const endDate = dateFns.endOfDay(new Date(endDateStr)).getTime()
+    const endDate = startOfDayWithTimeZone({
+      instant: endDateInstant,
+      timeZone,
+    }).getTime()
 
     const result = handler({
       doc,

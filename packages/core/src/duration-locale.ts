@@ -3,6 +3,7 @@ const formatDistanceLocale: Record<string, string> = {
   xMinutes: '{{count}}m',
   xHours: '{{count}}h',
   xDays: '{{count}}d',
+  xMonths: '{{count}}mo',
 }
 const durationLocale = {
   formatDistance(token: string, count: number) {
