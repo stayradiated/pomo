@@ -16,6 +16,8 @@ import { summaryCmd } from './command/summary.js'
 import { syncCmd } from './command/sync.js'
 import { togglCmd } from './command/toggl/index.js'
 import { userCmd } from './command/user/index.js'
+import { whenCmd } from './command/when.js'
+import { whereDidTheTimeGoCmd } from './command/where-did-the-time-go.js'
 
 export const cli = new CliCommand('pomo')
   .withDescription('Get your program to your users easily')
@@ -37,6 +39,8 @@ export const cli = new CliCommand('pomo')
     syncCmd,
     togglCmd,
     userCmd,
+    whereDidTheTimeGoCmd,
+    whenCmd,
   )
   .withHandler(() => {
     cli.help()
