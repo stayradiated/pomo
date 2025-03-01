@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.57.0](https://github.com/stayradiated/pomo/releases/tag/v0.57.0) - 2025-03-01
+
+- [`2988e1b`](https://github.com/stayradiated/pomo/commit/2988e1b1f99f8fee8b30068964e1201ead01ce97) feat: add when and where-did-the-time-go commands ✨
+- [`4d94a3d`](https://github.com/stayradiated/pomo/commit/4d94a3daabae83e1229e1e76aaeb8d4b53be2a3e) ci(uplift): uplifted for version v0.56.1
+- [`5c4327c`](https://github.com/stayradiated/pomo/commit/5c4327cd5b1ce4d349e4568d704bf818dd9e80f0) ci(uplift): uplifted for version v0.56.1
+
 ## [v0.56.1](https://github.com/stayradiated/pomo/releases/tag/v0.56.1) - 2025-02-28
 
 - [`debdae8`](https://github.com/stayradiated/pomo/commit/debdae818f0fcba6e62798ff98937fbf73875f82) fix: downgrade React to v18 and fix date parsing logic 🔧
