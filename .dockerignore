@@ -13,6 +13,16 @@
 !/apps/mobile/tsconfig.json
 !/apps/mobile/vite.config.ts
 
+!/apps/web/docker-app-start.sh
+!/apps/web/gmrc.cjs
+!/apps/web/migrations
+!/apps/web/package.json
+!/apps/web/src
+!/apps/web/static
+!/apps/web/svelte.config.js
+!/apps/web/tsconfig.json
+!/apps/web/vite.config.ts
+
 !/packages/doc/src
 !/packages/doc/package.json
 !/packages/doc/tsconfig.json

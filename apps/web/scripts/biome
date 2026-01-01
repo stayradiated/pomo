@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Biome wrapper script that auto-migrates when needed
+
+# Create a temporary file to capture output
+temp_file=$(mktemp)
+
+# Clean up on exit or interrupt
+cleanup() {
+    rm -f "$temp_file"
+}
+trap cleanup EXIT INT TERM
+
+# Run biome with all arguments, tee the output to both terminal and temp file
+biome "$@" 2>&1 | tee "$temp_file"
+exit_code=${PIPESTATUS[0]}
+
+# Strip ANSI escape codes when checking for the migration message
+if sed 's/\x1B\[[0-9;]*[a-zA-Z]//g' "$temp_file" | grep -q "Run the command biome migrate to migrate the configuration file."; then
+    echo
+    echo "Automatically migrating Biome configuration to latest version..."
+    echo "> biome migrate --write"
+    biome migrate --write
+fi
+
+# Exit with the same code as the original command
+exit $exit_code
