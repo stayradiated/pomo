@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.59.0](https://github.com/stayradiated/pomo/releases/tag/v0.59.0) - 2026-01-01
+
+- [`3eb44b6`](https://github.com/stayradiated/pomo/commit/3eb44b6c0d58bacb83a9bce1d3685ca296a159e3) feat: add start and end date options for days command 🧹 (#3)
+- [`94eb022`](https://github.com/stayradiated/pomo/commit/94eb02221552c6d1d68af83b507245f7eebb9c40) ci(uplift): uplifted for version v0.58.0
+- [`be66cd7`](https://github.com/stayradiated/pomo/commit/be66cd7b1ec3dab3c8ba610c185b61356a62a0cf) ci(uplift): uplifted for version v0.58.0
+
 ## [v0.58.0](https://github.com/stayradiated/pomo/releases/tag/v0.58.0) - 2025-03-01
 
 - [`a5495c5`](https://github.com/stayradiated/pomo/commit/a5495c53efd0e2ec474424877d5d47a0650cbd87) feat: enhance time tracking report with percentages and total duration 📊
