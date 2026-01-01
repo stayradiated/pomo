@@ -5,11 +5,9 @@
   "scripts": {
     "build": "turbo build --no-daemon",
     "test": "turbo test --no-daemon",
-    "tidy": "pnpm -r run --no-bail tidy",
-    "update-all": "pnpm -r exec -- ncu -u --cache"
+    "tidy": "turbo tidy --no-daemon"
   },
   "devDependencies": {
-    "npm-check-updates": "17.1.15",
-    "turbo": "2.4.4"
+    "turbo": "2.7.2"
   }
 }
