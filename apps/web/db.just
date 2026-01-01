@@ -43,3 +43,7 @@ uncommit:
 # Update schema.sql with current database snapshot
 snapshot-schema:
     ./scripts/db/snapshot-schema.sh
+
+# Regenerate database types from schema
+types:
+    kanel
