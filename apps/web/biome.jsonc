@@ -1,0 +1,196 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!!**/.svelte-kit",
+      "!!**/__snapshots__",
+      "!!**/build",
+      "!!**/coverage",
+      "!!**/node_modules",
+      "!!**/src/lib/__generated__",
+      "!**/*.ts.timestamp-*.mjs",
+      "!**/.DS_Store",
+      "!**/.env",
+      "!**/.env.*",
+      "!**/package-lock.json",
+      "!**/pnpm-lock.yaml"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80,
+    "attributePosition": "auto",
+    "bracketSpacing": true
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              [":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+              ":BLANK_LINE:",
+              { "type": true },
+              ":BLANK_LINE:",
+              "$app/**",
+              ":BLANK_LINE:",
+              "#lib/*",
+              ":BLANK_LINE:",
+              "#lib/server/*",
+              ":BLANK_LINE:",
+              "#lib/server/db/*",
+              ":BLANK_LINE:",
+              "#lib/server/db/**",
+              ":BLANK_LINE:",
+              "#lib/server/**",
+              ":BLANK_LINE:",
+              "#lib/vendor/**",
+              ":BLANK_LINE:",
+              "#lib/test/**",
+              ":BLANK_LINE:",
+              "#lib/core/**",
+              ":BLANK_LINE:",
+              "#lib/images/**",
+              "#lib/utils/**",
+              "#lib/tiptap/**",
+              ":BLANK_LINE:",
+              "#lib/components/**",
+              ":BLANK_LINE:",
+              "#lib/**",
+              ":BLANK_LINE:",
+              "#routes/**",
+              ":BLANK_LINE:",
+              ":PATH:",
+              ":BLANK_LINE:",
+              "**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "nursery": {
+        // https://next.biomejs.dev/linter/rules/no-floating-promises/
+        "noFloatingPromises": "error",
+
+        // https://biomejs.dev/linter/rules/no-misused-promises/
+        "noMisusedPromises": "error"
+      },
+      "correctness": {
+        // skipping rules for react hooks
+        "useHookAtTopLevel": "off"
+      },
+      "suspicious": {
+        "noConfusingVoidType": "off",
+        "noExplicitAny": "error",
+        "noConsole": {
+          "level": "error",
+          "options": {
+            "allow": ["assert", "error", "info", "warn"]
+          }
+        }
+      },
+      "style": {
+        "noInferrableTypes": "error",
+        "noNonNullAssertion": "error",
+        "noParameterAssign": "error",
+        "noUnusedTemplateLiteral": "error",
+        "noUselessElse": "error",
+        "useAsConstAssertion": "error",
+        "useBlockStatements": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useImportType": {
+          "level": "error",
+          "options": { "style": "separatedType" }
+        },
+        "useNumberNamespace": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "patterns": [
+              {
+                "group": ["../*"],
+                "message": "Importing from parent directories is not allowed. Use an absolute import from #lib/ or #routes/ instead."
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "asNeeded",
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "quoteStyle": "single",
+      "attributePosition": "auto",
+      "bracketSpacing": true
+    }
+  },
+  "html": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.svelte"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off",
+            "noUnusedVariables": "off"
+          },
+          "style": {
+            "useConst": "off",
+            "useImportType": "off",
+
+            // TODO: refactor components to avoid using null assertions
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.stories.svelte"],
+      "linter": {
+        "rules": {
+          "style": {
+            // TODO: refactor stories to avoid using null assertions
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -37,3 +37,13 @@ build: svelte-sync
 # Preview production build
 preview:
     vite preview
+
+# Check code style with ESLint
+fix:
+    ./scripts/biome check --unsafe --write --colors=force .
+    eslint --fix .
+    just --unstable --fmt
+
+lint:
+    ./scripts/biome check --unsafe --colors=force .
+    eslint .
