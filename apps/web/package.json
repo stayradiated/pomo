@@ -9,6 +9,9 @@
     "test": "just test",
     "tidy": "just fix"
   },
+  "dependencies": {
+    "graphile-migrate": "1.4.1"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@sveltejs/adapter-node": "5.2.12",
@@ -16,7 +19,6 @@
     "@sveltejs/vite-plugin-svelte": "6.2.1",
     "eslint": "9.39.2",
     "eslint-plugin-svelte": "3.13.1",
-    "graphile-migrate": "1.4.1",
     "kanel": "3.16.0",
     "kanel-kysely": "0.8.0",
     "kanel-zod": "1.7.0",

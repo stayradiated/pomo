@@ -183,6 +183,10 @@ importers:
         version: 3.0.7(@types/node@25.0.3)(jiti@2.6.1)(terser@5.19.2)
 
   apps/web:
+    dependencies:
+      graphile-migrate:
+        specifier: 1.4.1
+        version: 1.4.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.10
@@ -202,9 +206,6 @@ importers:
       eslint-plugin-svelte:
         specifier: 3.13.1
         version: 3.13.1(eslint@9.39.2(jiti@2.6.1))(svelte@5.46.1)
-      graphile-migrate:
-        specifier: 1.4.1
-        version: 1.4.1
       kanel:
         specifier: 3.16.0
         version: 3.16.0(@electric-sql/pglite@0.3.14)
