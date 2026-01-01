@@ -38,6 +38,10 @@ build: svelte-sync
 preview:
     vite preview
 
+# TypeScript + Svelte checking
+check *args: svelte-sync
+    svelte-check --tsconfig ./tsconfig.json {{ args }}
+
 # Check code style with ESLint
 fix:
     ./scripts/biome check --unsafe --write --colors=force .
