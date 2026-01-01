@@ -1,0 +1,8 @@
+import type { Selectable } from 'kysely'
+
+import type { DB } from '#lib/server/db/types.js'
+
+export type User = Selectable<DB['user']>
+export type Point = Selectable<DB['point']>
+export type Label = Selectable<DB['label']>
+export type Stream = Selectable<DB['stream']>
