@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.60.0](https://github.com/stayradiated/pomo/releases/tag/v0.60.0) - 2026-01-01
+
+- [`e90812f`](https://github.com/stayradiated/pomo/commit/e90812f74caa667987485f638302cbfc8e50b3b2) feat: initial scaffolding for new `/apps/web` (#4)
+- [`f88c1e3`](https://github.com/stayradiated/pomo/commit/f88c1e3446cb70eb28e3c53b1c3a8f3b94e1801e) feat: add Docker support for the web application 🐳
+- [`a557d7a`](https://github.com/stayradiated/pomo/commit/a557d7aaf11a6187f88918d165867de23ba54b57) feat: update Svelte adapter to node 🧹
+- [`fb57f0b`](https://github.com/stayradiated/pomo/commit/fb57f0b995b804900642f0835b4b6dc6abc83b51) feat: add TypeScript and Svelte checking command 🧹
+- [`a151a7d`](https://github.com/stayradiated/pomo/commit/a151a7d2b7ff0bb5eed8a4e646e94a978af20b88) chore: update dependencies for improved stability 🔧
+- [`df6432e`](https://github.com/stayradiated/pomo/commit/df6432e28e9694af91c3424d7bf75045f745a981) feat: add knip for unused code detection 🧹
+- [`0556e20`](https://github.com/stayradiated/pomo/commit/0556e20d2510419d8ec3e3a8a41b6be3cc38756f) feat: add kanel configuration and dependencies 🎉
+- [`5f2c5f5`](https://github.com/stayradiated/pomo/commit/5f2c5f5587343651654aa243ded84af8c0010505) feat: update biome and add eslint configuration 🎉
+- [`cd7a1a6`](https://github.com/stayradiated/pomo/commit/cd7a1a62b4cc4e3c17dc3f8f2fcac727eee04039) feat: add graphile-migrate for migration management ✨
+- [`7ad6fb8`](https://github.com/stayradiated/pomo/commit/7ad6fb856c9f2a63f7104d9e1c3ddea6e4dcf770) feat: initialize new SvelteKit web app with essential files 🚀
+- [`75ca1a1`](https://github.com/stayradiated/pomo/commit/75ca1a1153a3999d34935b80dcd3e33a9c78b122) ci(uplift): uplifted for version v0.59.0
+- [`e7dc6c9`](https://github.com/stayradiated/pomo/commit/e7dc6c9af6d98278776d0bcd4abd64cc72053f9c) ci(uplift): uplifted for version v0.59.0
+
 ## [v0.59.0](https://github.com/stayradiated/pomo/releases/tag/v0.59.0) - 2026-01-01
 
 - [`3eb44b6`](https://github.com/stayradiated/pomo/commit/3eb44b6c0d58bacb83a9bce1d3685ca296a159e3) feat: add start and end date options for days command 🧹 (#3)

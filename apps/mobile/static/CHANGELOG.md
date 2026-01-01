@@ -1,3 +1,5 @@
+## [v0.60.0](https://github.com/stayradiated/pomo/releases/tag/v0.60.0) - 2026-01-01
+
 ## [v0.59.0](https://github.com/stayradiated/pomo/releases/tag/v0.59.0) - 2026-01-01
 
 ## [v0.58.0](https://github.com/stayradiated/pomo/releases/tag/v0.58.0) - 2025-03-01
