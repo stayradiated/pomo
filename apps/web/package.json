@@ -17,10 +17,64 @@
     "kanel": "3.16.0",
     "kanel-kysely": "0.8.0",
     "kanel-zod": "1.7.0",
+    "knip": "5.45.0",
     "svelte": "^5.45.6",
     "svelte-check": "^4.3.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "8.51.0",
     "vite": "^7.2.6"
+  },
+  "knip": {
+    "vite": false,
+    "vitest": false,
+    "svelte": {
+      "entry": [
+        "./src/routes/**/+{layout,page,server,error}{,.server}.{svelte,ts}",
+        "./src/hooks.client.ts",
+        "./src/hooks.server.ts",
+        "./src/**/*.test.ts",
+        "vite.config*.ts"
+      ],
+      "project": [
+        "./src/**/*.ts"
+      ]
+    },
+    "paths": {
+      "$env/*": [
+        "./node_modules/@sveltejs/kit/src/runtime/env/*"
+      ]
+    },
+    "ignore": [
+      ".kanelrc.cjs",
+      "gmrc.cjs",
+      "justfile",
+      "pollen.config.js",
+      "prod-server.js",
+      "scripts/env-doctor/index.ts",
+      "scripts/check-tldraw-version.ts",
+      "src/**/*.bench.ts",
+      "src/**/*.test.ts",
+      "src/lib/__generated__/**",
+      "src/lib/constants.ts",
+      "src/lib/core/i18n/messages.ts",
+      "src/lib/server/db/log-query.ts",
+      "src/lib/utils/ansi.ts",
+      "src/lib/utils/debug-fn.ts",
+      "src/service-worker.ts"
+    ],
+    "ignoreDependencies": [
+      "@biomejs/biome",
+      "graphile-migrate",
+      "kanel",
+      "kanel-kysely",
+      "kanel-zod",
+      "svelte-check"
+    ],
+    "ignoreBinaries": [
+      "just"
+    ],
+    "ignoreExportsUsedInFile": {
+      "type": true
+    }
   }
 }

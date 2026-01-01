@@ -47,3 +47,7 @@ fix:
 lint:
     ./scripts/biome check --unsafe --colors=force .
     eslint .
+
+# Find unused files and code
+knip: svelte-sync
+    knip
