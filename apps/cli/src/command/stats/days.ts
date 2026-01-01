@@ -1,6 +1,7 @@
 import {
   eachDayOfIntervalWithTimeZone,
   mapPointListToLineList,
+  startOfDayWithTimeZone,
 } from '@stayradiated/pomo-core'
 import {
   getLabelByName,
@@ -9,6 +10,7 @@ import {
   retrievePointList,
 } from '@stayradiated/pomo-doc'
 import type { Doc } from '@stayradiated/pomo-doc'
+import * as chrono from 'chrono-node'
 import { CliCommand } from 'cilly'
 import * as dateFns from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
@@ -22,15 +24,17 @@ type HandlerOptions = {
     streamId: string
     labelId: string
   }
+  startDate: number
+  endDate: number
 }
 
 const handler = (options: HandlerOptions): undefined | Error => {
-  const { doc, timeZone, where } = options
+  const { doc, timeZone, where, startDate, endDate } = options
 
   const pointList = retrievePointList({
     doc,
-    startDate: dateFns.parseISO('2023-01-01').getTime(),
-    endDate: dateFns.parseISO('2025-01-01').getTime(),
+    startDate,
+    endDate,
     where: {
       streamIdList: [where.streamId],
     },
@@ -75,6 +79,8 @@ const handler = (options: HandlerOptions): undefined | Error => {
 const $Options = z.object({
   stream: z.string(),
   label: z.string(),
+  startDate: z.string(),
+  endDate: z.string().optional(),
 })
 
 const daysCmd = new CliCommand('days')
@@ -99,6 +105,18 @@ const daysCmd = new CliCommand('days')
         { name: 'label', description: 'Label to filter by', required: true },
       ],
     },
+    {
+      name: ['-f', '--start-date'],
+      description: 'Start date (YYYY.MM.DD)',
+      required: true,
+      args: [{ name: 'date', description: 'Start date', required: true }],
+    },
+    {
+      name: ['-t', '--end-date'],
+      description: 'End date (YYYY.MM.DD)',
+      required: false,
+      args: [{ name: 'date', description: 'End date', required: true }],
+    },
   )
   .withHandler(async (_args, rawOptions) => {
     const options = $Options.parse(rawOptions)
@@ -109,6 +127,40 @@ const daysCmd = new CliCommand('days')
     }
 
     const timeZone = getUserTimeZone({ doc })
+
+    const startDateInstant = chrono
+      .parseDate(options.startDate, {
+        instant: new Date(),
+        timezone: timeZone,
+      })
+      ?.getTime()
+
+    if (typeof startDateInstant !== 'number') {
+      throw new Error(`Could not parse start date: ${options.startDate}`)
+    }
+
+    const endDateInstant = options.endDate
+      ? chrono
+          .parseDate(options.endDate, {
+            instant: new Date(),
+            timezone: timeZone,
+          })
+          ?.getTime()
+      : new Date().getTime()
+
+    if (typeof endDateInstant !== 'number') {
+      throw new Error(`Could not parse end date: ${options.endDate}`)
+    }
+
+    const startDate = startOfDayWithTimeZone({
+      instant: startDateInstant,
+      timeZone,
+    }).getTime()
+
+    const endDate = startOfDayWithTimeZone({
+      instant: endDateInstant,
+      timeZone,
+    }).getTime()
 
     const stream = getStreamByName({ doc, name: options.stream })
     if (stream instanceof Error) {
@@ -131,6 +183,8 @@ const daysCmd = new CliCommand('days')
         streamId: stream.id,
         labelId: label.id,
       },
+      startDate,
+      endDate,
     })
     if (result instanceof Error) {
       throw result
