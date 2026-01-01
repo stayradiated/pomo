@@ -1,0 +1,187 @@
+#!/bin/bash
+
+# Vite Dev Server Manager Script
+# Usage: ./script/vite/dev start|stop|restart|status
+
+# Configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+PID_FILE="$PROJECT_ROOT/.vite-dev.pid"
+LOG_FILE="$PROJECT_ROOT/.vite-dev.log"
+VITE_PORT="${VITE_PORT:-5173}"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Functions
+print_status() {
+  echo -e "${GREEN}[VITE]${NC} $1"
+}
+
+print_error() {
+  echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+print_warning() {
+  echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+is_running() {
+  if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    if ps -p "$PID" > /dev/null 2>&1; then
+      return 0
+    else
+      # PID file exists but process is not running
+      rm -f "$PID_FILE"
+    fi
+  fi
+  return 1
+}
+
+start_server() {
+  if is_running; then
+    print_warning "Vite dev server is already running (PID: $(cat $PID_FILE))"
+    return 1
+  fi
+
+  print_status "Starting Vite dev server..."
+
+  # Change to project root directory
+  cd "$PROJECT_ROOT" || {
+    print_error "Failed to change to project directory: $PROJECT_ROOT"
+      return 1
+    }
+
+    # Check if vite is available
+    if ! command -v vite &> /dev/null && ! ./node_modules/.bin/vite --version &> /dev/null; then
+      print_error "Vite is not installed. Please run 'npm install' or 'yarn install' first."
+      return 1
+    fi
+
+    # Start vite in the background
+    nohup ./node_modules/.bin/vite --host 0.0.0.0 --open --strictPort --port "$VITE_PORT" > "$LOG_FILE" 2>&1 &
+    PID=$!
+
+    # Save PID
+    echo $PID > "$PID_FILE"
+
+    # Wait a moment to check if the process started successfully
+    sleep 2
+
+    if is_running; then
+      print_status "Vite dev server started successfully (PID: $PID)"
+      print_status "Server running at http://localhost:$VITE_PORT"
+      print_status "Logs available at: $LOG_FILE"
+      print_status "Use \`just dev logs\` to view the logs in real time."
+      return 0
+    else
+      print_error "Failed to start Vite dev server. Check logs at: $LOG_FILE"
+      rm -f "$PID_FILE"
+      return 1
+    fi
+  }
+
+stop_server() {
+  if ! is_running; then
+    print_warning "Vite dev server is not running"
+    return 1
+  fi
+
+  PID=$(cat "$PID_FILE")
+  print_status "Stopping Vite dev server (PID: $PID)..."
+
+  # Try graceful shutdown first
+  kill "$PID" 2>/dev/null
+
+  # Wait up to 5 seconds for process to stop
+  for i in {1..5}; do
+    if ! ps -p "$PID" > /dev/null 2>&1; then
+      break
+    fi
+    sleep 1
+  done
+
+  # Force kill if still running
+  if ps -p "$PID" > /dev/null 2>&1; then
+    print_warning "Process didn't stop gracefully, forcing shutdown..."
+    kill -9 "$PID" 2>/dev/null
+  fi
+
+  rm -f "$PID_FILE"
+  print_status "Vite dev server stopped"
+  return 0
+}
+
+restart_server() {
+  print_status "Restarting Vite dev server..."
+  stop_server
+  sleep 1
+  start_server
+}
+
+show_status() {
+  if is_running; then
+    PID=$(cat "$PID_FILE")
+    print_status "Vite dev server is running (PID: $PID)"
+    print_status "Server URL: http://localhost:$VITE_PORT"
+
+    # Show last few lines of log
+    if [ -f "$LOG_FILE" ]; then
+      echo -e "\nRecent log entries:"
+      tail -n 20 "$LOG_FILE"
+    fi
+
+    return 0
+  else
+    print_status "Vite dev server is not running"
+    return 1
+  fi
+}
+
+show_logs() {
+  if [ -f "$LOG_FILE" ]; then
+    tail -n 20 -f "$LOG_FILE"
+  else
+    print_error "Log file not found: $LOG_FILE"
+    return 1
+  fi
+}
+
+# Main script logic
+case "$1" in
+  start)
+    start_server
+    ;;
+  stop)
+    stop_server
+    ;;
+  restart)
+    restart_server
+    ;;
+  status)
+    show_status
+    ;;
+  logs)
+    show_logs
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status|logs}"
+    echo ""
+    echo "Commands:"
+    echo "  start    - Start the Vite dev server in the background"
+    echo "  stop     - Stop the running Vite dev server"
+    echo "  restart  - Restart the Vite dev server"
+    echo "  status   - Show the current status of the Vite dev server"
+    echo "  logs     - Tail the Vite dev server logs"
+    echo ""
+    echo "Environment variables:"
+    echo "  VITE_PORT - Port to run the dev server on (default: 5173)"
+    exit 1
+    ;;
+esac
+
+exit $?
