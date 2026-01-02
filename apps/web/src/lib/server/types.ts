@@ -4,5 +4,10 @@ import type { DB } from '#lib/server/db/types.js'
 
 export type User = Selectable<DB['user']>
 export type Point = Selectable<DB['point']>
+export type PointLabel = Selectable<DB['pointLabel']>
+export type PointWithLabelList = Selectable<DB['pointWithLabelList']>
 export type Label = Selectable<DB['label']>
 export type Stream = Selectable<DB['stream']>
+export type ReplicacheClient = Selectable<DB['replicacheClient']>
+export type ReplicacheClientGroup = Selectable<DB['replicacheClientGroup']>
+export type ReplicacheClientView = Selectable<DB['replicacheClientView']>

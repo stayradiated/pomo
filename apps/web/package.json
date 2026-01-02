@@ -10,7 +10,13 @@
     "tidy": "just fix"
   },
   "dependencies": {
-    "graphile-migrate": "1.4.1"
+    "@stayradiated/hydro": "1.1.0",
+    "async-mutex": "0.5.0",
+    "graphile-migrate": "1.4.1",
+    "pg": "8.16.3",
+    "replicache": "15.3.0",
+    "signia": "0.1.5",
+    "zod": "4.2.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
@@ -19,6 +25,7 @@
     "@sveltejs/kit": "2.49.2",
     "@sveltejs/vite-plugin-svelte": "6.2.1",
     "@types/node": "22.13.5",
+    "@types/pg": "8.16.0",
     "eslint": "9.39.2",
     "eslint-plugin-svelte": "3.13.1",
     "id128": "1.6.6",
@@ -29,10 +36,10 @@
     "kysely": "0.28.9",
     "svelte": "5.46.1",
     "svelte-check": "4.3.5",
+    "type-fest": "5.3.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.51.0",
-    "vite": "7.3.0",
-    "zod": "3.24.2"
+    "vite": "7.3.0"
   },
   "knip": {
     "vite": false,
@@ -58,19 +65,9 @@
       ".kanelrc.cjs",
       "gmrc.cjs",
       "justfile",
-      "pollen.config.js",
-      "prod-server.js",
-      "scripts/env-doctor/index.ts",
-      "scripts/check-tldraw-version.ts",
-      "src/**/*.bench.ts",
-      "src/**/*.test.ts",
+      "scripts/db/snapshot-schema.ts",
       "src/lib/__generated__/**",
-      "src/lib/constants.ts",
-      "src/lib/core/i18n/messages.ts",
-      "src/lib/server/db/log-query.ts",
-      "src/lib/utils/ansi.ts",
-      "src/lib/utils/debug-fn.ts",
-      "src/service-worker.ts"
+      "src/lib/server/db/log-query.ts"
     ],
     "ignoreDependencies": [
       "@biomejs/biome",

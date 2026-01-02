@@ -1,6 +1,11 @@
+export { type ReplicacheClientGroupId, type default as ReplicacheClientGroupTable, type ReplicacheClientGroup, type NewReplicacheClientGroup, type ReplicacheClientGroupUpdate, replicacheClientGroupId, replicacheClientGroup, replicacheClientGroupInitializer, replicacheClientGroupMutator } from './public/ReplicacheClientGroup';
 export { type LabelId, type default as LabelTable, type Label, type NewLabel, type LabelUpdate, labelId, label, labelInitializer, labelMutator } from './public/Label';
+export { type ReplicacheClientViewId, type default as ReplicacheClientViewTable, type ReplicacheClientView, type NewReplicacheClientView, type ReplicacheClientViewUpdate, replicacheClientViewId, replicacheClientView, replicacheClientViewInitializer, replicacheClientViewMutator } from './public/ReplicacheClientView';
 export { type UserId, type default as UserTable, type User, type NewUser, type UserUpdate, userId, user, userInitializer, userMutator } from './public/User';
+export { type ReplicacheClientId, type default as ReplicacheClientTable, type ReplicacheClient, type NewReplicacheClient, type ReplicacheClientUpdate, replicacheClientId, replicacheClient, replicacheClientInitializer, replicacheClientMutator } from './public/ReplicacheClient';
+export { type default as PointLabelTable, type PointLabel, type NewPointLabel, type PointLabelUpdate, pointLabel, pointLabelInitializer, pointLabelMutator } from './public/PointLabel';
 export { type StreamId, type default as StreamTable, type Stream, type NewStream, type StreamUpdate, streamId, stream, streamInitializer, streamMutator } from './public/Stream';
 export { type PointId, type default as PointTable, type Point, type NewPoint, type PointUpdate, pointId, point, pointInitializer, pointMutator } from './public/Point';
+export { type default as PointWithLabelListTable, type PointWithLabelList, pointWithLabelList } from './public/PointWithLabelList';
 export { type default as PublicSchema } from './public/PublicSchema';
 export { type default as Database } from './Database';

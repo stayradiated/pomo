@@ -1,14 +1,29 @@
+import type { default as ReplicacheClientGroupTable } from './ReplicacheClientGroup';
 import type { default as LabelTable } from './Label';
+import type { default as ReplicacheClientViewTable } from './ReplicacheClientView';
 import type { default as UserTable } from './User';
+import type { default as ReplicacheClientTable } from './ReplicacheClient';
+import type { default as PointLabelTable } from './PointLabel';
 import type { default as StreamTable } from './Stream';
 import type { default as PointTable } from './Point';
+import type { default as PointWithLabelListTable } from './PointWithLabelList';
 
 export default interface PublicSchema {
+  replicacheClientGroup: ReplicacheClientGroupTable;
+
   label: LabelTable;
 
+  replicacheClientView: ReplicacheClientViewTable;
+
   user: UserTable;
+
+  replicacheClient: ReplicacheClientTable;
+
+  pointLabel: PointLabelTable;
 
   stream: StreamTable;
 
   point: PointTable;
+
+  pointWithLabelList: PointWithLabelListTable;
 }

@@ -184,9 +184,27 @@ importers:
 
   apps/web:
     dependencies:
+      '@stayradiated/hydro':
+        specifier: 1.1.0
+        version: 1.1.0(@stayradiated/error-boundary@4.3.0)(p-map@4.0.0)
+      async-mutex:
+        specifier: 0.5.0
+        version: 0.5.0
       graphile-migrate:
         specifier: 1.4.1
         version: 1.4.1
+      pg:
+        specifier: 8.16.3
+        version: 8.16.3
+      replicache:
+        specifier: 15.3.0
+        version: 15.3.0
+      signia:
+        specifier: 0.1.5
+        version: 0.1.5
+      zod:
+        specifier: 4.2.1
+        version: 4.2.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.10
@@ -206,6 +224,9 @@ importers:
       '@types/node':
         specifier: 22.13.5
         version: 22.13.5
+      '@types/pg':
+        specifier: 8.16.0
+        version: 8.16.0
       eslint:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
@@ -236,6 +257,9 @@ importers:
       svelte-check:
         specifier: 4.3.5
         version: 4.3.5(picomatch@4.0.3)(svelte@5.46.1)(typescript@5.9.3)
+      type-fest:
+        specifier: 5.3.1
+        version: 5.3.1
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -245,9 +269,6 @@ importers:
       vite:
         specifier: 7.3.0
         version: 7.3.0(@types/node@22.13.5)(jiti@2.6.1)(terser@5.19.2)
-      zod:
-        specifier: 3.24.2
-        version: 3.24.2
 
   packages/core:
     dependencies:
@@ -341,6 +362,10 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@badrap/valita@0.3.16':
+    resolution: {integrity: sha512-slP2blSd6A+xUBgGf+wW6adGd72ojBLxemU0jXQ0fXQcsZWYQ70wTLTJggs6+oxcAqN/bvYA3Ops8SqR2Imyaw==}
+    engines: {node: '>= 16'}
 
   '@biomejs/biome@2.3.10':
     resolution: {integrity: sha512-/uWSUd1MHX2fjqNLHNL6zLYWBbrJeG412/8H7ESuK8ewoRoMPUgHDebqKrPTx/5n6f17Xzqc9hdg3MEqA5hXnQ==}
@@ -948,6 +973,17 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
+  '@rocicorp/lock@1.0.4':
+    resolution: {integrity: sha512-FavTiO8ETXFXDVfA87IThGduTTTR8iqzBnr/c60gUUmbk7knGEXPmf2B+yiNuluJD0ku0fL2V2r62UXnsLXl6w==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  '@rocicorp/logger@5.4.0':
+    resolution: {integrity: sha512-kmMR5iLrwRIsvPZ+UXnmyAM3Mlvz6rCHrYfMsrMPgFYKLfo7amUH1RwHo6tuuqJiAvUbeaCoDtc8e+V0Mr4PSA==}
+
+  '@rocicorp/resolver@1.0.2':
+    resolution: {integrity: sha512-TfjMTQp9cNNqNtHFfa+XHEGdA7NnmDRu+ZJH4YF3dso0Xk/b9DMhg/sl+b6CR4ThFZArXXDsG1j8Mwl34wcOZQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   '@rollup/plugin-commonjs@28.0.9':
     resolution: {integrity: sha512-PIR4/OHZ79romx0BVVll/PkwWpJ7e5lsqFa3gFfcrFPWwLXLV39JVUzQV9RKjWerE7B845Hqjj9VYlQeieZ2dA==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
@@ -1104,6 +1140,12 @@ packages:
 
   '@stayradiated/error-boundary@4.3.0':
     resolution: {integrity: sha512-fCTFrdkb+im3yaVheb5xFuLKVuJS2WAP18gwrW3NYwsWc31MMAn5Phtazv6HERnNJIM9DRkYCE0Nmnr9eGXljg==}
+
+  '@stayradiated/hydro@1.1.0':
+    resolution: {integrity: sha512-OpKTQbtvLTsjwkdlcixx7h3OSZY6ih8ikdRK8XGl14UFAHRPZEstUnf4gstrW5HYPaBvHZ7hOVp6WwEZhgMVlg==}
+    peerDependencies:
+      '@stayradiated/error-boundary': ^4.0.0
+      p-map: ^7.0.0
 
   '@svelte-put/shortcut@4.1.0':
     resolution: {integrity: sha512-wImNEIkbxAIWFqlfuhcbC+jRPDeRa/uJGIXHMEVVD+jqL9xCwWNnkGQJ6Qb2XVszuRLHlb8SGZDL3Io/h3vs8w==}
@@ -1372,6 +1414,9 @@ packages:
   assertion-error@2.0.1:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
+
+  async-mutex@0.5.0:
+    resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -2638,6 +2683,11 @@ packages:
     resolution: {integrity: sha512-/vxpCXddiX8NGfGO/mTafwjq4aFa/71pvamip0++IQk3zG8cbCj0fifNPrjjF1XMXUne91jL9OoxmdykoEtifQ==}
     engines: {node: '>= 10.13.0'}
 
+  replicache@15.3.0:
+    resolution: {integrity: sha512-XE9NbpG5bVuJNcj61vzbZBwesNx9q51l6/o0J8wT4v1YZhKoqj9GExwc3pLUYSi/AyrQtkX44wOyrSMLHzFIaA==}
+    engines: {node: '>=14.8.0'}
+    hasBin: true
+
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -2713,6 +2763,9 @@ packages:
 
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+
+  signia@0.1.5:
+    resolution: {integrity: sha512-ViJpywl7H1W6zRfqbu+86xpSCcuq6tpOen7I+gR8axaiyZP8txRNAoeCsL20UkuqzG/Ybtk0u4C2lawkiwPlnw==}
 
   sirv@3.0.2:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
@@ -2855,6 +2908,10 @@ packages:
 
   tagged-comment-parser@1.3.8:
     resolution: {integrity: sha512-HYkOQ/8ha113ln/Vp48wiDTPtbB59AWOdU44AXjhLyJLJjWWfn2kjnXUcyWLQepwbixA/mEeo1iW2Z9OwaBClQ==}
+
+  tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
 
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
@@ -3003,6 +3060,10 @@ packages:
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
+
+  type-fest@5.3.1:
+    resolution: {integrity: sha512-VCn+LMHbd4t6sF3wfU/+HKT63C9OoyrSIf4b+vtWHpt2U7/4InZG467YDNMFMR70DdHjAdpPWmw2lzRdg0Xqqg==}
+    engines: {node: '>=20'}
 
   typescript-eslint@8.51.0:
     resolution: {integrity: sha512-jh8ZuM5oEh2PSdyQG9YAEM1TCGuWenLSuSUhf/irbVUNW9O5FhbFVONviN2TgMTBnUmyHv7E56rYnfLZK6TkiA==}
@@ -3277,8 +3338,8 @@ packages:
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
-  zod@4.3.4:
-    resolution: {integrity: sha512-Zw/uYiiyF6pUT1qmKbZziChgNPRu+ZRneAsMUDU6IwmXdWt5JwcUfy2bvLOCUtz5UniaN/Zx5aFttZYbYc7O/A==}
+  zod@4.2.1:
+    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
 
 snapshots:
 
@@ -3291,6 +3352,8 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
+
+  '@badrap/valita@0.3.16': {}
 
   '@biomejs/biome@2.3.10':
     optionalDependencies:
@@ -3709,6 +3772,14 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
+  '@rocicorp/lock@1.0.4':
+    dependencies:
+      '@rocicorp/resolver': 1.0.2
+
+  '@rocicorp/logger@5.4.0': {}
+
+  '@rocicorp/resolver@1.0.2': {}
+
   '@rollup/plugin-commonjs@28.0.9(rollup@4.54.0)':
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.54.0)
@@ -3820,6 +3891,11 @@ snapshots:
   '@standard-schema/spec@1.1.0': {}
 
   '@stayradiated/error-boundary@4.3.0': {}
+
+  '@stayradiated/hydro@1.1.0(@stayradiated/error-boundary@4.3.0)(p-map@4.0.0)':
+    dependencies:
+      '@stayradiated/error-boundary': 4.3.0
+      p-map: 4.0.0
 
   '@svelte-put/shortcut@4.1.0(svelte@5.20.5)':
     dependencies:
@@ -4249,6 +4325,10 @@ snapshots:
   aria-query@5.3.2: {}
 
   assertion-error@2.0.1: {}
+
+  async-mutex@0.5.0:
+    dependencies:
+      tslib: 2.8.1
 
   asynckit@0.4.0: {}
 
@@ -5103,7 +5183,7 @@ snapshots:
       smol-toml: 1.6.0
       strip-json-comments: 5.0.3
       typescript: 5.9.3
-      zod: 4.3.4
+      zod: 4.2.1
 
   known-css-properties@0.37.0: {}
 
@@ -5500,6 +5580,13 @@ snapshots:
     dependencies:
       resolve: 1.22.11
 
+  replicache@15.3.0:
+    dependencies:
+      '@badrap/valita': 0.3.16
+      '@rocicorp/lock': 1.0.4
+      '@rocicorp/logger': 5.4.0
+      '@rocicorp/resolver': 1.0.2
+
   require-directory@2.1.1: {}
 
   require-main-filename@2.0.0: {}
@@ -5583,6 +5670,8 @@ snapshots:
   siginfo@2.0.0: {}
 
   signal-exit@3.0.7: {}
+
+  signia@0.1.5: {}
 
   sirv@3.0.2:
     dependencies:
@@ -5773,6 +5862,8 @@ snapshots:
 
   tagged-comment-parser@1.3.8: {}
 
+  tagged-tag@1.0.0: {}
+
   tapable@2.3.0: {}
 
   tarn@3.0.2: {}
@@ -5842,8 +5933,7 @@ snapshots:
 
   tslib@1.14.1: {}
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   tsup@8.4.0(jiti@2.6.1)(postcss@8.5.6)(typescript@5.7.3):
     dependencies:
@@ -5904,6 +5994,10 @@ snapshots:
       prelude-ls: 1.2.1
 
   type-fest@4.41.0: {}
+
+  type-fest@5.3.1:
+    dependencies:
+      tagged-tag: 1.0.0
 
   typescript-eslint@8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.7.3):
     dependencies:
@@ -6211,4 +6305,4 @@ snapshots:
 
   zod@3.24.2: {}
 
-  zod@4.3.4: {}
+  zod@4.2.1: {}
