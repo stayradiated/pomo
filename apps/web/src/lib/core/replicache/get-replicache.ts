@@ -13,6 +13,8 @@ import type {
 import { memoize } from '#lib/utils/memoize.js'
 import { asyncMapRecordValues } from '#lib/utils/record.js'
 
+import { subscribeToWebSocketPokes } from './poke.js'
+
 type LocalMutatorDefsImportMap<T extends LocalMutatorDefs = LocalMutatorDefs> =
   T extends T
     ? {
@@ -74,6 +76,15 @@ const getReplicache = memoize(
       pullURL: '/api/internal/replicache/pull',
       mutators: await createReplicacheMutators(context, mutators),
     })
+
+    // Use WebSocket-based poke subscription
+    console.info('[Replicache] Using WebSocket poke subscription')
+    const subscription = subscribeToWebSocketPokes({
+      onPoke: () => replicache.pull(),
+    })
+    if (subscription instanceof Error) {
+      return subscription
+    }
 
     if (import.meta.hot) {
       import.meta.hot.dispose(() => {

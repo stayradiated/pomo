@@ -202,6 +202,12 @@ importers:
       signia:
         specifier: 0.1.5
         version: 0.1.5
+      websocket-ts:
+        specifier: 2.2.1
+        version: 2.2.1
+      ws:
+        specifier: 8.18.3
+        version: 8.18.3
       zod:
         specifier: 4.2.1
         version: 4.2.1
@@ -227,6 +233,9 @@ importers:
       '@types/pg':
         specifier: 8.16.0
         version: 8.16.0
+      '@types/ws':
+        specifier: 8.18.1
+        version: 8.18.1
       eslint:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
@@ -1255,6 +1264,9 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
   '@typescript-eslint/eslint-plugin@8.51.0':
     resolution: {integrity: sha512-XtssGWJvypyM2ytBnSnKtHYOGT+4ZwTnBVl36TA4nRO2f4PRNGz5/1OszHzcZCvcBMh+qb7I06uoCmLTRdR9og==}
@@ -3235,6 +3247,9 @@ packages:
   webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
 
+  websocket-ts@2.2.1:
+    resolution: {integrity: sha512-YKPDfxlK5qOheLZ2bTIiktZO1bpfGdNCPJmTEaPW7G9UXI1GKjDdeacOrsULUS000OPNxDVOyAuKLuIWPqWM0Q==}
+
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
@@ -4046,6 +4061,10 @@ snapshots:
       csstype: 3.2.3
 
   '@types/resolve@1.20.2': {}
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 22.13.5
 
   '@typescript-eslint/eslint-plugin@8.51.0(@typescript-eslint/parser@8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.7.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.7.3)':
     dependencies:
@@ -6211,6 +6230,8 @@ snapshots:
   webidl-conversions@3.0.1: {}
 
   webidl-conversions@4.0.2: {}
+
+  websocket-ts@2.2.1: {}
 
   whatwg-url@5.0.0:
     dependencies:
