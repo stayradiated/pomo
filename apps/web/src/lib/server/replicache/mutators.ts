@@ -16,6 +16,8 @@ type ServerMutatorDefsImportMap<
 
 const mutators: ServerMutatorDefsImportMap = {
   ping: import('#lib/mutator/ping.server.js'),
+
+  stream_create: import('#lib/mutator/stream-create.server.js'),
 }
 
 // TODO: return a typed server mutator

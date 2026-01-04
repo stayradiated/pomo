@@ -38,10 +38,22 @@ import {
 } from '#lib/server/replicache/cvr.js'
 
 import { genId } from '#lib/utils/gen-id.js'
+import { onceGlobal } from '#lib/utils/once-global.js'
 import { promiseAllRecord } from '#lib/utils/promise-all-record.js'
 
 // cvrKey -> ClientViewRecord
-const cvrCache = new Map<string, CVR>()
+const getCVRCache = onceGlobal(
+  Symbol.for('POMO_CVR'),
+  () => new Map<string, CVR>(),
+)
+const getCVR = (clientViewId: ReplicacheClientViewId): CVR | undefined => {
+  const cache = getCVRCache()
+  return cache.get(clientViewId)
+}
+const setCVR = (clientViewId: ReplicacheClientViewId, cvr: CVR) => {
+  const cache = getCVRCache()
+  cache.set(clientViewId, cvr)
+}
 
 const $Cookie = z.object({
   clientViewId: $ReplicacheClientViewId,
@@ -88,7 +100,7 @@ const POST: RequestHandler = async ({ request }) => {
   const prevClientViewId = requestCookie?.clientViewId
 
   // 1: Fetch prevCVR
-  const prevCVR = prevClientViewId ? cvrCache.get(prevClientViewId) : undefined
+  const prevCVR = prevClientViewId ? getCVR(prevClientViewId) : undefined
 
   // 2: Init baseCVR
   const baseCVR: CVR = prevCVR ?? EMPTY_CVR
@@ -157,10 +169,13 @@ const POST: RequestHandler = async ({ request }) => {
           db,
           where: { userId: sessionUserId, streamId: { in: diff.stream.puts } },
         }),
-        user: getPartialUserList({
-          db,
-          where: { userId: sessionUserId },
-        }),
+        user:
+          diff.user.puts.length > 0
+            ? getPartialUserList({
+                db,
+                where: { userId: sessionUserId },
+              })
+            : [],
       })
       if (entities instanceof Error) {
         return new Error('Could not get entities.', { cause: entities })
@@ -234,7 +249,7 @@ const POST: RequestHandler = async ({ request }) => {
 
   // 16-17: store cvr
   const clientViewId = genId<ReplicacheClientViewId>()
-  cvrCache.set(clientViewId, nextCVR)
+  setCVR(clientViewId, nextCVR)
 
   // 18(i): build patch
   const patch: PatchOperation[] = []

@@ -51,6 +51,8 @@ const createReplicacheMutators = async (
 
 const mutators: LocalMutatorDefsImportMap = {
   ping: import('#lib/mutator/ping.js'),
+
+  stream_create: import('#lib/mutator/stream-create.js'),
 }
 
 type GetReplicacheOptions = {

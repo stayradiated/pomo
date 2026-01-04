@@ -1,6 +1,6 @@
 import type { WriteTransaction } from 'replicache'
 
-import type { UserId } from '#lib/ids.js'
+import type { StreamId, UserId } from '#lib/ids.js'
 import type { Transaction } from '#lib/server/db/types.js'
 
 /*
@@ -10,6 +10,11 @@ import type { Transaction } from '#lib/server/db/types.js'
 type Mutators = {
   ping: Mutator<{
     message: string
+  }>
+
+  stream_create: Mutator<{
+    streamId: StreamId
+    name: string
   }>
 }
 
