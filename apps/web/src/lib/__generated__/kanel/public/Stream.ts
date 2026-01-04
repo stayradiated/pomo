@@ -13,9 +13,9 @@ export default interface StreamTable {
 
   name: ColumnType<string, string, string>;
 
-  index: ColumnType<number, number, number>;
-
   parentId: ColumnType<StreamId | null, StreamId | null, StreamId | null>;
+
+  sortOrder: ColumnType<number, number, number>;
 
   createdAt: ColumnType<number, number, number>;
 
@@ -34,8 +34,8 @@ export const stream = z.object({
   id: streamId,
   userId: userId,
   name: z.string(),
-  index: z.number(),
   parentId: streamId.nullable(),
+  sortOrder: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),
 });
@@ -44,8 +44,8 @@ export const streamInitializer = z.object({
   id: streamId,
   userId: userId,
   name: z.string(),
-  index: z.number(),
   parentId: streamId.optional().nullable(),
+  sortOrder: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),
 });
@@ -54,8 +54,8 @@ export const streamMutator = z.object({
   id: streamId.optional(),
   userId: userId.optional(),
   name: z.string().optional(),
-  index: z.number().optional(),
   parentId: streamId.optional().nullable(),
+  sortOrder: z.number().optional(),
   createdAt: z.number().optional(),
   updatedAt: z.number().optional(),
 });

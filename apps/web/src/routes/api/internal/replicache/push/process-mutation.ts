@@ -14,7 +14,7 @@ import { upsertReplicacheClient } from '#lib/server/db/replicache-client/upsert-
 import { getReplicacheClientGroup } from '#lib/server/db/replicache-client-group/get-replicache-client-group.js'
 import { upsertReplicacheClientGroup } from '#lib/server/db/replicache-client-group/upsert-replicache-client-group.js'
 
-import { getMutator } from '#lib/server/replicache/mutators.js'
+import { getMutator } from '#lib/server/replicache/get-mutator.js'
 
 type ProcessMutationOptions = {
   db: Transaction

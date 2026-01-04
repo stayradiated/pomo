@@ -3,9 +3,6 @@ import type { LabelId, PointId, StreamId, UserId } from '#lib/ids.js'
 type LocalUser = {
   readonly id: UserId
   timeZone: string
-  stravaClientId: string | undefined
-  stravaClientSecret: string | undefined
-  stravaSession: Record<string, unknown> | undefined
   createdAt: number
   updatedAt: number
 }
@@ -25,7 +22,7 @@ type LocalPoint = {
   readonly id: PointId
   streamId: StreamId
   labelIdList: readonly LabelId[]
-  value: string
+  description: string
   startedAt: number
   createdAt: number
   updatedAt: number
@@ -34,7 +31,7 @@ type LocalPoint = {
 type LocalStream = {
   readonly id: StreamId
   name: string
-  index: number
+  sortOrder: number
   parentId: StreamId | undefined
   createdAt: number
   updatedAt: number

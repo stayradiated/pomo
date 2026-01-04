@@ -8,7 +8,6 @@ import type {
   UserId,
 } from '#lib/ids.js'
 import type { CVR, VersionRecord } from '#lib/server/replicache/cvr.js'
-import type { JSONObject } from '#lib/utils/json-value.js'
 import type { RequestHandler } from './$types'
 
 import {
@@ -19,16 +18,12 @@ import {
 import { getDb } from '#lib/server/db/get-db.js'
 import { transact } from '#lib/server/db/transact.js'
 
-import { getLabelList } from '#lib/server/db/label/get-label-list.js'
 import { getLabelVersionRecord } from '#lib/server/db/label/get-label-version-record.js'
-import { getPointList } from '#lib/server/db/point/get-point-list.js'
 import { getPointVersionRecord } from '#lib/server/db/point/get-point-version-record.js'
 import { getReplicacheClientVersionRecord } from '#lib/server/db/replicache-client/get-replicache-client-version-record.js'
 import { getReplicacheClientGroup } from '#lib/server/db/replicache-client-group/get-replicache-client-group.js'
 import { upsertReplicacheClientGroup } from '#lib/server/db/replicache-client-group/upsert-replicache-client-group.js'
-import { getStreamList } from '#lib/server/db/stream/get-stream-list.js'
 import { getStreamVersionRecord } from '#lib/server/db/stream/get-stream-version-record.js'
-import { getPartialUserList } from '#lib/server/db/user/get-partial-user-list.js'
 import { getUserVersionRecord } from '#lib/server/db/user/get-user-version-record.js'
 
 import {
@@ -40,6 +35,8 @@ import {
 import { genId } from '#lib/utils/gen-id.js'
 import { onceGlobal } from '#lib/utils/once-global.js'
 import { promiseAllRecord } from '#lib/utils/promise-all-record.js'
+
+import { getEntities } from './get-entities.js'
 
 // cvrKey -> ClientViewRecord
 const getCVRCache = onceGlobal(
@@ -73,9 +70,7 @@ type TXResult =
     }
   | {
       type: 'SUCCESS'
-      entities: {
-        [index: string]: { dels: string[]; puts: JSONObject[] }
-      }
+      entities: PatchOperation[]
       clients: VersionRecord<ReplicacheClientId>
       nextCVR: CVR
       nextCVRVersion: number
@@ -156,26 +151,10 @@ const POST: RequestHandler = async ({ request }) => {
       }
 
       // 11: get entities
-      const entities = await promiseAllRecord({
-        point: getPointList({
-          db,
-          where: { userId: sessionUserId, pointId: { in: diff.point.puts } },
-        }),
-        label: getLabelList({
-          db,
-          where: { userId: sessionUserId, labelId: { in: diff.label.puts } },
-        }),
-        stream: getStreamList({
-          db,
-          where: { userId: sessionUserId, streamId: { in: diff.stream.puts } },
-        }),
-        user:
-          diff.user.puts.length > 0
-            ? getPartialUserList({
-                db,
-                where: { userId: sessionUserId },
-              })
-            : [],
+      const entities = await getEntities({
+        db,
+        diff,
+        sessionUserId,
       })
       if (entities instanceof Error) {
         return new Error('Could not get entities.', { cause: entities })
@@ -211,12 +190,7 @@ const POST: RequestHandler = async ({ request }) => {
 
       return {
         type: 'SUCCESS',
-        entities: {
-          point: { dels: diff.point.dels, puts: entities.point },
-          label: { dels: diff.label.dels, puts: entities.label },
-          stream: { dels: diff.stream.dels, puts: entities.stream },
-          user: { dels: diff.user.dels, puts: entities.user },
-        },
+        entities,
         clients,
         nextCVR,
         nextCVRVersion,
@@ -252,22 +226,8 @@ const POST: RequestHandler = async ({ request }) => {
   setCVR(clientViewId, nextCVR)
 
   // 18(i): build patch
-  const patch: PatchOperation[] = []
   if (prevCVR === undefined) {
-    patch.push({ op: 'clear' })
-  }
-
-  for (const [name, { puts, dels }] of Object.entries(entities)) {
-    for (const id of dels) {
-      patch.push({ op: 'del', key: `${name}/${id}` })
-    }
-    for (const entity of puts) {
-      patch.push({
-        op: 'put',
-        key: `${name}/${entity.id}`,
-        value: entity,
-      })
-    }
+    entities.unshift({ op: 'clear' })
   }
 
   // 18(ii): construct cookie
@@ -282,7 +242,7 @@ const POST: RequestHandler = async ({ request }) => {
   const body: PullResponseOKV1 = {
     cookie,
     lastMutationIDChanges,
-    patch,
+    patch: entities,
   }
 
   return new Response(JSON.stringify(body), {

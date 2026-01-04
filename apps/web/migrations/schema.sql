@@ -46,7 +46,7 @@ CREATE TABLE public.point (
     id text NOT NULL,
     user_id text NOT NULL,
     stream_id text NOT NULL,
-    value text NOT NULL,
+    description text NOT NULL,
     started_at bigint NOT NULL,
     created_at bigint NOT NULL,
     updated_at bigint NOT NULL
@@ -74,8 +74,9 @@ CREATE TABLE public.point_label (
 CREATE VIEW public.point_with_label_list AS
 SELECT
     NULL::text AS id,
+    NULL::text AS user_id,
     NULL::text AS stream_id,
-    NULL::text AS value,
+    NULL::text AS description,
     NULL::bigint AS started_at,
     NULL::bigint AS created_at,
     NULL::bigint AS updated_at,
@@ -127,8 +128,8 @@ CREATE TABLE public.stream (
     id text NOT NULL,
     user_id text NOT NULL,
     name text NOT NULL,
-    index integer NOT NULL,
     parent_id text,
+    sort_order integer NOT NULL,
     created_at bigint NOT NULL,
     updated_at bigint NOT NULL
 );
@@ -171,6 +172,14 @@ ALTER TABLE ONLY public.label
 
 ALTER TABLE ONLY public.point
     ADD CONSTRAINT "point:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: point point:unique(stream_id,started_at); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point
+    ADD CONSTRAINT "point:unique(stream_id,started_at)" UNIQUE (stream_id, started_at);
 
 
 --
@@ -243,8 +252,9 @@ ALTER TABLE ONLY public."user"
 
 CREATE OR REPLACE VIEW public.point_with_label_list AS
  SELECT p.id,
+    p.user_id,
     p.stream_id,
-    p.value,
+    p.description,
     p.started_at,
     p.created_at,
     p.updated_at,

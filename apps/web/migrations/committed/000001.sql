@@ -1,5 +1,5 @@
 --! Previous: -
---! Hash: sha1:bc25530585c0be93d0c9f1d685a09080e8a3aa70
+--! Hash: sha1:fe8b1104d37ff45806b608f5acdc63eb68139b78
 
 --
 -- idempotent reset
@@ -42,10 +42,9 @@ alter table public.user
 create table public.stream (
   id text,
   user_id text not null,
-
   name text not null,
-  index integer not null,
   parent_id text,
+  sort_order integer not null,
 
   created_at bigint not null,
   updated_at bigint not null
@@ -69,7 +68,7 @@ create table public.point (
   id text,
   user_id text not null,
   stream_id text not null,
-  value text not null,
+  description text not null,
   started_at bigint not null,
 
   created_at bigint not null,
@@ -79,6 +78,8 @@ create table public.point (
 alter table public.point
   add constraint "point:primaryKey(id)"
     primary key (id),
+  add constraint "point:unique(stream_id,started_at)"
+    unique (stream_id, started_at),
   add constraint "point:foreignKey(user_id)"
     foreign key (user_id) references public.user (id),
   add constraint "point:foreignKey(stream_id)"
@@ -144,8 +145,9 @@ alter table public.point_label
 create view public.point_with_label_list as
   select
     p.id,
+    p.user_id,
     p.stream_id,
-    p.value,
+    p.description,
     p.started_at,
     p.created_at,
     p.updated_at,

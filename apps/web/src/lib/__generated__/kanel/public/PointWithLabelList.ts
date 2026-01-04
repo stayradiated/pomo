@@ -1,4 +1,5 @@
 import { pointId, type PointId } from './Point';
+import { userId, type UserId } from './User';
 import { streamId, type StreamId } from './Stream';
 import type { ColumnType, Selectable } from 'kysely';
 import { z } from 'zod';
@@ -7,9 +8,11 @@ import { z } from 'zod';
 export default interface PointWithLabelListTable {
   id: ColumnType<PointId, never, never>;
 
+  userId: ColumnType<UserId, never, never>;
+
   streamId: ColumnType<StreamId, never, never>;
 
-  value: ColumnType<string, never, never>;
+  description: ColumnType<string, never, never>;
 
   startedAt: ColumnType<number, never, never>;
 
@@ -24,8 +27,9 @@ export type PointWithLabelList = Selectable<PointWithLabelListTable>;
 
 export const pointWithLabelList = z.object({
   id: pointId,
+  userId: userId,
   streamId: streamId,
-  value: z.string(),
+  description: z.string(),
   startedAt: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),

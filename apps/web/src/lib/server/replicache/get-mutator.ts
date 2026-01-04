@@ -1,24 +1,8 @@
-import type {
-  MutatorKey,
-  ServerMutator,
-  ServerMutatorDefs,
-} from '#lib/mutator/types.js'
+import type { MutatorKey, ServerMutator } from '#lib/mutator/types.js'
 
 import { memoize } from '#lib/utils/memoize.js'
 
-type ServerMutatorDefsImportMap<
-  T extends ServerMutatorDefs = ServerMutatorDefs,
-> = T extends T
-  ? {
-      [Key in keyof T & string]: Promise<{ default: T[Key] }>
-    }
-  : never
-
-const mutators: ServerMutatorDefsImportMap = {
-  ping: import('#lib/mutator/ping.server.js'),
-
-  stream_create: import('#lib/mutator/stream-create.server.js'),
-}
+import { mutators } from '#lib/mutator/index.server.js'
 
 // TODO: return a typed server mutator
 // biome-ignore lint/suspicious/noExplicitAny: temporary type for dynamic mutator loading

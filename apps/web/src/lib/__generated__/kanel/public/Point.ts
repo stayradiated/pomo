@@ -14,7 +14,7 @@ export default interface PointTable {
 
   streamId: ColumnType<StreamId, StreamId, StreamId>;
 
-  value: ColumnType<string, string, string>;
+  description: ColumnType<string, string, string>;
 
   startedAt: ColumnType<number, number, number>;
 
@@ -35,7 +35,7 @@ export const point = z.object({
   id: pointId,
   userId: userId,
   streamId: streamId,
-  value: z.string(),
+  description: z.string(),
   startedAt: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),
@@ -45,7 +45,7 @@ export const pointInitializer = z.object({
   id: pointId,
   userId: userId,
   streamId: streamId,
-  value: z.string(),
+  description: z.string(),
   startedAt: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),
@@ -55,7 +55,7 @@ export const pointMutator = z.object({
   id: pointId.optional(),
   userId: userId.optional(),
   streamId: streamId.optional(),
-  value: z.string().optional(),
+  description: z.string().optional(),
   startedAt: z.number().optional(),
   createdAt: z.number().optional(),
   updatedAt: z.number().optional(),

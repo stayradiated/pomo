@@ -1,6 +1,6 @@
 import type { WriteTransaction } from 'replicache'
 
-import type { StreamId, UserId } from '#lib/ids.js'
+import type { LabelId, PointId, StreamId, UserId } from '#lib/ids.js'
 import type { Transaction } from '#lib/server/db/types.js'
 
 /*
@@ -12,9 +12,25 @@ type Mutators = {
     message: string
   }>
 
+  label_create: Mutator<{
+    labelId: LabelId
+    streamId: StreamId
+    name: string
+    color: string
+    icon: string
+  }>
+
   stream_create: Mutator<{
     streamId: StreamId
     name: string
+  }>
+
+  point_create: Mutator<{
+    pointId: PointId
+    streamId: StreamId
+    labelIdList: LabelId[]
+    description: string
+    startedAt: number
   }>
 }
 
@@ -91,12 +107,28 @@ type ReplicacheMutatorDefs = {
   ) => Promise<Exclude<Awaited<ReturnType<LocalMutatorDefs[K]>>, Error>>
 }
 
+type LocalMutatorDefsImportMap<T extends LocalMutatorDefs = LocalMutatorDefs> =
+  T extends T
+    ? {
+        [Key in keyof T & string]: Promise<{ default: T[Key] }>
+      }
+    : never
+
+type ServerMutatorDefsImportMap<
+  T extends ServerMutatorDefs = ServerMutatorDefs,
+> = T extends T
+  ? {
+      [Key in keyof T & string]: Promise<{ default: T[Key] }>
+    }
+  : never
+
 export type {
   GenericLocalMutator,
   GenericServerMutator,
   LocalMutator,
   LocalMutatorContext,
   LocalMutatorDefs,
+  LocalMutatorDefsImportMap,
   InternalMutatorInput,
   Mutator,
   MutatorKey,
@@ -104,4 +136,5 @@ export type {
   ServerMutator,
   ServerMutatorContext,
   ServerMutatorDefs,
+  ServerMutatorDefsImportMap,
 }

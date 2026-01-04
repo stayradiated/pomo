@@ -1,10 +1,8 @@
 import { errorBoundary } from '@stayradiated/error-boundary'
 
-import type { LabelId, StreamId, UserId } from '#lib/ids.js'
+import type { LabelId, PointId, StreamId, UserId } from '#lib/ids.js'
 import type { KyselyDb } from '#lib/server/db/types.js'
 import type { Point, PointLabel } from '#lib/server/types.js'
-
-import { genId } from '#lib/utils/gen-id.js'
 
 type UpsertPointOptions = {
   db: KyselyDb
@@ -13,8 +11,11 @@ type UpsertPointOptions = {
     streamId: StreamId
     startedAt: number
   }
+  insert: {
+    pointId: PointId
+  }
   set: {
-    value: string
+    description: string
     labelIdList: LabelId[]
   }
   now?: number
@@ -23,14 +24,14 @@ type UpsertPointOptions = {
 const upsertPoint = async (
   options: UpsertPointOptions,
 ): Promise<Point | Error> => {
-  const { db, where, set, now = Date.now() } = options
+  const { db, where, insert, set, now = Date.now() } = options
 
   const value: Point = {
-    id: genId(),
+    id: insert.pointId,
     userId: where.userId,
     streamId: where.streamId,
     startedAt: where.startedAt,
-    value: set.value ?? '',
+    description: set.description,
     createdAt: now,
     updatedAt: now,
   }
@@ -40,7 +41,10 @@ const upsertPoint = async (
       .insertInto('point')
       .values(value)
       .onConflict((oc) =>
-        oc.columns(['streamId', 'startedAt']).doUpdateSet(set),
+        oc.columns(['streamId', 'startedAt']).doUpdateSet({
+          description: set.description,
+          updatedAt: now,
+        }),
       )
       .returningAll()
       .executeTakeFirstOrThrow(),

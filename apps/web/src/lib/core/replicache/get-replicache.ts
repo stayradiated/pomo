@@ -6,21 +6,16 @@ import type {
   GenericLocalMutator,
   InternalMutatorInput,
   LocalMutatorContext,
-  LocalMutatorDefs,
+  LocalMutatorDefsImportMap,
   ReplicacheMutatorDefs,
 } from '#lib/mutator/types.js'
 
 import { memoize } from '#lib/utils/memoize.js'
 import { asyncMapRecordValues } from '#lib/utils/record.js'
 
-import { subscribeToWebSocketPokes } from './poke.js'
+import { mutators } from '#lib/mutator/index.js'
 
-type LocalMutatorDefsImportMap<T extends LocalMutatorDefs = LocalMutatorDefs> =
-  T extends T
-    ? {
-        [Key in keyof T & string]: Promise<{ default: T[Key] }>
-      }
-    : never
+import { subscribeToWebSocketPokes } from './poke.js'
 
 const createReplicacheMutators = async (
   initialContext: Omit<LocalMutatorContext, 'tx' | 'actionedAt'>,
@@ -47,12 +42,6 @@ const createReplicacheMutators = async (
       }
     },
   ) as Promise<ReplicacheMutatorDefs>
-}
-
-const mutators: LocalMutatorDefsImportMap = {
-  ping: import('#lib/mutator/ping.js'),
-
-  stream_create: import('#lib/mutator/stream-create.js'),
 }
 
 type GetReplicacheOptions = {
