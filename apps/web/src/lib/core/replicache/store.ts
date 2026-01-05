@@ -21,10 +21,11 @@ import { mapRecordValues } from '#lib/utils/record.js'
 
 type CreateStoreOptions = {
   rep: Replicache
+  sessionUserId: UserId
 }
 
 const createStore = (options: CreateStoreOptions) => {
-  const { rep } = options
+  const { rep, sessionUserId } = options
 
   const label = new Table<LabelId, AnonLabel, Label>({
     key: Key.label,
@@ -79,6 +80,7 @@ const createStore = (options: CreateStoreOptions) => {
   return {
     id: rep.clientID,
     rep: rep,
+    sessionUserId,
 
     label,
     point,

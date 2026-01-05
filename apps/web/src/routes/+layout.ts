@@ -10,14 +10,12 @@ const load = (async () => {
   // const { sessionUserId } = data
   const sessionUserId = 'test' as UserId
 
-  const rep = await getReplicache({
-    sessionUserId,
-  })
+  const rep = await getReplicache({ sessionUserId })
   if (rep instanceof Error) {
     throw error(500, rep)
   }
 
-  const store = createStore({ rep })
+  const store = createStore({ rep, sessionUserId })
   void rep.pull()
 
   return {
