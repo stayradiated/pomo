@@ -17,6 +17,341 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: label; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.label (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    stream_id text NOT NULL,
+    name text NOT NULL,
+    icon text,
+    color text,
+    parent_id text,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: point; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.point (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    stream_id text NOT NULL,
+    description text NOT NULL,
+    started_at bigint NOT NULL,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: point_label; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.point_label (
+    point_id text NOT NULL,
+    label_id text NOT NULL,
+    user_id text NOT NULL,
+    sort_order integer NOT NULL,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: point_with_label_list; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.point_with_label_list AS
+SELECT
+    NULL::text AS id,
+    NULL::text AS user_id,
+    NULL::text AS stream_id,
+    NULL::text AS description,
+    NULL::bigint AS started_at,
+    NULL::bigint AS created_at,
+    NULL::bigint AS updated_at,
+    NULL::text[] AS label_id_list;
+
+
+--
+-- Name: replicache_client; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.replicache_client (
+    id text NOT NULL,
+    replicache_client_group_id text NOT NULL,
+    last_mutation_id integer NOT NULL,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: replicache_client_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.replicache_client_group (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    cvr_version integer NOT NULL,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: replicache_client_view; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.replicache_client_view (
+    id text NOT NULL,
+    record jsonb NOT NULL,
+    created_at bigint NOT NULL
+);
+
+
+--
+-- Name: stream; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.stream (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    name text NOT NULL,
+    parent_id text,
+    sort_order integer NOT NULL,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."user" (
+    id text NOT NULL,
+    time_zone text NOT NULL,
+    strava_client_id text,
+    strava_client_secret text,
+    strava_session jsonb,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL
+);
+
+
+--
+-- Name: label label:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.label
+    ADD CONSTRAINT "label:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: label label:unique(id,user_id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.label
+    ADD CONSTRAINT "label:unique(id,user_id)" UNIQUE (id, user_id);
+
+
+--
+-- Name: point point:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point
+    ADD CONSTRAINT "point:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: point point:unique(stream_id,started_at); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point
+    ADD CONSTRAINT "point:unique(stream_id,started_at)" UNIQUE (stream_id, started_at);
+
+
+--
+-- Name: point_label point_label:primaryKey(point_id,label_id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point_label
+    ADD CONSTRAINT "point_label:primaryKey(point_id,label_id)" PRIMARY KEY (point_id, label_id);
+
+
+--
+-- Name: point_label point_label:unique(point_id,label_id,user_id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point_label
+    ADD CONSTRAINT "point_label:unique(point_id,label_id,user_id)" UNIQUE (point_id, label_id, user_id);
+
+
+--
+-- Name: replicache_client replicache_client:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.replicache_client
+    ADD CONSTRAINT "replicache_client:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: replicache_client_group replicache_client_group:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.replicache_client_group
+    ADD CONSTRAINT "replicache_client_group:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: replicache_client_view replicache_client_view:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.replicache_client_view
+    ADD CONSTRAINT "replicache_client_view:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: stream stream:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stream
+    ADD CONSTRAINT "stream:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: stream stream:unique(id,user_id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stream
+    ADD CONSTRAINT "stream:unique(id,user_id)" UNIQUE (id, user_id);
+
+
+--
+-- Name: user user:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT "user:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: point_with_label_list _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.point_with_label_list AS
+ SELECT p.id,
+    p.user_id,
+    p.stream_id,
+    p.description,
+    p.started_at,
+    p.created_at,
+    p.updated_at,
+    COALESCE(array_agg(pl.label_id ORDER BY pl.sort_order, pl.label_id) FILTER (WHERE (pl.label_id IS NOT NULL)), ARRAY[]::text[]) AS label_id_list
+   FROM (public.point p
+     LEFT JOIN public.point_label pl ON ((p.id = pl.point_id)))
+  GROUP BY p.id;
+
+
+--
+-- Name: label label:foreignKey(parent_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.label
+    ADD CONSTRAINT "label:foreignKey(parent_id)" FOREIGN KEY (parent_id, user_id) REFERENCES public.label(id, user_id);
+
+
+--
+-- Name: label label:foreignKey(stream_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.label
+    ADD CONSTRAINT "label:foreignKey(stream_id)" FOREIGN KEY (stream_id, user_id) REFERENCES public.stream(id, user_id);
+
+
+--
+-- Name: label label:foreignKey(user_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.label
+    ADD CONSTRAINT "label:foreignKey(user_id)" FOREIGN KEY (user_id) REFERENCES public."user"(id);
+
+
+--
+-- Name: point point:foreignKey(stream_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point
+    ADD CONSTRAINT "point:foreignKey(stream_id)" FOREIGN KEY (stream_id, user_id) REFERENCES public.stream(id, user_id);
+
+
+--
+-- Name: point point:foreignKey(user_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point
+    ADD CONSTRAINT "point:foreignKey(user_id)" FOREIGN KEY (user_id) REFERENCES public."user"(id);
+
+
+--
+-- Name: point_label point_label:foreignKey(label_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point_label
+    ADD CONSTRAINT "point_label:foreignKey(label_id)" FOREIGN KEY (label_id) REFERENCES public.label(id);
+
+
+--
+-- Name: point_label point_label:foreignKey(point_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.point_label
+    ADD CONSTRAINT "point_label:foreignKey(point_id)" FOREIGN KEY (point_id) REFERENCES public.point(id);
+
+
+--
+-- Name: replicache_client replicache_client:foreignKey(replicache_client_group_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.replicache_client
+    ADD CONSTRAINT "replicache_client:foreignKey(replicache_client_group_id)" FOREIGN KEY (replicache_client_group_id) REFERENCES public.replicache_client_group(id);
+
+
+--
+-- Name: replicache_client_group replicache_client_group:foreignKey(user_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.replicache_client_group
+    ADD CONSTRAINT "replicache_client_group:foreignKey(user_id)" FOREIGN KEY (user_id) REFERENCES public."user"(id);
+
+
+--
+-- Name: stream stream:foreignKey(parent_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stream
+    ADD CONSTRAINT "stream:foreignKey(parent_id)" FOREIGN KEY (parent_id, user_id) REFERENCES public.stream(id, user_id);
+
+
+--
+-- Name: stream stream:foreignKey(user_id); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stream
+    ADD CONSTRAINT "stream:foreignKey(user_id)" FOREIGN KEY (user_id) REFERENCES public."user"(id);
+
+
 --
 -- PostgreSQL database dump complete
 --

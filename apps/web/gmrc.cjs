@@ -83,28 +83,23 @@ module.exports = {
   /*
    * afterReset: actions executed after a `graphile-migrate reset` command.
    */
-  afterReset: [
-    'initial_schema.sql',
-    // { "_": "command", "command": "graphile-worker --schema-only" },
-  ],
+  afterReset: ['initial_schema.sql'],
 
   /*
    * afterAllMigrations: actions executed once all migrations are complete.
    */
-  afterAllMigrations: [
-    // { _: 'command', shadow: false, command: 'pnpm run kanel' },
-  ],
+  afterAllMigrations: [],
 
   /*
    * afterCurrent: actions executed once the current migration has been
    * evaluated (i.e. in watch mode).
    */
   afterCurrent: [
-    // {
-    //   _: 'command',
-    //   shadow: false,
-    //   command: 'pnpm just db types',
-    // },
+    {
+      _: 'command',
+      shadow: false,
+      command: 'just db types',
+    },
   ],
 
   /*
