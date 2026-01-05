@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.61.0](https://github.com/stayradiated/pomo/releases/tag/v0.61.0) - 2026-01-05
+
+- [`7f16de6`](https://github.com/stayradiated/pomo/commit/7f16de6207d5a4c5ddd94934c743699f28795876) feat(database): enhance schema and introduce data management features (#5)
+- [`dfd7da1`](https://github.com/stayradiated/pomo/commit/dfd7da14ad9ec78b8e073b902828c1282cdc2272) feat: update database schema and introduce new labels and points features 🎉
+- [`be568ee`](https://github.com/stayradiated/pomo/commit/be568ee57c2e255e75b7ffa9359acbe39c1be00a) feat: add stream creation functionality 🎉
+- [`8f04471`](https://github.com/stayradiated/pomo/commit/8f044715ed863a1a9dcf316784c1c3f457428556) feat: add websocket server for poke notifications 🧹
+- [`2724f32`](https://github.com/stayradiated/pomo/commit/2724f329520574c0831e2613bd3aa335a5b0c51d) feat: setup replicache with initial configurations and database schema changes 🚀
+- [`729677d`](https://github.com/stayradiated/pomo/commit/729677d5d74e758eedb5554622ec3d0e7015763d) feat: add database functions for point management 🥳
+- [`5e97a0d`](https://github.com/stayradiated/pomo/commit/5e97a0d7a9cee4a97dc6a9f5531eaa7cb534ba4b) feat: setup initial database and migration scripts 🧹
+- [`1432c1d`](https://github.com/stayradiated/pomo/commit/1432c1d1df9dae2e1d66fda5b93eaf97569b38aa) chore: update .gitignore to exclude .vite-dev.pid files 🧹
+- [`670436e`](https://github.com/stayradiated/pomo/commit/670436e2d35c40618f57dc5d674b4be7d23c9d93) ci(uplift): uplifted for version v0.60.0
+- [`128eddc`](https://github.com/stayradiated/pomo/commit/128eddc34c5162290135be6cad5301fc5fb3cd50) ci(uplift): uplifted for version v0.60.0
+
 ## [v0.60.0](https://github.com/stayradiated/pomo/releases/tag/v0.60.0) - 2026-01-01
 
 - [`e90812f`](https://github.com/stayradiated/pomo/commit/e90812f74caa667987485f638302cbfc8e50b3b2) feat: initial scaffolding for new `/apps/web` (#4)
