@@ -9,28 +9,32 @@ type Props = {
 
 let { children }: Props = $props()
 
-let menuOpen = $state(false)
-const toggleMenuOpen = () => (menuOpen = !menuOpen)
+let isMenuOpen = $state(false)
+const toggleMenuOpen = () => {
+  isMenuOpen = !isMenuOpen
+}
 
-afterNavigate(() => (menuOpen = false))
+afterNavigate(() => {
+  isMenuOpen = false
+})
 </script>
 
 <header>
-	<h1>Pomo</h1>
+  <h1>Pomo</h1>
 
-	<nav class:menuOpen>
-		<div class="menuContainer">
-			<a href="/add">Add</a>
-			<a href="/quick-add">Quick Add</a>
-			<a href="/log">Log</a>
-			<a href="/calendar/day">Calendar</a>
-			<a href="/label">Labels</a>
-			<a href="/stats">Stats</a>
-			<a href="/goals">Goals</a>
-			<a href="/sync">Sync</a>
-		</div>
-		<button class="menuToggle" aria-hidden="true" onclick={toggleMenuOpen}>Menu</button>
-	</nav>
+  <nav class:isMenuOpen>
+    <div class="menuContainer">
+      <a href="/add">Add</a>
+      <a href="/quick-add">Quick Add</a>
+      <a href="/log">Log</a>
+      <a href="/calendar/day">Calendar</a>
+      <a href="/label">Labels</a>
+      <a href="/stats">Stats</a>
+      <a href="/goals">Goals</a>
+      <a href="/sync">Sync</a>
+    </div>
+    <button class="menuToggle" aria-hidden="true" onclick={toggleMenuOpen}>Menu</button>
+  </nav>
 </header>
 
 {@render children?.()}
@@ -149,7 +153,7 @@ afterNavigate(() => (menuOpen = false))
 				opacity 0.2s;
 		}
 
-		nav.menuOpen > .menuContainer {
+    nav.isMenuOpen > .menuContainer {
 			opacity: 1;
 			transform: translateY(0);
 		}
