@@ -10,4 +10,4 @@ export type Label = Selectable<DB['label']>
 export type Stream = Selectable<DB['stream']>
 export type ReplicacheClient = Selectable<DB['replicacheClient']>
 export type ReplicacheClientGroup = Selectable<DB['replicacheClientGroup']>
-export type ReplicacheClientView = Selectable<DB['replicacheClientView']>
+// export type ReplicacheClientView = Selectable<DB['replicacheClientView']>

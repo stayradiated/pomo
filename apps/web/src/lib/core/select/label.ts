@@ -2,9 +2,9 @@ import { computed } from 'signia'
 
 import type { StreamId } from '#lib/ids.js'
 
-import { memoizeWithStore } from '#lib/core/replicache/store.js'
+import { createSelector } from '#lib/utils/selector.js'
 
-const getLabelListForStream = memoizeWithStore(
+const getLabelListForStream = createSelector(
   'getLabelListForStream',
   (store, streamId: StreamId) => {
     const $filteredLabelList = store.label.filter((value) => {

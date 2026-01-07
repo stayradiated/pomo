@@ -1,168 +1,177 @@
 <script lang="ts">
-import { offset, shift } from '@floating-ui/dom'
-import Select from 'svelte-select'
+import { onMount } from 'svelte'
+import type { ChangeEventHandler } from 'svelte/elements'
 
 import type { Store } from '#lib/core/replicache/store.js'
-import type { Point, Stream } from '#lib/types.local.js'
+import type { LabelId } from '#lib/ids.js'
+import type { Stream } from '#lib/types.local.js'
 
 import { getLabelListForStream } from '#lib/core/select/label.js'
 
 import { query } from '#lib/utils/query.js'
 
+import MultiSelect from '#lib/components/MultiSelect/MultiSelect.svelte'
+
+type CreateLabel = { name: string }
+
 type Props = {
   store: Store
-
   stream: Stream
-  defaultPoint: Point | undefined
 
-  onReset: () => void
+  labelList: readonly (LabelId | CreateLabel)[]
+  description: string
+
+  onreset: () => void
+  onchange: (value: {
+    description?: string
+    labelList?: readonly (LabelId | CreateLabel)[]
+  }) => void
 }
 
-let { store, stream, defaultPoint, onReset }: Props = $props()
+let { store, stream, labelList, description, onchange, onreset }: Props =
+  $props()
 
 const uid = $props.id()
 
-const { labelList } = $derived(
+// hack to focus the input on mount
+// TODO: rewrite MultiSelect to support this use case
+let selectInputEl = $state<HTMLInputElement | null>(null)
+onMount(() => {
+  setTimeout(() => {
+    selectInputEl?.focus()
+  }, 10)
+})
+
+const { streamLabelList } = $derived(
   query({
-    labelList: getLabelListForStream(store, stream.id),
+    streamLabelList: getLabelListForStream(store, stream.id),
   }),
 )
 
-let pointDescription = $state(defaultPoint?.description ?? '')
-
-const textareaId = `${uid}-edit-stream`
-
-let filterText = $state('')
-
-type SelectLabelItem = {
-  value: { type: 'connect'; id: string } | { type: 'create'; name: string }
+type Option = {
+  value?: LabelId
   label: string
-  created?: boolean
 }
 
-let value = $state(
-  defaultPoint?.labelIdList.map((labelId) => {
-    const label = store.label.get(labelId).value
-    return {
-      value: { type: 'connect', id: label.id },
-      label: (label.icon ? `${label.icon} ` : '') + label.name,
-    }
-  }),
-)
-
-let items = $state(
-  labelList.map(
-    (label): SelectLabelItem => ({
-      value: { type: 'connect', id: label.id },
+const optionList = $derived(
+  streamLabelList.map(
+    (label): Option => ({
+      value: label.id,
       label: (label.icon ? `${label.icon} ` : '') + label.name,
     }),
   ),
 )
 
-const handleFilter = (event: CustomEvent<Record<string, never>>) => {
-  if (value?.find((i) => i.label === filterText)) {
-    return
+const selectedOptionList = $derived(
+  labelList.flatMap((labelOrCreate): Option | never[] => {
+    if (typeof labelOrCreate === 'string') {
+      const labelId = labelOrCreate
+      return (
+        optionList.find((option) => {
+          return option.value === labelId
+        }) ?? []
+      )
+    }
+    return {
+      label: labelOrCreate.name,
+    }
+  }),
+)
+
+let optionCreate = $state.raw<Option>()
+
+const visibleOptionList = $derived.by((): Option[] => {
+  if (optionCreate) {
+    return [...optionList, optionCreate]
   }
-  if (event.detail.length === 0 && filterText.length > 0) {
-    const prev = items.filter((i) => !i.created)
-    items = [
-      ...prev,
-      {
-        value: { type: 'create', name: filterText },
-        label: filterText,
-        created: true,
-      },
-    ]
-  }
-}
+  return optionList
+})
 
 const handleReset = (event: MouseEvent) => {
   event.preventDefault()
-  onReset()
+  onreset()
 }
 
-const handleClear = (event: MouseEvent) => {
+const handleClearDescription = (event: MouseEvent) => {
   event.preventDefault()
-  pointDescription = ''
+  onchange({ description: '' })
 }
 
-const handleChange = (_event: CustomEvent<Record<string, never>>) => {
-  items = items.map((i) => {
-    delete i.created
-    return i
-  })
+const handleChangeDescription: ChangeEventHandler<HTMLTextAreaElement> = (
+  event,
+) => {
+  onchange({ description: event.currentTarget.value })
+}
+
+const handleChangeLabel = (data: {
+  option?: Option
+  options?: Option[]
+  type: 'add' | 'remove' | 'removeAll' | 'selectAll' | 'reorder'
+}) => {
+  switch (data.type) {
+    case 'add': {
+      const labelId = data.option?.value
+      if (labelId) {
+        onchange({ labelList: [...labelList, labelId] })
+      } else {
+        const label = data.option?.label
+        if (label) {
+          onchange({ labelList: [...labelList, { name: label }] })
+        }
+      }
+      break
+    }
+    case 'remove': {
+      const labelId = data.option?.value
+      if (labelId) {
+        onchange({ labelList: labelList.filter((item) => item !== labelId) })
+      } else {
+        const label = data.option?.label
+        if (label) {
+          onchange({
+            labelList: labelList.filter(
+              (item) => typeof item === 'object' && item.name !== label,
+            ),
+          })
+        }
+      }
+      break
+    }
+    case 'removeAll': {
+      onchange({ labelList: [] })
+      break
+    }
+    default:
+      break
+  }
 }
 </script>
 
 <div class="container">
   <div class="row">
-    <label for={textareaId}>{stream.name}</label>
+    <label for="{uid}-textarea">{stream.name}</label>
     <button class="reset-button" onclick={handleReset}> Reset </button>
   </div>
 
-  <Select
-    focused
-    listOpen
-    multiple
-    floatingConfig={{ middleware: [offset(5), shift() /* flip() */] }}
-    on:change={handleChange}
-    on:filter={handleFilter}
-    bind:filterText
-    bind:value
-    {items}
-    --background="var(--theme-background-alt)"
-    --border-radius="var(--radius-xs)"
-    --border="1px solid transparent"
-    --border-hover="1px solid var(--theme-selection)"
-    --list-background="var(--theme-background)"
-    --list-color="var(--theme-text-bright)"
-    --item-color="var(--theme-text-main)"
-    --item-hover-color="var(--theme-text-bright)"
-    --item-hover-bg="var(--theme-selection)"
-    --multi-item-bg="var(--theme-background)"
-    --multi-item-outline="var(--theme-focus) 1px solid"
-    --multi-item-clear-icon-color="var(--theme-links)">
-    <svelte:fragment slot="item" let:item>
-      <div>
-        {item.created ? 'Add new: ' : ''}
-        {item.label}
-      </div>
-    </svelte:fragment>
-    <svelte:fragment slot="input-hidden" let:value>
-      {#if Array.isArray(value)}
-        {#each value as item, index (item.value.id)}
-          <input
-            type="hidden"
-            name="stream.{stream.id}.label[{index}].type"
-            value={item.value.type}
-          />
-          {#if item.value.type === 'create'}
-            <input
-              type="hidden"
-              name="stream.{stream.id}.label[{index}].name"
-              value={item.value.name}
-            />
-          {:else}
-            <input
-              type="hidden"
-              name="stream.{stream.id}.label[{index}].id"
-              value={item.value.id}
-            />
-          {/if}
-        {/each}
-      {/if}
-    </svelte:fragment>
-  </Select>
+  <MultiSelect
+    bind:input={selectInputEl}
+    selected={selectedOptionList}
+    options={visibleOptionList}
+    allowUserOptions="append"
+    placeholder="Add label…"
+    onchange={handleChangeLabel}
+  />
+
 
   <div class="textarea-container">
     <textarea
+      id="{uid}-textarea"
       rows="1"
-      name="stream.{stream.id}.value"
-      id={textareaId}
-      bind:value={pointDescription}
+      value={description}
+      onchange={handleChangeDescription}
       placeholder="Add description…"></textarea>
-    {#if pointDescription.length > 0}
-      <button class="clear-value-button" onclick={handleClear}>X</button>
+    {#if description.length > 0}
+      <button class="clear-value-button" onclick={handleClearDescription}>X</button>
     {/if}
   </div>
 </div>

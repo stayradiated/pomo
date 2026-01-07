@@ -4,9 +4,10 @@ import { computed } from 'signia'
 import type { StreamId } from '#lib/ids.js'
 import type { Point } from '#lib/types.local.js'
 
-import { memoizeWithStore } from '#lib/core/replicache/store.js'
+import { firstIndexGTE, lastIndexLTE } from '#lib/utils/binary-search.js'
+import { createSelector } from '#lib/utils/selector.js'
 
-const getPointListForStream = memoizeWithStore(
+const getPointListForStream = createSelector(
   'getPointListForStream',
   (store, streamId: StreamId) => {
     const $filteredPointList = store.point.filter((value) => {
@@ -21,56 +22,38 @@ const getPointListForStream = memoizeWithStore(
   },
 )
 
-const findIndexOfPoint = memoizeWithStore(
+const findIndexOfPoint = createSelector(
   'findIndexOfPoint',
   (
     store,
     streamId: StreamId,
-    where: { startedAt: { lt: number } | { gt: number } },
+    where: { startedAt: { lte: number } | { gte: number } },
   ): Signal<number | undefined> => {
     const $list = getPointListForStream(store, streamId)
 
+    const getStartedAt = (point: Point) => point.startedAt
+    const compare = (a: number, b: number) => a - b
+
     return computed('getLatestPointByStream', () => {
-      /* binary search */
-
-      // return binarySearch($pointList.value, (point) => {
-      //   return point.startedAt - where.startedAt.lt
-      // })
-
-      const list = $list.value
-      const length = list.length
-      if (length === 0) {
-        return undefined
+      if ('lte' in where.startedAt) {
+        return lastIndexLTE(
+          $list.value,
+          where.startedAt.lte,
+          getStartedAt,
+          compare,
+        )
       }
-
-      let lower = 0
-      let upper = length
-      while (true) {
-        if (upper === lower) {
-          return lower
-        }
-
-        const i = Math.floor((upper - lower) / 2)
-        const value = list[i]
-        if (!value) {
-          return undefined
-        }
-
-        if (
-          'lt' in where.startedAt
-            ? value.startedAt >= where.startedAt.lt
-            : value.startedAt <= where.startedAt.gt
-        ) {
-          upper = i
-        } else {
-          lower = i
-        }
-      }
+      return firstIndexGTE(
+        $list.value,
+        where.startedAt.gte,
+        getStartedAt,
+        compare,
+      )
     })
   },
 )
 
-const getInclusivePointListForStream = memoizeWithStore(
+const getInclusivePointListForStream = createSelector(
   'getInclusivePointListForStream',
   (
     store,
@@ -81,13 +64,13 @@ const getInclusivePointListForStream = memoizeWithStore(
   ): Signal<Point[]> => {
     const $pointList = getPointListForStream(store, streamId)
     const $startIndex = findIndexOfPoint(store, streamId, {
-      startedAt: { lt: where.startedAt.gte },
+      startedAt: { lte: where.startedAt.gte },
     })
 
     const $endIndex =
       typeof where.startedAt.lte === 'number'
         ? findIndexOfPoint(store, streamId, {
-            startedAt: { gt: where.startedAt.lte },
+            startedAt: { gte: where.startedAt.lte },
           })
         : undefined
 
@@ -99,12 +82,12 @@ const getInclusivePointListForStream = memoizeWithStore(
   },
 )
 
-const getPointAtTime = memoizeWithStore(
+const getPointAtTime = createSelector(
   'getPointAtTime',
   (store, streamId: StreamId, timestamp: number): Signal<Point | undefined> => {
     const $pointList = getPointListForStream(store, streamId)
     const $index = findIndexOfPoint(store, streamId, {
-      startedAt: { lt: timestamp },
+      startedAt: { lte: timestamp },
     })
 
     return computed('getPointAtTime', () => {
@@ -117,7 +100,7 @@ const getPointAtTime = memoizeWithStore(
   },
 )
 
-const getAllPointsAtTime = memoizeWithStore(
+const getAllPointsAtTime = createSelector(
   'getAllPointsAtTime',
   (store, timestamp: number): Signal<Record<StreamId, Point | undefined>> => {
     return computed('getAllPointsAtTime', () => {

@@ -27,13 +27,7 @@ afterNavigate(() => {
   <nav class:isMenuOpen>
     <div class="menuContainer">
       <a href="/add">Add</a>
-      <a href="/quick-add">Quick Add</a>
       <a href="/log">Log</a>
-      <a href="/calendar/day">Calendar</a>
-      <a href="/label">Labels</a>
-      <a href="/stats">Stats</a>
-      <a href="/goals">Goals</a>
-      <a href="/sync">Sync</a>
     </div>
     <button class="menuToggle" aria-hidden="true" onclick={toggleMenuOpen}>Menu</button>
   </nav>

@@ -1,4 +1,3 @@
-import type { Signal } from 'signia'
 import { transact } from 'signia'
 
 import type {
@@ -16,7 +15,6 @@ import * as Key from '#lib/core/replicache/keys.js'
 import { Table } from '#lib/core/replicache/table/table.js'
 
 import { groupBy } from '#lib/utils/group-by.js'
-import { memoize } from '#lib/utils/memoize'
 import { mapRecordValues } from '#lib/utils/record.js'
 
 type CreateStoreOptions = {
@@ -107,31 +105,5 @@ const createStore = (options: CreateStoreOptions) => {
 
 type Store = ReturnType<typeof createStore>
 
-type WithStoreOptions<Args extends unknown[]> = {
-  cacheKey?: (args: Args) => string
-}
-
-const memoizeWithStore = <
-  Args extends unknown[],
-  Result extends Signal<unknown>,
->(
-  _debugName: string,
-  fn: (store: Store, ...args: Args) => Result,
-  options: WithStoreOptions<Args> = {},
-) => {
-  const cacheKey = options.cacheKey ?? ((args) => args.join('|'))
-  return memoize(
-    (store: Store, ...args: Args) => {
-      // console.log(`memoizeWithStore(${_debugName}, ${cacheKey(args)})`)
-      return fn(store, ...args)
-    },
-    {
-      cacheKey: ([store, ...args]) => `${store.id}|${cacheKey(args)}`,
-      // use a separate cache for each store
-      cache: new Map(),
-    },
-  )
-}
-
-export { createStore, memoizeWithStore }
+export { createStore }
 export type { Store }

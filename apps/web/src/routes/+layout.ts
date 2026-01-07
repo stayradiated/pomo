@@ -25,4 +25,5 @@ const load = (async () => {
 
 export { load }
 
+// never sever side render this app
 export const ssr = false

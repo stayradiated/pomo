@@ -5,9 +5,8 @@ import type { StreamId } from '#lib/ids.js'
 import type { Point } from '#lib/types.local.js'
 import type { Line } from './types.js'
 
-import { memoizeWithStore } from '#lib/core/replicache/store.js'
-
 import { clock } from '#lib/utils/clock.js'
+import { createSelector } from '#lib/utils/selector.js'
 
 import { getInclusivePointListForStream } from './point.js'
 
@@ -49,7 +48,7 @@ const buildLine = <PointLike extends Point>(
   return line
 }
 
-const getLineListForStream = memoizeWithStore(
+const getLineListForStream = createSelector(
   'getLineListForStream',
   (
     store,
@@ -73,7 +72,7 @@ const getLineListForStream = memoizeWithStore(
   },
 )
 
-const getAllLineLists = memoizeWithStore(
+const getAllLineLists = createSelector(
   'getAllLineLists',
   (
     store,

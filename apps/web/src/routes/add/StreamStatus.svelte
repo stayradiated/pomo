@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Store } from '#lib/core/replicache/store.js'
+import type { LabelId } from '#lib/ids.js'
 import type { Stream } from '#lib/types.local.js'
 
 import { getPointAtTime } from '#lib/core/select/point.js'
@@ -9,13 +10,25 @@ import { query } from '#lib/utils/query.js'
 
 import PointInput from './PointInput.svelte'
 
+export type StreamState =
+  | {
+      action: 'edit'
+      description: string
+      labelList: readonly (LabelId | { name: string })[]
+    }
+  | {
+      action: 'skip'
+    }
+
 type Props = {
   store: Store
   stream: Stream
   currentTime: number
+  state: StreamState | undefined
+  onchange: (state: StreamState) => void
 }
 
-const { store, stream, currentTime }: Props = $props()
+const { store, stream, currentTime, state, onchange }: Props = $props()
 
 const { currentPoint, labelList } = $derived(
   query(() => {
@@ -27,23 +40,30 @@ const { currentPoint, labelList } = $derived(
   }),
 )
 
-let editMode = $state(false)
-
 const handleEdit = (event: MouseEvent) => {
   event.preventDefault()
-  editMode = true
+  onchange({
+    action: 'edit',
+    description: currentPoint?.description ?? '',
+    labelList: currentPoint?.labelIdList ?? [],
+  })
 }
 </script>
 
-<input name="stream.{stream.id}.id" value={stream.id} type="hidden" />
-<input name="stream.{stream.id}.type" value={editMode ? 'edit' : 'skip'} type="hidden" />
-
-{#if editMode}
+{#if state?.action === 'edit'}
   <PointInput
     {store}
     {stream}
-    defaultPoint={currentPoint}
-    onReset={() => (editMode = false)}
+    description={state.description}
+    labelList={state.labelList}
+    onchange={(value) => onchange({
+      action: 'edit',
+      description: value.description ?? state.description,
+      labelList: value.labelList ?? state.labelList,
+    })}
+    onreset={() => {
+      onchange({ action: 'skip'})
+    }}
   />
 {:else}
   <button class="container" onclick={handleEdit}>

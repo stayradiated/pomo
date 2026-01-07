@@ -1,44 +1,55 @@
 <script lang="ts">
 import * as dateFns from 'date-fns'
-import { formatInTimeZone } from 'date-fns-tz'
+import { formatInTimeZone, toDate, toZonedTime } from 'date-fns-tz'
 
+import type { StreamId } from '#lib/ids.js'
 import type { PageProps } from './$types'
+import type { StreamState } from './StreamStatus.svelte'
 
+import { getStreamList } from '#lib/core/select/stream.js'
 import { getTimeZone } from '#lib/core/select/user.js'
 
 import { clock } from '#lib/utils/clock.js'
 import { query } from '#lib/utils/query.js'
 
 import StreamStatus from './StreamStatus.svelte'
+import { handleFormSubmit } from './submit.js'
 
 let { data }: PageProps = $props()
 const { store } = $derived(data)
 
-const { timeZone, streamList } = $derived(
+const { now, timeZone, streamList } = $derived(
   query({
+    now: clock,
     timeZone: getTimeZone(store),
-    streamList: store.stream.asList,
+    streamList: getStreamList(store),
   }),
 )
 
-let currentTime = $state(clock.value)
-let [nowDate, nowTime] = $derived.by(() => {
-  return formatInTimeZone(currentTime, timeZone, "yyyy-MM-dd'T'HH:mm").split(
-    'T',
-  )
-})
+let formState = $state.raw<Record<StreamId, StreamState>>({})
+
+let [nowDate, nowTime] = $derived(
+  formatInTimeZone(clock.value, timeZone, "yyyy-MM-dd'T'HH:mm").split('T'),
+)
+const currentTime = $derived(
+  toZonedTime(toDate(`${nowDate}T${nowTime}:00`), timeZone).getTime(),
+)
 
 const handleSubmit = async (event: SubmitEvent) => {
   event.preventDefault()
-
-  const form = event.target as HTMLFormElement
-  const formData = new FormData(form)
-  console.info(formData)
+  await handleFormSubmit({
+    store,
+    currentTime,
+    formState: $state.snapshot(formState),
+  })
 }
 
-const handleNow = (event: MouseEvent) => {
-  event.preventDefault()
-  currentTime = clock.value
+const handleNow = (_event: MouseEvent) => {
+  ;[nowDate, nowTime] = formatInTimeZone(
+    clock.value,
+    timeZone,
+    "yyyy-MM-dd'T'HH:mm",
+  ).split('T')
 }
 </script>
 
@@ -49,6 +60,10 @@ const handleNow = (event: MouseEvent) => {
         {store}
         {stream}
         {currentTime}
+        state={formState[stream.id]}
+        onchange={(state) => {
+          formState = { ...formState, [stream.id]: state }
+        }}
       />
     {/each}
 
@@ -69,12 +84,12 @@ const handleNow = (event: MouseEvent) => {
       />
 
       <p class="datetime-relative">
-        {dateFns.formatDistanceToNow(currentTime, { includeSeconds: true, addSuffix: true })}
+        {dateFns.formatDistance(currentTime, now, { includeSeconds: true, addSuffix: true })}
       </p>
-      <button class="now-button" onclick={handleNow}>Now</button>
+      <button type="button" class="now-button" onclick={handleNow}>Now</button>
     </div>
 
-    <button class="save-button">Save</button>
+    <button type="submit" class="save-button">Save</button>
   </form>
 </main>
 

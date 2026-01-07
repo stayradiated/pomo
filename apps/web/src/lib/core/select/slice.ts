@@ -4,10 +4,9 @@ import { computed } from 'signia'
 import type { StreamId } from '#lib/ids.js'
 import type { Slice } from './types.js'
 
-import { memoizeWithStore } from '#lib/core/replicache/store.js'
-
 import { MinHeap } from '#lib/utils/min-heap.js'
 import { objectEntries } from '#lib/utils/object-entries.js'
+import { createSelector } from '#lib/utils/selector.js'
 
 import { getAllLineLists } from './line.js'
 
@@ -17,7 +16,7 @@ type HeapEntry = {
   startedAt: number
 }
 
-const getSliceList = memoizeWithStore(
+const getSliceList = createSelector(
   'getSliceList',
   (
     store,
