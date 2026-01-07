@@ -1,6 +1,8 @@
 <script lang="ts">
 import type { Snippet } from 'svelte'
 
+import '#lib/theme.css'
+
 import { afterNavigate } from '$app/navigation'
 
 type Props = {

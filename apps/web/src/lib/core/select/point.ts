@@ -99,8 +99,44 @@ const getInclusivePointListForStream = memoizeWithStore(
   },
 )
 
+const getPointAtTime = memoizeWithStore(
+  'getPointAtTime',
+  (store, streamId: StreamId, timestamp: number): Signal<Point | undefined> => {
+    const $pointList = getPointListForStream(store, streamId)
+    const $index = findIndexOfPoint(store, streamId, {
+      startedAt: { lt: timestamp },
+    })
+
+    return computed('getPointAtTime', () => {
+      const index = $index.value
+      if (index === undefined) {
+        return undefined
+      }
+      return $pointList.value[index]
+    })
+  },
+)
+
+const getAllPointsAtTime = memoizeWithStore(
+  'getAllPointsAtTime',
+  (store, timestamp: number): Signal<Record<StreamId, Point | undefined>> => {
+    return computed('getAllPointsAtTime', () => {
+      return Object.fromEntries(
+        store.stream.keys.value.map((streamId) => {
+          return [
+            streamId,
+            getPointAtTime(store, streamId, timestamp).value,
+          ] as const
+        }),
+      )
+    })
+  },
+)
+
 export {
   getPointListForStream,
   findIndexOfPoint,
   getInclusivePointListForStream,
+  getPointAtTime,
+  getAllPointsAtTime,
 }
