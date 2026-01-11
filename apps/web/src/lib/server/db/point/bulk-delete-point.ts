@@ -1,0 +1,46 @@
+import { errorBoundary } from '@stayradiated/error-boundary'
+import type { DeleteResult } from 'kysely'
+
+import type { PointId, UserId } from '#lib/ids.js'
+import type { KyselyDb } from '#lib/server/db/types.js'
+import type { Where } from '#lib/server/db/where.js'
+
+import { extendWhere } from '#lib/server/db/where.js'
+
+type BulkDeletePointOptions = {
+  db: KyselyDb
+  where: Where<{
+    userId: UserId
+    pointId?: PointId
+  }>
+}
+
+const bulkDeletePoint = async (
+  options: BulkDeletePointOptions,
+): Promise<DeleteResult | Error> => {
+  const { db, where } = options
+
+  return errorBoundary(async () => {
+    let query = db.selectFrom('point').select('id')
+
+    query = extendWhere(query)
+      .string('id', where.pointId)
+      .string('userId', where.userId)
+      .done()
+
+    const list = await query.execute()
+
+    const pointIdList = list.map((row) => row.id)
+
+    await db
+      .deleteFrom('pointLabel')
+      .where('pointId', 'in', pointIdList)
+      .executeTakeFirstOrThrow()
+    return db
+      .deleteFrom('point')
+      .where('id', 'in', pointIdList)
+      .executeTakeFirstOrThrow()
+  })
+}
+
+export { bulkDeletePoint }

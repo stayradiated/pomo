@@ -1,13 +1,13 @@
 import { errorBoundary } from '@stayradiated/error-boundary'
+import type { DeleteResult } from 'kysely'
 
 import type { StreamId, UserId } from '#lib/ids.js'
 import type { KyselyDb } from '#lib/server/db/types.js'
 import type { Where } from '#lib/server/db/where.js'
-import type { Stream } from '#lib/server/types.js'
 
 import { extendWhere } from '#lib/server/db/where.js'
 
-type GetStreamListOptions = {
+type BulkDeleteStreamOptions = {
   db: KyselyDb
   where: Where<{
     userId: UserId
@@ -15,21 +15,21 @@ type GetStreamListOptions = {
   }>
 }
 
-const getStreamList = async (
-  options: GetStreamListOptions,
-): Promise<Stream[] | Error> => {
+const bulkDeleteStream = async (
+  options: BulkDeleteStreamOptions,
+): Promise<DeleteResult | Error> => {
   const { db, where } = options
 
   return errorBoundary(() => {
-    let query = db.selectFrom('stream').selectAll().orderBy('sortOrder', 'asc')
+    let query = db.deleteFrom('stream')
 
     query = extendWhere(query)
       .string('id', where.streamId)
       .string('userId', where.userId)
       .done()
 
-    return query.execute()
+    return query.executeTakeFirstOrThrow()
   })
 }
 
-export { getStreamList }
+export { bulkDeleteStream }

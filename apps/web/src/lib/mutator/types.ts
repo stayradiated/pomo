@@ -24,6 +24,17 @@ type Mutators = {
     streamId: StreamId
     name: string
   }>
+  stream_rename: Mutator<{
+    streamId: StreamId
+    name: string
+  }>
+  stream_sort: Mutator<{
+    streamId: StreamId
+    delta: -1 | 1
+  }>
+  stream_delete: Mutator<{
+    streamId: StreamId
+  }>
 
   point_create: Mutator<{
     pointId: PointId
@@ -31,6 +42,10 @@ type Mutators = {
     labelIdList: readonly LabelId[]
     description: string
     startedAt: number
+  }>
+
+  danger_deleteAllData: Mutator<{
+    userHasConfirmed: boolean
   }>
 }
 
