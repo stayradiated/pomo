@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.62.0](https://github.com/stayradiated/pomo/releases/tag/v0.62.0) - 2026-01-11
+
+- [`f855daf`](https://github.com/stayradiated/pomo/commit/f855daf83fb518997d139186bcec47bd99520dff) feat(web): add MultiSelect, /add and /log pages, core selectors (#6)
+- [`57df3d0`](https://github.com/stayradiated/pomo/commit/57df3d02e3c53a330f108530cac5839917f5c1d2) feat: add MultiSelect component with icon support and customizable options 🌟
+- [`dd5573f`](https://github.com/stayradiated/pomo/commit/dd5573f81ff612b3e7b53c8c45c30c67fce67bb2) chore: update dependencies to latest versions 🧹
+- [`392f998`](https://github.com/stayradiated/pomo/commit/392f9980d19a01cbe85c1c20515f609016c211a9) feat: implement first half of /add page 🧹
+- [`7c0fb7d`](https://github.com/stayradiated/pomo/commit/7c0fb7df487acc7345c604407f0f094eae343c27) chore: update dependencies and fix biome errors 🧹
+- [`3b05e8f`](https://github.com/stayradiated/pomo/commit/3b05e8fe26287e6b8b3c90393f4e54e7ab3b53ae) feat: add logging and code cleanup 🧹
+- [`4abad9b`](https://github.com/stayradiated/pomo/commit/4abad9b9f7bdc4ffbd325eb737035f5f1d518e71) ci(uplift): uplifted for version v0.61.0
+- [`2a5d262`](https://github.com/stayradiated/pomo/commit/2a5d2628039d7c6309ad4d3bde8c9fb8d8b1d304) ci(uplift): uplifted for version v0.61.0
+
 ## [v0.61.0](https://github.com/stayradiated/pomo/releases/tag/v0.61.0) - 2026-01-05
 
 - [`7f16de6`](https://github.com/stayradiated/pomo/commit/7f16de6207d5a4c5ddd94934c743699f28795876) feat(database): enhance schema and introduce data management features (#5)
