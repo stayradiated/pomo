@@ -1,0 +1,126 @@
+<script lang="ts">
+import type { Store } from '#lib/core/replicache/store.js'
+import type { LabelId } from '#lib/ids.js'
+import type { Stream } from '#lib/types.local.js'
+
+import { getPointAtTime } from '#lib/core/select/point.js'
+
+import { formatDurationRough } from '#lib/utils/format-duration.js'
+import { query } from '#lib/utils/query.js'
+
+import PointInput from './PointInput.svelte'
+
+export type StreamState =
+  | {
+      action: 'edit'
+      description: string
+      labelList: readonly (LabelId | { name: string })[]
+    }
+  | {
+      action: 'skip'
+    }
+
+type Props = {
+  store: Store
+  stream: Stream
+  currentTime: number
+  state: StreamState | undefined
+  onchange: (state: StreamState) => void
+}
+
+const { store, stream, currentTime, state, onchange }: Props = $props()
+
+const { currentPoint, labelList } = $derived(
+  query(() => {
+    const currentPoint = getPointAtTime(store, stream.id, currentTime).value
+    const labelList = (currentPoint?.labelIdList ?? []).flatMap((labelId) => {
+      return store.label.get(labelId).value ?? []
+    })
+    return { currentPoint, labelList }
+  }),
+)
+
+const handleEdit = (event: MouseEvent) => {
+  event.preventDefault()
+  onchange({
+    action: 'edit',
+    description: currentPoint?.description ?? '',
+    labelList: currentPoint?.labelIdList ?? [],
+  })
+}
+</script>
+
+{#if state?.action === 'edit'}
+  <PointInput
+    {store}
+    {stream}
+    description={state.description}
+    labelList={state.labelList}
+    onchange={(value) => onchange({
+      action: 'edit',
+      description: value.description ?? state.description,
+      labelList: value.labelList ?? state.labelList,
+    })}
+    onreset={() => {
+      onchange({ action: 'skip'})
+    }}
+  />
+{:else}
+  <button class="container" onclick={handleEdit}>
+    <div class="label">{stream.name}</div>
+    <div class="value">
+      {#if labelList.length === 0}
+        --
+      {:else}
+        {#each labelList as label (label.id)}
+          {label.icon ?? ''} {label.name}
+        {/each}
+      {/if}
+    </div>
+    <div class="duration">
+      {currentPoint ? formatDurationRough(currentTime - currentPoint?.startedAt) : ''}
+    </div>
+  </button>
+{/if}
+
+<style>
+	.container {
+		padding: 0 var(--size-3);
+		background: var(--theme-background);
+		border: none;
+		color: var(--theme-text-main);
+		border-radius: var(--radius-xs);
+		cursor: pointer;
+
+		display: grid;
+		grid-template-areas:
+			'label value'
+			'label duration';
+
+		justify-content: space-between;
+		line-height: var(--line-xl);
+		border-bottom: 1px solid var(--theme-border);
+	}
+	.container:hover {
+		background-color: var(--theme-background-alt);
+	}
+
+	.label {
+		font-weight: var(--weight-bold);
+		grid-area: label;
+		font-size: var(--scale-1);
+	}
+
+	.value {
+		grid-area: value;
+		text-align: right;
+		font-size: var(--scale-1);
+	}
+
+	.duration {
+		grid-area: duration;
+		text-align: right;
+		font-size: var(--scale-0);
+		color: var(--theme-text-muted);
+	}
+</style>

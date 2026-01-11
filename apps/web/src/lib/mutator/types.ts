@@ -16,8 +16,8 @@ type Mutators = {
     labelId: LabelId
     streamId: StreamId
     name: string
-    color: string
-    icon: string
+    color: string | undefined
+    icon: string | undefined
   }>
 
   stream_create: Mutator<{
@@ -28,7 +28,7 @@ type Mutators = {
   point_create: Mutator<{
     pointId: PointId
     streamId: StreamId
-    labelIdList: LabelId[]
+    labelIdList: readonly LabelId[]
     description: string
     startedAt: number
   }>

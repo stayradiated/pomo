@@ -16,8 +16,8 @@ const label_create: ServerMutator<'label_create'> = async (
       userId: sessionUserId,
       streamId,
       name,
-      icon,
-      color,
+      icon: icon ?? null,
+      color: color ?? null,
       parentId: null,
     },
   })

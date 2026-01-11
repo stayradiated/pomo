@@ -55,3 +55,6 @@ lint:
 # Find unused files and code
 knip: svelte-sync
     knip
+
+test:
+    vitest

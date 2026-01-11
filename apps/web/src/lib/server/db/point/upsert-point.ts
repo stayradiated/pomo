@@ -16,7 +16,7 @@ type UpsertPointOptions = {
   }
   set: {
     description: string
-    labelIdList: LabelId[]
+    labelIdList: readonly LabelId[]
   }
   now?: number
 }
