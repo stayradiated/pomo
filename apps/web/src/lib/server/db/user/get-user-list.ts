@@ -14,17 +14,13 @@ type GetUserListOptions = {
   }>
 }
 
-type PartialUser = Pick<User, 'id' | 'timeZone' | 'createdAt' | 'updatedAt'>
-
-const getPartialUserList = async (
+const getUserList = async (
   options: GetUserListOptions,
-): Promise<PartialUser[] | Error> => {
+): Promise<User[] | Error> => {
   const { db, where } = options
 
   return errorBoundary(() => {
-    let query = db
-      .selectFrom('user')
-      .select(['id', 'timeZone', 'createdAt', 'updatedAt'])
+    let query = db.selectFrom('user').selectAll('user')
 
     query = extendWhere(query).string('id', where.userId).done()
 
@@ -32,4 +28,4 @@ const getPartialUserList = async (
   })
 }
 
-export { getPartialUserList }
+export { getUserList }

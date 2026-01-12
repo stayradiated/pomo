@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  kanel-zod:
+    hash: e741c9afd9437ef4707a8df454c4da263c4f96c2d4dd101c24f993647513f946
+    path: patches/kanel-zod.patch
+
 importers:
 
   .:
@@ -262,7 +267,7 @@ importers:
         version: 0.8.0
       kanel-zod:
         specifier: 1.7.0
-        version: 1.7.0
+        version: 1.7.0(patch_hash=e741c9afd9437ef4707a8df454c4da263c4f96c2d4dd101c24f993647513f946)
       knip:
         specifier: 5.80.2
         version: 5.80.2(@types/node@25.0.6)(typescript@5.9.3)
@@ -5517,7 +5522,7 @@ snapshots:
     dependencies:
       '@kristiandupont/recase': 1.4.1
 
-  kanel-zod@1.7.0:
+  kanel-zod@1.7.0(patch_hash=e741c9afd9437ef4707a8df454c4da263c4f96c2d4dd101c24f993647513f946):
     dependencies:
       '@kristiandupont/recase': 1.4.1
 

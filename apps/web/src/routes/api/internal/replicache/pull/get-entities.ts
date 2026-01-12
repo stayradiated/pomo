@@ -14,7 +14,7 @@ import type { Key as GenericKey } from '#lib/utils/create-key.js'
 import { getLabelList } from '#lib/server/db/label/get-label-list.js'
 import { getPointList } from '#lib/server/db/point/get-point-list.js'
 import { getStreamList } from '#lib/server/db/stream/get-stream-list.js'
-import { getPartialUserList } from '#lib/server/db/user/get-partial-user-list.js'
+import { getUserList } from '#lib/server/db/user/get-user-list.js'
 
 import * as Key from '#lib/core/replicache/keys.js'
 
@@ -71,7 +71,7 @@ const getEntities = async (
     }),
     user:
       diff.user.puts.length > 0
-        ? getPartialUserList({
+        ? getUserList({
             db,
             where: { userId: sessionUserId },
           })

@@ -32,9 +32,9 @@ export const userId = z.string() as unknown as z.Schema<UserId>;
 export const user = z.object({
   id: userId,
   timeZone: z.string(),
-  stravaClientId: z.string().nullable(),
-  stravaClientSecret: z.string().nullable(),
-  stravaSession: z.record(z.string(), z.unknown()).nullable(),
+  stravaClientId: z.string().nullable().nullable(),
+  stravaClientSecret: z.string().nullable().nullable(),
+  stravaSession: z.record(z.string(), z.unknown()).nullable().nullable(),
   createdAt: z.number(),
   updatedAt: z.number(),
 });
@@ -42,9 +42,9 @@ export const user = z.object({
 export const userInitializer = z.object({
   id: userId,
   timeZone: z.string(),
-  stravaClientId: z.string().optional().nullable(),
-  stravaClientSecret: z.string().optional().nullable(),
-  stravaSession: z.record(z.string(), z.unknown()).optional().nullable(),
+  stravaClientId: z.string().nullable().optional().nullable(),
+  stravaClientSecret: z.string().nullable().optional().nullable(),
+  stravaSession: z.record(z.string(), z.unknown()).nullable().optional().nullable(),
   createdAt: z.number(),
   updatedAt: z.number(),
 });
@@ -52,9 +52,9 @@ export const userInitializer = z.object({
 export const userMutator = z.object({
   id: userId.optional(),
   timeZone: z.string().optional(),
-  stravaClientId: z.string().optional().nullable(),
-  stravaClientSecret: z.string().optional().nullable(),
-  stravaSession: z.record(z.string(), z.unknown()).optional().nullable(),
+  stravaClientId: z.string().nullable().optional().nullable(),
+  stravaClientSecret: z.string().nullable().optional().nullable(),
+  stravaSession: z.record(z.string(), z.unknown()).nullable().optional().nullable(),
   createdAt: z.number().optional(),
   updatedAt: z.number().optional(),
 });

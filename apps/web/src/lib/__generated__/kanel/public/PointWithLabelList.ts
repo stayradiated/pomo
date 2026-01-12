@@ -33,5 +33,5 @@ export const pointWithLabelList = z.object({
   startedAt: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),
-  labelIdList: z.string(),
+  labelIdList: z.string().array(),
 });
