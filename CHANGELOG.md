@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.63.0](https://github.com/stayradiated/pomo/releases/tag/v0.63.0) - 2026-01-12
+
+- [`715b8b5`](https://github.com/stayradiated/pomo/commit/715b8b5b3481d46eae7e96e547526da94821f949) feat(web): add Settings page, stream management and danger-delete (#7)
+- [`9701bbe`](https://github.com/stayradiated/pomo/commit/9701bbef3bc8799fc9cb99c9e26cdd6dd3e01510) feat: add settings page and data deletion functionality 🛠️
+- [`05aba20`](https://github.com/stayradiated/pomo/commit/05aba20e13df7536fb40246c5022c90b68b579ba) chore: update dependencies to latest versions 🔧
+- [`bc73efc`](https://github.com/stayradiated/pomo/commit/bc73efcb46a60b5f29388f635810d766559f3881) ci(uplift): uplifted for version v0.62.0
+- [`ac4553c`](https://github.com/stayradiated/pomo/commit/ac4553c239cd79e2e817e6e2f51919465d958b32) ci(uplift): uplifted for version v0.62.0
+
 ## [v0.62.0](https://github.com/stayradiated/pomo/releases/tag/v0.62.0) - 2026-01-11
 
 - [`f855daf`](https://github.com/stayradiated/pomo/commit/f855daf83fb518997d139186bcec47bd99520dff) feat(web): add MultiSelect, /add and /log pages, core selectors (#6)
