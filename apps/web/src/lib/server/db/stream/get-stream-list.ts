@@ -20,7 +20,7 @@ const getStreamList = async (
 ): Promise<Stream[] | Error> => {
   const { db, where } = options
 
-  return errorBoundary(() => {
+  const streamList = await errorBoundary(() => {
     let query = db.selectFrom('stream').selectAll().orderBy('sortOrder', 'asc')
 
     query = extendWhere(query)
@@ -30,6 +30,12 @@ const getStreamList = async (
 
     return query.execute()
   })
+
+  if (streamList instanceof Error) {
+    return new Error('Failed to getStreamList', { cause: streamList })
+  }
+
+  return streamList
 }
 
 export { getStreamList }

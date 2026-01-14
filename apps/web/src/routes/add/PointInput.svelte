@@ -110,14 +110,12 @@ const handleChangeLabel = (data: {
 }) => {
   switch (data.type) {
     case 'add': {
-      const labelId = data.option?.value
-      if (labelId) {
+      if (typeof data.option === 'string') {
+        const label = data.option
+        onchange({ labelList: [...labelList, { name: label }] })
+      } else if (typeof data.option?.value === 'string') {
+        const labelId = data.option.value
         onchange({ labelList: [...labelList, labelId] })
-      } else {
-        const label = data.option?.label
-        if (label) {
-          onchange({ labelList: [...labelList, { name: label }] })
-        }
       }
       break
     }

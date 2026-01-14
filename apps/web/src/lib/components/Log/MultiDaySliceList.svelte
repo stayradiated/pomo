@@ -5,6 +5,8 @@ import { toZonedTime } from 'date-fns-tz'
 import type { Slice } from '#lib/core/select/types.js'
 import type { Label, Stream } from '#lib/types.local.js'
 
+import { groupBy } from '#lib/utils/group-by.js'
+
 import SliceList from './SliceList.svelte'
 
 interface Props {
@@ -16,23 +18,20 @@ interface Props {
 
 let { streamList, sliceList, timeZone, labelRecord }: Props = $props()
 
+/* grouping slices by day */
 let sliceListByDay = $derived(
-  sliceList.reduce<Map<string, Slice[]>>((acc, slice) => {
+  groupBy(sliceList, (slice) => {
     const { startedAt: startedAtUTC } = slice
     const startedAt = toZonedTime(startedAtUTC, timeZone)
 
     // Format as Friday 02 June 2023
     const day = format(startedAt, 'EEEE dd MMMM yyyy')
-
-    const list: Slice[] = acc.get(day) ?? []
-    list.push(slice)
-    acc.set(day, list)
-    return acc
-  }, new Map()),
+    return day
+  }),
 )
 </script>
 
-{#each Array.from(sliceListByDay.entries()) as [day, sliceList] (day)}
+{#each Object.entries(sliceListByDay) as [day, sliceList] (day)}
   <div class="container">
     <h2>{day}</h2>
     <SliceList {streamList} {sliceList} {timeZone} {labelRecord} />

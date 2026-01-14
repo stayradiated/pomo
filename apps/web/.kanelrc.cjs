@@ -63,6 +63,28 @@ const supportVerbatimModuleSyntaxHook = (filePath, lines) => {
   return lines
 }
 
+/*
+ * strip type brand from personEmail.email key
+ */
+const usePointWithLabelListFix = (filePath, lines) => {
+  if (filePath === 'src/lib/__generated__/kanel/public/PointWithLabelList.ts') {
+    lines.unshift("import { labelId, type LabelId } from './Label';")
+
+    return lines.map((line) => {
+      switch (line.trim()) {
+        case 'labelIdList: ColumnType<string[], never, never>;': {
+          return '  labelIdList: ColumnType<LabelId[], never, never>;'
+        }
+        case 'labelIdList: z.string().array(),': {
+          return '  labelIdList: labelId.array(),'
+        }
+      }
+      return line
+    })
+  }
+  return lines
+}
+
 /** @type {import('kanel').Config} */
 module.exports = {
   // When `kanel` is called directly, it will use the DATABASE_URL environment
@@ -92,6 +114,7 @@ module.exports = {
   postRenderHooks: [
     kanelKyselyZodCompatibilityHook,
     supportVerbatimModuleSyntaxHook,
+    usePointWithLabelListFix,
   ],
 
   customTypeMap: getTypeMap('typescript'),

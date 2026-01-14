@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import type { Doc, YPoint } from './types.js'
+import type { Doc, YPoint, YLabel } from './types.js'
 
 type MigrateOptions = {
   doc: Doc
@@ -22,6 +22,24 @@ const migrate = (options: MigrateOptions): undefined | Error => {
     // Make sure every point has a labelIdList
     if (!point.get('labelIdList')) {
       point.set('labelIdList', new Y.Array())
+    }
+
+    // Make sure every label in the labelIdList exists
+    const labelIdList = point.get('labelIdList')!
+    for (const labelId of labelIdList) {
+      if (!labelMap.has(labelId)) {
+        // if the label doesn't exist, create it as unknown
+        const label = new Y.Map() as YLabel
+        label.set('id', labelId)
+        label.set('streamId', point.get('streamId')!)
+        label.set('name', 'Unknown')
+        label.set('icon', '❓')
+        label.set('color', null)
+        label.set('parentId', null)
+        label.set('createdAt', Date.now())
+        label.set('updatedAt', null)
+        labelMap.set(labelId, label)
+      }
     }
 
     // Make sure every point has a unique (streamId, startedAt) pair
