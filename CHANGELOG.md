@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.64.0](https://github.com/stayradiated/pomo/releases/tag/v0.64.0) - 2026-01-14
+
+- [`9c0589c`](https://github.com/stayradiated/pomo/commit/9c0589ccd3fd3d579b2c1c4153a6b3caf5380e11) feat(snapshot): add import/export, legacy migration, and schema fixes (#8)
+- [`7110db3`](https://github.com/stayradiated/pomo/commit/7110db3766037de4b5e05a9f7ff6ab8e4980dd5d) feat: update TypeScript definitions and improve snapshot import logic 🧹
+- [`0fc4e39`](https://github.com/stayradiated/pomo/commit/0fc4e39ca7a42eb136c32ce3edc04eb9a04249a7) chore: update dependencies to latest versions 🧹
+- [`cbd011c`](https://github.com/stayradiated/pomo/commit/cbd011cc2fbb0a852021a142de20546b78ba143c) feat: improve zod schema definitions and add snapshot utility functions 🧹
+- [`cb4cfe5`](https://github.com/stayradiated/pomo/commit/cb4cfe5964d117508e060cd5e6d4081ac096e606) chore: update dependencies to latest versions 📦
+- [`f854706`](https://github.com/stayradiated/pomo/commit/f8547064acc289b12ad17ed3f56867d1ab9ca162) ci(uplift): uplifted for version v0.63.0
+- [`9e684d0`](https://github.com/stayradiated/pomo/commit/9e684d0196493a88a714d35c462f59ea8f226ab0) ci(uplift): uplifted for version v0.63.0
+
 ## [v0.63.0](https://github.com/stayradiated/pomo/releases/tag/v0.63.0) - 2026-01-12
 
 - [`715b8b5`](https://github.com/stayradiated/pomo/commit/715b8b5b3481d46eae7e96e547526da94821f949) feat(web): add Settings page, stream management and danger-delete (#7)
