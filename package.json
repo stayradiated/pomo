@@ -9,7 +9,7 @@
     "tidy": "turbo tidy --no-daemon"
   },
   "devDependencies": {
-    "turbo": "2.7.3"
+    "turbo": "2.7.4"
   },
   "pnpm": {
     "patchedDependencies": {
