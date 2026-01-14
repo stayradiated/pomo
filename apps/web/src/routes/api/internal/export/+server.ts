@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 
 import { getDb } from '#lib/server/db/get-db.js'
 
-import { exportSnapshot } from '#lib/server/snapshot/export.js'
+import { exportSnapshot } from '#lib/server/snapshot/export-snapshot.js'
 
 import { errorResponse } from '#lib/utils/http-error.js'
 

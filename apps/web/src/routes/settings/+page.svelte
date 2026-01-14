@@ -1,4 +1,6 @@
 <script lang="ts">
+import { dropAllDatabases } from 'replicache'
+
 import type { StreamId } from '#lib/ids.js'
 import type { PageProps } from './$types'
 
@@ -17,6 +19,11 @@ const { streamList } = $derived(
     streamList: getStreamList(store),
   }),
 )
+
+const handleResetReplicache = async () => {
+  await dropAllDatabases()
+  window.location.reload()
+}
 
 const handleCreateStream = async () => {
   const name = prompt('Stream Name')
@@ -68,6 +75,23 @@ const handleImport = async () => {
   const fileList = await openFilePicker({
     accept: 'application/json',
   })
+  const file = fileList[0]
+  if (!file) {
+    return
+  }
+
+  const response = await fetch('/api/internal/import', {
+    method: 'POST',
+    body: await file.text(),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!response.ok) {
+    const text = await response.text()
+    console.error(text)
+    return
+  }
 }
 
 const handleDeleteAllData = async () => {
@@ -83,6 +107,12 @@ const handleDeleteAllData = async () => {
 
 <main>
   <h1>Settings</h1>
+
+  <section>
+    <h2>Debug</h2>
+
+    <button onclick={handleResetReplicache}>Reset Local State</button>
+  </section>
 
   <section>
     <h2>Streams</h2>

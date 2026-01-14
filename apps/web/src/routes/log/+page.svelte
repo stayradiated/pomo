@@ -28,8 +28,9 @@ const { timeZone, streamList, labelRecord, sliceList } = $derived(
       userList: store.user.asList.value,
       streamList: store.stream.asList.value,
       labelRecord: store.label.asRecord.value,
-      sliceList: getSliceList(store, { startedAt: { gte: rangeStartDate } })
-        .value,
+      sliceList: getSliceList(store, {
+        startedAt: { gte: rangeStartDate },
+      }).value.toReversed(),
     }
   }),
 )

@@ -78,6 +78,7 @@ const getEntities = async (
         : [],
   })
   if (entities instanceof Error) {
+    console.error(entities)
     return new Error('Could not get entities.', { cause: entities })
   }
 

@@ -36,8 +36,8 @@ const upsertPoint = async (
     updatedAt: now,
   }
 
-  const point = await errorBoundary(() =>
-    db
+  return errorBoundary(async () => {
+    const point = await db
       .insertInto('point')
       .values(value)
       .onConflict((oc) =>
@@ -47,31 +47,32 @@ const upsertPoint = async (
         }),
       )
       .returningAll()
-      .executeTakeFirstOrThrow(),
-  )
-  if (point instanceof Error) {
+      .executeTakeFirstOrThrow()
+
+    // remove duplicate labels, while preserving order
+    const labelIdList = [...new Set(set.labelIdList)]
+
+    const pointLabelList = labelIdList.map(
+      (labelId, index): PointLabel => ({
+        pointId: point.id,
+        labelId,
+        userId: where.userId,
+        sortOrder: index,
+        createdAt: now,
+        updatedAt: now,
+      }),
+    )
+
+    // TODO: make this a single query
+    // TODO: don't delete all pointLabels, just the ones that are being deleted
+
+    await db.deleteFrom('pointLabel').where('pointId', '=', point.id).execute()
+    if (pointLabelList.length > 0) {
+      await db.insertInto('pointLabel').values(pointLabelList).execute()
+    }
+
     return point
-  }
-
-  const pointLabelList = set.labelIdList.map(
-    (labelId, index): PointLabel => ({
-      pointId: point.id,
-      labelId,
-      userId: where.userId,
-      sortOrder: index,
-      createdAt: now,
-      updatedAt: now,
-    }),
-  )
-
-  // TODO: make this a single query
-  // TODO: don't delete all pointLabels, just the ones that are being deleted
-
-  await db.deleteFrom('pointLabel').where('pointId', '=', point.id).execute()
-
-  await db.insertInto('pointLabel').values(pointLabelList).execute()
-
-  return point
+  })
 }
 
 export { upsertPoint }

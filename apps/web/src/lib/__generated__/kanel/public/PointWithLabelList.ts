@@ -1,3 +1,4 @@
+import { labelId, type LabelId } from './Label';
 import { pointId, type PointId } from './Point';
 import { userId, type UserId } from './User';
 import { streamId, type StreamId } from './Stream';
@@ -20,7 +21,7 @@ export default interface PointWithLabelListTable {
 
   updatedAt: ColumnType<number, never, never>;
 
-  labelIdList: ColumnType<string[], never, never>;
+  labelIdList: ColumnType<LabelId[], never, never>;
 }
 
 export type PointWithLabelList = Selectable<PointWithLabelListTable>;
@@ -33,5 +34,5 @@ export const pointWithLabelList = z.object({
   startedAt: z.number(),
   createdAt: z.number(),
   updatedAt: z.number(),
-  labelIdList: z.string().array(),
+  labelIdList: labelId.array(),
 });

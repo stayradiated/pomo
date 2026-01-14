@@ -194,7 +194,7 @@ importers:
         version: 1.7.4
       '@stayradiated/hydro':
         specifier: 1.1.0
-        version: 1.1.0(@stayradiated/error-boundary@4.3.0)(p-map@4.0.0)
+        version: 1.1.0(@stayradiated/error-boundary@4.3.0)(p-map@7.0.4)
       async-mutex:
         specifier: 0.5.0
         version: 0.5.0
@@ -207,6 +207,9 @@ importers:
       graphile-migrate:
         specifier: 1.4.1
         version: 1.4.1
+      p-map:
+        specifier: 7.0.4
+        version: 7.0.4
       pg:
         specifier: 8.16.3
         version: 8.16.3
@@ -2667,6 +2670,10 @@ packages:
     resolution: {integrity: sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==}
     engines: {node: '>=10'}
 
+  p-map@7.0.4:
+    resolution: {integrity: sha512-tkAQEw8ysMzmkhgw8k+1U/iPhWNhykKnSk4Rd5zLoPJCuJaGRPo6YposrZgaxHKzDHdDWWZvE/Sk7hsL2X/CpQ==}
+    engines: {node: '>=18'}
+
   p-queue@8.1.0:
     resolution: {integrity: sha512-mxLDbbGIBEXTJL0zEx8JIylaj3xQ7Z/7eEVjcF9fJX4DBiH9oqe+oahYnlKKxm0Ci9TlWTyhSHgygxMxjIB2jw==}
     engines: {node: '>=18'}
@@ -4212,10 +4219,10 @@ snapshots:
 
   '@stayradiated/error-boundary@4.3.0': {}
 
-  '@stayradiated/hydro@1.1.0(@stayradiated/error-boundary@4.3.0)(p-map@4.0.0)':
+  '@stayradiated/hydro@1.1.0(@stayradiated/error-boundary@4.3.0)(p-map@7.0.4)':
     dependencies:
       '@stayradiated/error-boundary': 4.3.0
-      p-map: 4.0.0
+      p-map: 7.0.4
 
   '@svelte-put/shortcut@4.1.0(svelte@5.20.5)':
     dependencies:
@@ -5788,6 +5795,8 @@ snapshots:
   p-map@4.0.0:
     dependencies:
       aggregate-error: 3.1.0
+
+  p-map@7.0.4: {}
 
   p-queue@8.1.0:
     dependencies:

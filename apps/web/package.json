@@ -16,6 +16,7 @@
     "date-fns": "4.1.0",
     "date-fns-tz": "3.2.0",
     "graphile-migrate": "1.4.1",
+    "p-map": "7.0.4",
     "pg": "8.16.3",
     "replicache": "15.3.0",
     "signia": "0.1.5",

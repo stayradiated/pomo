@@ -14,6 +14,9 @@ import { sql } from 'kysely'
 
 const ANY_ID = Symbol('ANY_ID')
 
+// above this threshold, we use the ANY() function
+const IN_TO_ANY_THRESHOLD = 1000 as const
+
 // this is a simplified version of the kysely type
 // SelectType<ExtractTypeFromStringReference>
 type ExtractTypeFromStringReference<
@@ -117,6 +120,14 @@ const whereString = (
         // special case: in([]) is always false
         return query.where(sql<boolean>`1 = 0`)
       }
+
+      // switch to ANY() once it gets big
+      if (value.in.length >= IN_TO_ANY_THRESHOLD) {
+        return query.where((eb) =>
+          eb(column, '=', eb.fn.any(sql.val(value.in))),
+        )
+      }
+
       return query.where(column, 'in', value.in)
     }
     if ('notIn' in value) {

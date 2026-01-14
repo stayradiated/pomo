@@ -20,7 +20,7 @@ const getLabelList = async (
 ): Promise<Label[] | Error> => {
   const { db, where } = options
 
-  return errorBoundary(() => {
+  const labelList = await errorBoundary(() => {
     let query = db.selectFrom('label').selectAll()
 
     query = extendWhere(query)
@@ -30,6 +30,14 @@ const getLabelList = async (
 
     return query.execute()
   })
+
+  if (labelList instanceof Error) {
+    return new Error('Failed to getPointList', {
+      cause: labelList,
+    })
+  }
+
+  return labelList
 }
 
 export { getLabelList }
