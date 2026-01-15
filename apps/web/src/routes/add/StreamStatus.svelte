@@ -3,7 +3,7 @@ import type { Store } from '#lib/core/replicache/store.js'
 import type { LabelId } from '#lib/ids.js'
 import type { Stream } from '#lib/types.local.js'
 
-import { getPointAtTime } from '#lib/core/select/point.js'
+import { getActivePoint } from '#lib/core/select/get-active-point.js'
 
 import { formatDurationRough } from '#lib/utils/format-duration.js'
 import { query } from '#lib/utils/query.js'
@@ -32,7 +32,7 @@ const { store, stream, currentTime, state, onchange }: Props = $props()
 
 const { currentPoint, labelList } = $derived(
   query(() => {
-    const currentPoint = getPointAtTime(store, stream.id, currentTime).value
+    const currentPoint = getActivePoint(store, stream.id, currentTime).value
     const labelList = (currentPoint?.labelIdList ?? []).flatMap((labelId) => {
       return store.label.get(labelId).value ?? []
     })

@@ -8,7 +8,7 @@ import type { Line } from './types.js'
 import { clock } from '#lib/utils/clock.js'
 import { createSelector } from '#lib/utils/selector.js'
 
-import { getInclusivePointListForStream } from './point.js'
+import { getActivePointList } from './get-active-point-list.js'
 
 type BuildLineOptions<PointLike extends Point> = {
   points: [PointLike, PointLike | undefined]
@@ -57,7 +57,7 @@ const getLineListForStream = createSelector(
       startedAt: { gte: number; lte?: number }
     },
   ): Signal<Line[]> => {
-    const $pointList = getInclusivePointListForStream(store, streamId, where)
+    const $pointList = getActivePointList(store, streamId, where)
 
     return computed('getLineListForStream', () => {
       const pointList = $pointList.value

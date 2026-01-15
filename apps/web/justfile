@@ -56,5 +56,5 @@ lint:
 knip: svelte-sync
     knip
 
-test:
-    vitest
+test *args:
+    vitest {{ args }}

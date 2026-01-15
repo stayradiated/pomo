@@ -153,6 +153,7 @@ const handleChangeLabel = (data: {
 
   <MultiSelect
     bind:input={selectInputEl}
+    key={(option) => option.value}
     selected={selectedOptionList}
     options={visibleOptionList}
     allowUserOptions="append"

@@ -11,6 +11,7 @@ const mutators: LocalMutatorDefsImportMap = {
   label_create: import('./label-create.js'),
 
   point_create: import('./point-create.js'),
+  point_slide: import('./point-slide.js'),
 
   danger_deleteAllData: import('./danger-delete-all-data.js'),
 }

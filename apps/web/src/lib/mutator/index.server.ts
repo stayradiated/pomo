@@ -11,6 +11,7 @@ const mutators: ServerMutatorDefsImportMap = {
   label_create: import('./label-create.server.js'),
 
   point_create: import('./point-create.server.js'),
+  point_slide: import('./point-slide.server.js'),
 
   danger_deleteAllData: import('./danger-delete-all-data.server.js'),
 }

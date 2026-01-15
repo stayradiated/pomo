@@ -10,7 +10,6 @@
     "tidy": "just fix"
   },
   "dependencies": {
-    "@floating-ui/dom": "1.7.4",
     "@stayradiated/hydro": "1.1.0",
     "async-mutex": "0.5.0",
     "date-fns": "4.1.0",
@@ -26,6 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.11",
+    "@roughapp/replimock": "15.2.0",
     "@stayradiated/error-boundary": "4.3.0",
     "@sveltejs/adapter-node": "5.5.1",
     "@sveltejs/kit": "2.49.5",
@@ -43,6 +43,7 @@
     "kysely": "0.28.9",
     "svelte": "5.46.4",
     "svelte-check": "4.3.5",
+    "test-fixture-factory": "2.1.0",
     "type-fest": "5.4.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.53.0",

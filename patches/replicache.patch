@@ -1,0 +1,13 @@
+diff --git a/out/chunk-C1TWiB5U.d.ts b/out/chunk-C1TWiB5U.d.ts
+index 7d41352eb4442f1b40a7eb6ca4edfe108f34bfec..701314dd862892c1f8eca18d77beb4141f95c746 100644
+--- a/out/chunk-C1TWiB5U.d.ts
++++ b/out/chunk-C1TWiB5U.d.ts
+@@ -942,7 +942,7 @@ interface ReadTransaction {
+      * undefined behavior.
+      */
+     get(key: string): Promise<ReadonlyJSONValue | undefined>;
+-    get<T extends JSONValue>(key: string): Promise<DeepReadonly<T> | undefined>;
++    get<T extends ReadonlyJSONValue>(key: string): Promise<DeepReadonly<T> | undefined>;
+     /** Determines if a single `key` is present in the database. */
+     has(key: string): Promise<boolean>;
+     /** Whether the database is empty. */
