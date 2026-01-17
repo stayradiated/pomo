@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.65.0](https://github.com/stayradiated/pomo/releases/tag/v0.65.0) - 2026-01-17
+
+- [`d634ead`](https://github.com/stayradiated/pomo/commit/d634ead2236ad0ec9e2039a63cb3b178d30363db) chore: update package dependencies to latest versions 🔄 (#9)
+- [`fed57a9`](https://github.com/stayradiated/pomo/commit/fed57a96ce6f84ee7ddfff30dace025add2ad400) feat: refactor testing framework and implement new features 🎉
+- [`a7ab0d2`](https://github.com/stayradiated/pomo/commit/a7ab0d23af0004681090f23120944d7a460b69d3) chore: update package dependencies to latest versions 🔄
+- [`d9f7149`](https://github.com/stayradiated/pomo/commit/d9f7149a8e19631d9e09a70b2ff5a02216b8812a) ci(uplift): uplifted for version v0.64.0
+- [`167135f`](https://github.com/stayradiated/pomo/commit/167135f744ea69354c81b9dd2a94888fbedbdd0d) ci(uplift): uplifted for version v0.64.0
+
 ## [v0.64.0](https://github.com/stayradiated/pomo/releases/tag/v0.64.0) - 2026-01-14
 
 - [`9c0589c`](https://github.com/stayradiated/pomo/commit/9c0589ccd3fd3d579b2c1c4153a6b3caf5380e11) feat(snapshot): add import/export, legacy migration, and schema fixes (#8)
