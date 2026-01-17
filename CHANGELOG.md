@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.67.0](https://github.com/stayradiated/pomo/releases/tag/v0.67.0) - 2026-01-17
+
+- [`d4d7145`](https://github.com/stayradiated/pomo/commit/d4d714519d91198c80de9c9f6e486f0d205ff5a4) feat(web): add email verification flow and background worker (#11)
+- [`3c88ccd`](https://github.com/stayradiated/pomo/commit/3c88ccdd28244367735d99ede128ffd599b61324) fix: bump svelte-kit to 2.50.0 and refactor layout imports 🎉
+- [`2cebc9e`](https://github.com/stayradiated/pomo/commit/2cebc9eaa081fa8b64ce8e86b64ee91470a6a013) feat: add email verification functionality ✉️
+- [`274276c`](https://github.com/stayradiated/pomo/commit/274276c9bc571991b502239434266cd1cecc906e) ci(uplift): uplifted for version v0.66.0
+- [`3495290`](https://github.com/stayradiated/pomo/commit/3495290620eb36160254064e07b2b8ce4be9b79d) ci(uplift): uplifted for version v0.66.0
+
 ## [v0.66.0](https://github.com/stayradiated/pomo/releases/tag/v0.66.0) - 2026-01-17
 
 - [`03a32a8`](https://github.com/stayradiated/pomo/commit/03a32a83c279b02b4f1b054dcc5fb6dbd675ca7d) feat: add basic authentication and user session handling 🛡️ (#10)
