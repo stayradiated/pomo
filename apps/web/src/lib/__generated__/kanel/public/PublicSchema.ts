@@ -3,6 +3,7 @@ import type { default as LabelTable } from './Label';
 import type { default as ReplicacheClientViewTable } from './ReplicacheClientView';
 import type { default as UserTable } from './User';
 import type { default as ReplicacheClientTable } from './ReplicacheClient';
+import type { default as UserSessionTable } from './UserSession';
 import type { default as PointLabelTable } from './PointLabel';
 import type { default as StreamTable } from './Stream';
 import type { default as PointTable } from './Point';
@@ -18,6 +19,8 @@ export default interface PublicSchema {
   user: UserTable;
 
   replicacheClient: ReplicacheClientTable;
+
+  userSession: UserSessionTable;
 
   pointLabel: PointLabelTable;
 

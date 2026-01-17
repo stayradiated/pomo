@@ -1,6 +1,5 @@
 import { z } from 'zod'
 
-import type { UserId } from '#lib/ids.js'
 import type { RequestHandler } from './$types.js'
 
 import { getDb } from '#lib/server/db/get-db.js'
@@ -16,9 +15,12 @@ import { $Snapshot } from '#lib/server/snapshot/schema.js'
 import { printError } from '#lib/utils/print-error.js'
 
 const POST: RequestHandler = async (event) => {
-  const { request } = event
+  const { request, locals } = event
 
-  const sessionUserId = 'test' as UserId
+  const sessionUserId = locals.session?.userId
+  if (!sessionUserId) {
+    return new Response('Must be logged in', { status: 401 })
+  }
 
   const requestBody: unknown = await request.json()
 

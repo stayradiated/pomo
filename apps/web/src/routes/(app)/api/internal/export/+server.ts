@@ -1,4 +1,3 @@
-import type { UserId } from '#lib/ids.js'
 import type { RequestHandler } from './$types.js'
 
 import { getDb } from '#lib/server/db/get-db.js'
@@ -7,12 +6,12 @@ import { exportSnapshot } from '#lib/server/snapshot/export-snapshot.js'
 
 import { errorResponse } from '#lib/utils/http-error.js'
 
-const GET: RequestHandler = async (_event) => {
-  const sessionUserId = 'test' as UserId
-  // const userId = getSessionUserId(locals)
-  // if (userId instanceof Error) {
-  //   throw userId
-  // }
+const GET: RequestHandler = async (event) => {
+  const { locals } = event
+  const sessionUserId = locals.session?.userId
+  if (!sessionUserId) {
+    return new Response('Must be logged in', { status: 401 })
+  }
 
   const db = getDb()
   const snapshot = await exportSnapshot({
@@ -32,4 +31,5 @@ const GET: RequestHandler = async (_event) => {
     },
   })
 }
+
 export { GET }

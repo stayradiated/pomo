@@ -1,14 +1,12 @@
 import { error } from '@sveltejs/kit'
 
-import type { UserId } from '#lib/ids.js'
 import type { LayoutLoad } from './$types.js'
 
 import { getReplicache } from '#lib/core/replicache/get-replicache.js'
 import { createStore } from '#lib/core/replicache/store.js'
 
-const load = (async () => {
-  // const { sessionUserId } = data
-  const sessionUserId = 'test' as UserId
+const load = (async (event) => {
+  const { sessionUserId } = event.data
 
   const rep = await getReplicache({ sessionUserId })
   if (rep instanceof Error) {

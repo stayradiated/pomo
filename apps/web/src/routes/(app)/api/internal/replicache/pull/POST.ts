@@ -2,11 +2,7 @@ import { error } from '@sveltejs/kit'
 import type { PatchOperation, PullResponseOKV1 } from 'replicache'
 import { z } from 'zod'
 
-import type {
-  ReplicacheClientId,
-  ReplicacheClientViewId,
-  UserId,
-} from '#lib/ids.js'
+import type { ReplicacheClientId, ReplicacheClientViewId } from '#lib/ids.js'
 import type { CVR, VersionRecord } from '#lib/server/replicache/cvr.js'
 import type { RequestHandler } from './$types'
 
@@ -76,12 +72,13 @@ type TXResult =
       nextCVRVersion: number
     }
 
-const POST: RequestHandler = async ({ request }) => {
-  const sessionUserId = 'test' as UserId
-  // const sessionUserId = getSessionUserId(locals)
-  // if (sessionUserId instanceof Error) {
-  //   return new Response(sessionUserId.message, { status: 401 })
-  // }
+const POST: RequestHandler = async (event) => {
+  const { request, locals } = event
+
+  const sessionUserId = locals.session?.userId
+  if (!sessionUserId) {
+    return new Response('Must be logged in', { status: 401 })
+  }
 
   const db = getDb()
 

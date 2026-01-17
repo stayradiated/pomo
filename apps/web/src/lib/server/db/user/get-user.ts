@@ -2,22 +2,22 @@ import { errorBoundary } from '@stayradiated/error-boundary'
 
 import type { UserId } from '#lib/ids.js'
 import type { KyselyDb } from '#lib/server/db/types.js'
-import type { Where } from '#lib/server/db/where.js'
+import type { ANY_ID, Where } from '#lib/server/db/where.js'
 import type { User } from '#lib/server/types.js'
 
 import { extendWhere } from '#lib/server/db/where.js'
 
-type GetUserListOptions = {
+type GetUserOptions = {
   db: KyselyDb
   where: Where<{
-    userId: UserId
+    userId: UserId | typeof ANY_ID
     email?: string
   }>
 }
 
-const getUserList = async (
-  options: GetUserListOptions,
-): Promise<User[] | Error> => {
+const getUser = async (
+  options: GetUserOptions,
+): Promise<User | undefined | Error> => {
   const { db, where } = options
 
   return errorBoundary(() => {
@@ -28,8 +28,8 @@ const getUserList = async (
       .string('email', where.email)
       .done()
 
-    return query.execute()
+    return query.executeTakeFirst()
   })
 }
 
-export { getUserList }
+export { getUser }

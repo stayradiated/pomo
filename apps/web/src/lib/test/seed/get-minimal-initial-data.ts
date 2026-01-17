@@ -20,6 +20,7 @@ const getMinimalInitialData = (
 
   return {
     [`user/${sessionUserId}`]: {
+      email: 'test@example.com',
       timeZone: 'UTC',
       createdAt: Date.now(),
       updatedAt: Date.now(),

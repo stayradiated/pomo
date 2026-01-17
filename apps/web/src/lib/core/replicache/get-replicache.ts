@@ -61,7 +61,7 @@ const getReplicache = memoize(
     const context = { sessionUserId }
 
     const replicache = new Replicache<ReplicacheMutatorDefs>({
-      schemaVersion: '2026.01.04/0',
+      schemaVersion: '2026.01.17/0',
       name: sessionUserId,
       pushURL: '/api/internal/replicache/push',
       pullURL: '/api/internal/replicache/pull',
