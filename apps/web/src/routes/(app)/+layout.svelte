@@ -1,15 +1,23 @@
 <script lang="ts">
-import type { Snippet } from 'svelte'
+import type { LayoutProps } from './$types'
+
+import { enhance } from '$app/forms'
 
 import '#lib/theme.css'
+import '#lib/normalize.css'
 
 import { afterNavigate } from '$app/navigation'
 
-type Props = {
-  children?: Snippet
-}
+import { query } from '#lib/utils/query.js'
 
-let { children }: Props = $props()
+let { data, children }: LayoutProps = $props()
+const { store } = $derived(data)
+
+const { sessionUser } = $derived(
+  query({
+    sessionUser: store.user.get(store.sessionUserId),
+  }),
+)
 
 let isMenuOpen = $state(false)
 const toggleMenuOpen = () => {
@@ -23,6 +31,15 @@ afterNavigate(() => {
 
 <header>
   <h1>Pomo</h1>
+
+  {#if sessionUser}
+    <div class="user">
+      <span>{sessionUser.email}</span>
+      <form use:enhance action="/?/logout" method="post">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  {/if}
 
   <nav class:isMenuOpen>
     <div class="menuContainer">

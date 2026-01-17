@@ -2,6 +2,7 @@ import type { LabelId, PointId, StreamId, UserId } from '#lib/ids.js'
 
 type LocalUser = {
   readonly id: UserId
+  email: string
   timeZone: string
   createdAt: number
   updatedAt: number

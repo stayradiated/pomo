@@ -6,4 +6,5 @@ export type {
   ReplicacheClientViewId,
   StreamId,
   UserId,
+  UserSessionId,
 } from '#lib/__generated__/kanel/index.js'

@@ -127,6 +127,7 @@ const getEntities = async (
       diff.user,
       entities.user,
       (entity): AnonUser => ({
+        email: entity.email,
         timeZone: entity.timeZone,
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,

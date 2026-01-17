@@ -146,6 +146,21 @@ CREATE TABLE public."user" (
     strava_client_secret text,
     strava_session jsonb,
     created_at bigint NOT NULL,
+    updated_at bigint NOT NULL,
+    email text NOT NULL,
+    CONSTRAINT "user:check(email)" CHECK ((email = lower(email)))
+);
+
+
+--
+-- Name: user_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_session (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    expires_at bigint NOT NULL,
+    created_at bigint NOT NULL,
     updated_at bigint NOT NULL
 );
 
@@ -244,6 +259,22 @@ ALTER TABLE ONLY public.stream
 
 ALTER TABLE ONLY public."user"
     ADD CONSTRAINT "user:primaryKey(id)" PRIMARY KEY (id);
+
+
+--
+-- Name: user user:unique(email); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT "user:unique(email)" UNIQUE (email);
+
+
+--
+-- Name: user_session user_session:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_session
+    ADD CONSTRAINT "user_session:primaryKey(id)" PRIMARY KEY (id);
 
 
 --
@@ -350,6 +381,14 @@ ALTER TABLE ONLY public.stream
 
 ALTER TABLE ONLY public.stream
     ADD CONSTRAINT "stream:foreignKey(user_id)" FOREIGN KEY (user_id) REFERENCES public."user"(id);
+
+
+--
+-- Name: user_session user_session:foreignKey(user_id,user); Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_session
+    ADD CONSTRAINT "user_session:foreignKey(user_id,user)" FOREIGN KEY (user_id) REFERENCES public."user"(id);
 
 
 --

@@ -4,9 +4,10 @@ import { computed } from 'signia'
 import { createSelector } from '#lib/utils/selector.js'
 
 const getTimeZone = createSelector('getTimeZone', (store): Signal<string> => {
-  const user = store.user.get(store.sessionUserId)
+  const $user = store.user.get(store.sessionUserId)
   return computed('getTimeZone', () => {
-    return user.value ? user.value.timeZone : 'UTC'
+    const user = $user.value
+    return user ? user.timeZone : 'UTC'
   })
 })
 

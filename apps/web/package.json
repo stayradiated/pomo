@@ -10,6 +10,8 @@
     "tidy": "just fix"
   },
   "dependencies": {
+    "@oslojs/crypto": "1.0.1",
+    "@oslojs/encoding": "1.1.0",
     "@stayradiated/hydro": "1.1.0",
     "async-mutex": "0.5.0",
     "date-fns": "4.1.0",

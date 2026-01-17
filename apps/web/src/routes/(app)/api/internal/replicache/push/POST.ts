@@ -1,7 +1,7 @@
 import type { ReadonlyJSONValue } from 'replicache'
 import { z } from 'zod'
 
-import type { ReplicacheClientGroupId, UserId } from '#lib/ids.js'
+import type { ReplicacheClientGroupId } from '#lib/ids.js'
 import type { RequestHandler } from './$types.js'
 
 import { $ReplicacheClientGroupId } from '#lib/schema.js'
@@ -10,8 +10,6 @@ import { getDb } from '#lib/server/db/get-db.js'
 import { transact } from '#lib/server/db/transact.js'
 
 import { poke } from '#lib/server/replicache/poke/poke.js'
-
-// import { getSessionUserId } from '#lib/core/get-session-user-id.js'
 
 import { printError } from '#lib/utils/print-error.js'
 
@@ -33,12 +31,13 @@ const $PushRequest = z.object({
   ),
 })
 
-const POST: RequestHandler = async ({ request }) => {
-  const sessionUserId = 'test' as UserId
-  // const sessionUserId = getSessionUserId(locals)
-  // if (sessionUserId instanceof Error) {
-  //   return new Response(sessionUserId.message, { status: 401 })
-  // }
+const POST: RequestHandler = async (event) => {
+  const { request, locals } = event
+
+  const sessionUserId = locals.session?.userId
+  if (!sessionUserId) {
+    return new Response('Must be logged in', { status: 401 })
+  }
 
   const push = $PushRequest.safeParse(await request.json())
   if (!push.success) {

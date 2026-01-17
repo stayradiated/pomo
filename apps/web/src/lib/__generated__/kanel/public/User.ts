@@ -19,6 +19,8 @@ export default interface UserTable {
   createdAt: ColumnType<number, number, number>;
 
   updatedAt: ColumnType<number, number, number>;
+
+  email: ColumnType<string, string, string>;
 }
 
 export type User = Selectable<UserTable>;
@@ -37,6 +39,7 @@ export const user = z.object({
   stravaSession: z.record(z.string(), z.unknown()).nullable().nullable(),
   createdAt: z.number(),
   updatedAt: z.number(),
+  email: z.string(),
 });
 
 export const userInitializer = z.object({
@@ -47,6 +50,7 @@ export const userInitializer = z.object({
   stravaSession: z.record(z.string(), z.unknown()).nullable().optional().nullable(),
   createdAt: z.number(),
   updatedAt: z.number(),
+  email: z.string(),
 });
 
 export const userMutator = z.object({
@@ -57,4 +61,5 @@ export const userMutator = z.object({
   stravaSession: z.record(z.string(), z.unknown()).nullable().optional().nullable(),
   createdAt: z.number().optional(),
   updatedAt: z.number().optional(),
+  email: z.string().optional(),
 });
