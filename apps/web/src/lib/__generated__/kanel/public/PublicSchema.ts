@@ -1,5 +1,6 @@
 import type { default as ReplicacheClientGroupTable } from './ReplicacheClientGroup';
 import type { default as LabelTable } from './Label';
+import type { default as EmailVerificationTable } from './EmailVerification';
 import type { default as ReplicacheClientViewTable } from './ReplicacheClientView';
 import type { default as UserTable } from './User';
 import type { default as ReplicacheClientTable } from './ReplicacheClient';
@@ -13,6 +14,8 @@ export default interface PublicSchema {
   replicacheClientGroup: ReplicacheClientGroupTable;
 
   label: LabelTable;
+
+  emailVerification: EmailVerificationTable;
 
   replicacheClientView: ReplicacheClientViewTable;
 

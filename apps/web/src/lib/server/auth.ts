@@ -11,6 +11,8 @@ import type { UserSession } from '#lib/server/types.js'
 
 type SessionValidationResult = { session: UserSession } | { session: undefined }
 
+const SESSION_COOKIE_NAME = 'session'
+
 const generateSessionToken = (): string => {
   const bytes = new Uint8Array(20)
   crypto.getRandomValues(bytes)
@@ -100,7 +102,7 @@ const setSessionTokenCookie = (
   token: string,
   expiresAt: number,
 ): void => {
-  event.cookies.set('session', token, {
+  event.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: 'lax',
     expires: new Date(expiresAt),
@@ -109,7 +111,7 @@ const setSessionTokenCookie = (
 }
 
 const deleteSessionTokenCookie = (event: RequestEvent): void => {
-  event.cookies.set('session', '', {
+  event.cookies.set(SESSION_COOKIE_NAME, '', {
     httpOnly: true,
     sameSite: 'lax',
     maxAge: 0,
@@ -118,6 +120,7 @@ const deleteSessionTokenCookie = (event: RequestEvent): void => {
 }
 
 export {
+  SESSION_COOKIE_NAME,
   validateSessionToken,
   invalidateSession,
   invalidateAllSessions,
