@@ -35,7 +35,7 @@
     "@roughapp/replimock": "15.2.0",
     "@stayradiated/error-boundary": "4.3.0",
     "@sveltejs/adapter-node": "5.5.1",
-    "@sveltejs/kit": "2.49.5",
+    "@sveltejs/kit": "2.50.0",
     "@sveltejs/vite-plugin-svelte": "6.2.4",
     "@types/node": "25.0.9",
     "@types/pg": "8.16.0",

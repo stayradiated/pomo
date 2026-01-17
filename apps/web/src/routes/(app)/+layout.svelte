@@ -2,15 +2,11 @@
 import type { LayoutProps } from './$types'
 
 import { enhance } from '$app/forms'
-
-import '#lib/theme.css'
-import '#lib/normalize.css'
-
 import { afterNavigate } from '$app/navigation'
 
 import { query } from '#lib/utils/query.js'
 
-let { data, children }: LayoutProps = $props()
+const { data, children }: LayoutProps = $props()
 const { store } = $derived(data)
 
 const { sessionUser } = $derived(
