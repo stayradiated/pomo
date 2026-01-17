@@ -3,7 +3,6 @@ import { errorBoundary } from '@stayradiated/error-boundary'
 import type { StreamId, UserId } from '#lib/ids.js'
 import type { KyselyDb } from '#lib/server/db/types.js'
 import type { Stream } from '#lib/server/types.js'
-import type { OmitTimestamps } from '#lib/utils/omit-timestamps.js'
 
 type UpdateStreamOptions = {
   db: KyselyDb
@@ -11,7 +10,7 @@ type UpdateStreamOptions = {
     userId: UserId
     streamId: StreamId
   }
-  set: Partial<Pick<OmitTimestamps<Stream>, 'name' | 'sortOrder'>>
+  set: Partial<Pick<Stream, 'name' | 'sortOrder'>>
   now?: number
 }
 

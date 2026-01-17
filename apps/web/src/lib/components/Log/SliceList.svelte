@@ -27,7 +27,7 @@ let { streamList, sliceList, timeZone, labelRecord }: Props = $props()
   <tbody>
     {#each sliceList as slice, index (index)}
       <tr>
-        <td><a href="/edit?ref={slice.lineList[0]?.id}">{formatTime(timeZone, slice.startedAt)}</a></td>
+        <td><a href="/edit/slice/{slice.startedAt}">{formatTime(timeZone, slice.startedAt)}</a></td>
 
         {#each streamList as stream (stream.id)}
           {@const line = slice.lineList.find((line) => line.streamId === stream.id)}

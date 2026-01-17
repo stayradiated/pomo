@@ -1,28 +1,21 @@
-// A total-order comparator: <0 if a<b, 0 if equal, >0 if a>b
-type Comparator<K> = (a: K, b: K) => number
+// A total-order comparator: <0 if item < target, 0 if equal, >0 if item > target
+export type Comparator<K> = (item: K) => number
 
-// Returns true if key(item) is valid, false otherwise.
-type Predicate<K> = (a: K, b: K) => boolean
+export type Predicate<K> = (item: K) => boolean
 
-// Find an upper / lower bound
-// Returns first index i in [0, n] such that:
-//   compare(key(arr[i]), target) == true
-// Returns n if no such element exists.
-const binarySearch = <ListItem, Prop>(
-  list: readonly ListItem[],
-  target: Prop,
-  key: (item: ListItem) => Prop,
-  compare: Predicate<Prop>,
-): number => {
+/**
+ * Returns the smallest index i in [0, n] such that pred(list[i]) is true.
+ * Assumes pred is monotone: false...false, true...true.
+ * If pred is never true, returns n.
+ */
+const firstTrue = <K>(list: readonly K[], pred: Predicate<K>): number => {
   let lo = 0
-  let hi = list.length
+  let hi = list.length // exclusive
 
   while (lo < hi) {
     const mid = lo + ((hi - lo) >> 1)
-    // biome-ignore lint/style/noNonNullAssertion: this is a valid index
-    const midValue = list[mid]!
-    const isValid = compare(key(midValue), target)
-    if (isValid) {
+    // biome-ignore lint/style/noNonNullAssertion: mid is in-bounds when lo < hi
+    if (pred(list[mid]!)) {
       hi = mid
     } else {
       lo = mid + 1
@@ -32,31 +25,43 @@ const binarySearch = <ListItem, Prop>(
   return lo
 }
 
-// Rightmost index where key(item) <= target (or undefined if none).
-const lastIndexLTE = <ListItem, Prop>(
-  list: readonly ListItem[],
-  target: Prop,
-  key: (item: ListItem) => Prop,
-  compare: Comparator<Prop>,
-): number | undefined => {
-  const i =
-    binarySearch(list, target, key, (a, b) => {
-      return compare(a, b) > 0
-    }) - 1
-  return i >= 0 ? i : undefined
-}
+/**
+ * How to use lowerBound / upperBound on a sorted array:
+ *
+ * Given a sorted list and a comparator `compare(item)` that returns:
+ *   < 0 if item < target, 0 if item == target, > 0 if item > target
+ *
+ * - `lowerBound(list, compare)` returns the first index with item >= target.
+ * - `upperBound(list, compare)` returns the first index with item >  target.
+ *
+ * This gives you:
+ *   - Insert position for `target` (stable, before equals): lowerBound(...)
+ *   - Range of all occurrences of `target`: [lower, upper)
+ *       const lower = lowerBound(list, cmp)
+ *       const upper = upperBound(list, cmp)
+ *       // target exists iff lower < upper (and list[lower] == target)
+ *       // count = upper - lower
+ *
+ * Writing `compare` in practice: close over the target and compare the list
+ * item to it:
+ *
+ * - numbers: `x => x - target`
+ * - strings: `s => s.localeCompare(target)`
+ * - objects: `o => o.key - targetKey`
+ */
 
-// Leftmost index where key(item) >= target (or undefined if none).
-const firstIndexGTE = <ListItem, Prop>(
-  list: readonly ListItem[],
-  target: Prop,
-  key: (item: ListItem) => Prop,
-  compare: Comparator<Prop>,
-) => {
-  const i = binarySearch(list, target, key, (a, b) => {
-    return compare(a, b) >= 0
-  })
-  return i < list.length ? i : undefined
-}
+/**
+ * lowerBound: first index with item >= target
+ * i.e. first index where compare(item) >= 0
+ */
+const lowerBound = <K>(list: readonly K[], compare: Comparator<K>): number =>
+  firstTrue(list, (item) => compare(item) >= 0)
 
-export { lastIndexLTE, firstIndexGTE }
+/**
+ * upperBound: first index with item > target
+ * i.e. first index where compare(item) > 0
+ */
+const upperBound = <K>(list: readonly K[], compare: Comparator<K>): number =>
+  firstTrue(list, (item) => compare(item) > 0)
+
+export { upperBound, lowerBound }

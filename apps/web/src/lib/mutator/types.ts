@@ -43,6 +43,10 @@ type Mutators = {
     description: string
     startedAt: number
   }>
+  point_slide: Mutator<{
+    pointId: PointId
+    startedAt: number
+  }>
 
   danger_deleteAllData: Mutator<{
     userHasConfirmed: boolean

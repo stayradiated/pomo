@@ -16,16 +16,11 @@ const createSelector = <Args extends unknown[], Result extends Signal<unknown>>(
   },
 ) => {
   const { cacheKey } = options
-  return memoize(
-    (store: Store, ...args: Args) => {
-      return fn(store, ...args)
-    },
-    {
-      cacheKey: ([store, ...args]) => `${store.id}|${cacheKey(args)}`,
-      // use a separate cache for each store
-      cache: new Map(),
-    },
-  )
+  return memoize(fn, {
+    cacheKey: ([store, ...args]) => `${store.id}|${cacheKey(args)}`,
+    // use a separate cache for each store
+    cache: new Map(),
+  })
 }
 
 export { createSelector }

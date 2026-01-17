@@ -13,7 +13,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "kanel-zod": "patches/kanel-zod.patch"
+      "kanel-zod": "patches/kanel-zod.patch",
+      "replicache": "patches/replicache.patch"
     }
   }
 }
