@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+## [v0.66.0](https://github.com/stayradiated/pomo/releases/tag/v0.66.0) - 2026-01-17
+
+- [`03a32a8`](https://github.com/stayradiated/pomo/commit/03a32a83c279b02b4f1b054dcc5fb6dbd675ca7d) feat: add basic authentication and user session handling 🛡️ (#10)
+- [`78706b3`](https://github.com/stayradiated/pomo/commit/78706b35815ffe8add5e3e46817237501ad36898) feat: add basic authentication and user session handling 🛡️
+- [`6648829`](https://github.com/stayradiated/pomo/commit/664882931b5fd1b1ea5717e39ed6fc239596efd1) ci(uplift): uplifted for version v0.65.0
+- [`9fbeb06`](https://github.com/stayradiated/pomo/commit/9fbeb06bf8180b78cbedca2970909eabf2fc7c1d) ci(uplift): uplifted for version v0.65.0
+
 ## [v0.65.0](https://github.com/stayradiated/pomo/releases/tag/v0.65.0) - 2026-01-17
 
 - [`d634ead`](https://github.com/stayradiated/pomo/commit/d634ead2236ad0ec9e2039a63cb3b178d30363db) chore: update package dependencies to latest versions 🔄 (#9)
