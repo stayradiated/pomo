@@ -1,13 +1,14 @@
 import type { IncomingMessage } from 'node:http'
 import { promisify, styleText } from 'node:util'
-// import cookie from 'cookie'
+import cookie from 'cookie'
 import type { WebSocket } from 'ws'
 import { WebSocketServer } from 'ws'
 
 import type { UserId } from '#lib/ids.js'
 
-// import { getDb } from '#lib/server/db/get-db.js'
-// import * as auth from '#lib/server/auth/auth.js'
+import * as auth from '#lib/server/auth.js'
+
+import { getDb } from '#lib/server/db/get-db.js'
 
 import { getRoutes } from './get-routes.js'
 import { setConfigureServer } from './global-state.js'
@@ -47,30 +48,24 @@ const handleWebsocket: HandleWebsocket = async (event) => {
 type TeardownFn = () => Promise<void>
 
 const getSessionUserId = async (
-  _request: IncomingMessage,
+  request: IncomingMessage,
 ): Promise<UserId | undefined> => {
-  return 'test' as UserId
-  // const token = cookie.parse(request.headers.cookie ?? '')[
-  //   auth.SESSION_COOKIE_NAME
-  // ]
-  // if (!token) {
-  //   return undefined
-  // }
-  //
-  // const db = getDb()
-  // const result = await auth.validateSessionToken(db, token)
-  // if (result instanceof Error) {
-  //   console.error('Error validating session token:', result)
-  //   return undefined
-  // }
-  // const { session, user } = result
-  //
-  // // require two-factor verification if enabled
-  // if (user?.twoFactorEnabled && !session?.twoFactorVerifiedAt) {
-  //   return undefined
-  // }
-  //
-  // return user?.id
+  const token = cookie.parse(request.headers.cookie ?? '')[
+    auth.SESSION_COOKIE_NAME
+  ]
+  if (!token) {
+    return undefined
+  }
+
+  const db = getDb()
+  const result = await auth.validateSessionToken(db, token)
+  if (result instanceof Error) {
+    console.error('Error validating session token:', result)
+    return undefined
+  }
+  const { session } = result
+
+  return session?.userId
 }
 
 const state: {

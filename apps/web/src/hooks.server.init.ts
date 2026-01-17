@@ -1,5 +1,7 @@
 import { styleText } from 'node:util'
 
+import { initBoss } from '#lib/server/worker.js'
+
 import {
   exposeConfigureServerGlobal,
   startWebsocketServer,
@@ -45,6 +47,7 @@ const createHandler = (fn: SetupFn) => {
 const onInit = createHandler(async () => {
   const teardownList: TeardownFn[] = []
 
+  teardownList.push(initBoss())
   teardownList.push(startWebsocketServer())
 
   return async () => {

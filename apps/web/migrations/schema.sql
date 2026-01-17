@@ -22,6 +22,23 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: email_verification; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.email_verification (
+    id text NOT NULL,
+    email text NOT NULL,
+    token_hash text NOT NULL,
+    expires_at bigint NOT NULL,
+    retry_count integer NOT NULL,
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL,
+    CONSTRAINT "email_verification:check(email)" CHECK ((email = lower(email))),
+    CONSTRAINT "email_verification:check(retry_count)" CHECK ((retry_count >= 0))
+);
+
+
+--
 -- Name: label; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -163,6 +180,14 @@ CREATE TABLE public.user_session (
     created_at bigint NOT NULL,
     updated_at bigint NOT NULL
 );
+
+
+--
+-- Name: email_verification email_verification:primaryKey(id); Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.email_verification
+    ADD CONSTRAINT "email_verification:primaryKey(id)" PRIMARY KEY (id);
 
 
 --

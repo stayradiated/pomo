@@ -1,21 +1,17 @@
 import { error, redirect } from '@sveltejs/kit'
+import * as dateFns from 'date-fns'
 
-import type { UserId } from '#lib/ids.js'
 import type { Actions, PageServerLoad } from './$types.js'
 
-import {
-  createSession,
-  generateSessionToken,
-  setSessionTokenCookie,
-} from '#lib/server/auth.js'
-
 import { getDb } from '#lib/server/db/get-db.js'
-import { ANY_ID } from '#lib/server/db/where.js'
 
-import { getUser } from '#lib/server/db/user/get-user.js'
-import { insertUser } from '#lib/server/db/user/insert-user.js'
+import { checkEmailIsRateLimited } from '#lib/server/db/email-verification/check-rate-limited-email.js'
+import { insertEmailVerification } from '#lib/server/db/email-verification/insert-email-verification.js'
 
-import { genId } from '#lib/utils/gen-id.js'
+import { genCrockfordToken } from '#lib/server/crypto/crockford-token.js'
+import { genSecureToken } from '#lib/server/crypto/gen-secure-token.js'
+import { cryptoHash } from '#lib/server/crypto/hash.js'
+import { sendVerificationEmail } from '#lib/server/email/send-verification-email.js'
 
 const load = (async (event) => {
   const { locals } = event
@@ -30,50 +26,53 @@ const actions = {
     const { request } = event
     const formData = await request.formData()
     const email = formData.get('email')
-    const timeZone = formData.get('timeZone')
 
     if (typeof email !== 'string' || email.trim().length === 0) {
       return error(400, 'Email is required')
     }
-    if (typeof timeZone !== 'string' || timeZone.trim().length === 0) {
-      return error(400, 'Time zone is required')
-    }
 
     const db = getDb()
 
-    const existingUser = await getUser({
+    const isRateLimited = await checkEmailIsRateLimited({
       db,
-      where: { userId: ANY_ID, email },
+      where: { email },
     })
-    if (existingUser instanceof Error) {
-      return error(500, 'Failed to get user')
+    if (isRateLimited instanceof Error) {
+      return error(500, isRateLimited)
+    }
+    if (isRateLimited) {
+      return error(
+        400,
+        'Please wait a few seconds before trying to login again.',
+      )
     }
 
-    let userId: UserId
-    if (existingUser) {
-      userId = existingUser.id
-    } else {
-      const user = await insertUser({
-        db,
-        set: {
-          id: genId(),
-          timeZone,
-          email,
-          stravaClientId: null,
-          stravaClientSecret: null,
-          stravaSession: null,
-        },
-      })
-      if (user instanceof Error) {
-        return error(500, 'Failed to insert user')
-      }
-      userId = user.id
+    const verificationToken = genCrockfordToken()
+    const tokenHash = await cryptoHash.hash(verificationToken.value)
+
+    const emailVerification = await insertEmailVerification({
+      db,
+      set: {
+        id: genSecureToken(32),
+        email,
+        tokenHash,
+        expiresAt: dateFns.addMinutes(Date.now(), 15).getTime(),
+        retryCount: 3,
+      },
+    })
+    if (emailVerification instanceof Error) {
+      throw emailVerification
     }
 
-    const sessionToken = generateSessionToken()
-    const session = await createSession(db, sessionToken, userId)
-    setSessionTokenCookie(event, sessionToken, session.expiresAt)
-    return redirect(302, '/')
+    const emailResult = await sendVerificationEmail({
+      userEmail: email,
+      verificationCode: verificationToken.prettified,
+    })
+    if (emailResult instanceof Error) {
+      throw emailResult
+    }
+
+    return redirect(302, `/login/verify/${emailVerification.id}`)
   },
 } satisfies Actions
 

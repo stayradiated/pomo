@@ -33,7 +33,10 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
 
   // do not require a cookie session when querying these exact paths
-  if (event.route.id === '/login') {
+  if (
+    event.route.id === '/login' ||
+    event.route.id === '/login/verify/[emailVerificationId]'
+  ) {
     return resolve(event)
   }
 
