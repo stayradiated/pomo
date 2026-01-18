@@ -1,34 +1,18 @@
 # by default we exclude everything from the Docker worker...
 *
 
-!/turbo.json
+# and then we whitelist only the files we want to include
+!/db.just
+!/dev.just
+!/docker-app-start.sh
+!/gmrc.cjs
+!/justfile
+!/migrations
 !/package.json
+!/patches
 !/pnpm-lock.yaml
-!/pnpm-workspace.yaml
-
-!/apps/mobile/src
-!/apps/mobile/static
-!/apps/mobile/package.json
-!/apps/mobile/svelte.config.js
-!/apps/mobile/tsconfig.json
-!/apps/mobile/vite.config.ts
-
-!/apps/web/docker-app-start.sh
-!/apps/web/gmrc.cjs
-!/apps/web/migrations
-!/apps/web/package.json
-!/apps/web/src
-!/apps/web/static
-!/apps/web/svelte.config.js
-!/apps/web/tsconfig.json
-!/apps/web/vite.config.ts
-
-!/packages/doc/src
-!/packages/doc/package.json
-!/packages/doc/tsconfig.json
-!/packages/doc/tsup.config.ts
-
-!/packages/core/src
-!/packages/core/package.json
-!/packages/core/tsconfig.json
-!/packages/core/tsup.config.ts
+!/src
+!/static
+!/svelte.config.js
+!/tsconfig.json
+!/vite.config.ts

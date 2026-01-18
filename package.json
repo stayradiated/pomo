@@ -1,20 +1,112 @@
 {
-  "name": "root",
-  "version": "0.67.0",
+  "name": "aeon",
   "private": true,
-  "packageManager": "pnpm@10.5.2",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "build": "turbo build --no-daemon",
-    "test": "turbo test --no-daemon",
-    "tidy": "turbo tidy --no-daemon"
+    "dev": "just dev",
+    "build": "just build",
+    "test": "just test",
+    "tidy": "just fix"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "2.0.2",
+    "@oslojs/crypto": "1.0.1",
+    "@oslojs/encoding": "1.1.0",
+    "@stayradiated/hydro": "1.1.0",
+    "@sveltelaunch/svelte-5-email": "0.0.11",
+    "async-mutex": "0.5.0",
+    "cookie": "1.1.1",
+    "date-fns": "4.1.0",
+    "date-fns-tz": "3.2.0",
+    "graphile-migrate": "1.4.1",
+    "p-map": "7.0.4",
+    "pg": "8.17.1",
+    "pg-boss": "12.5.4",
+    "replicache": "15.3.0",
+    "resend": "6.7.0",
+    "signia": "0.1.5",
+    "websocket-ts": "2.2.1",
+    "ws": "8.19.0",
+    "zod": "4.3.5"
   },
   "devDependencies": {
-    "turbo": "2.7.4"
+    "@biomejs/biome": "2.3.11",
+    "@roughapp/replimock": "15.2.0",
+    "@stayradiated/error-boundary": "4.3.0",
+    "@sveltejs/adapter-node": "5.5.1",
+    "@sveltejs/kit": "2.50.0",
+    "@sveltejs/vite-plugin-svelte": "6.2.4",
+    "@types/node": "25.0.9",
+    "@types/pg": "8.16.0",
+    "@types/ws": "8.18.1",
+    "eslint": "9.39.2",
+    "eslint-plugin-svelte": "3.14.0",
+    "id128": "1.6.6",
+    "kanel": "3.16.0",
+    "kanel-kysely": "0.8.0",
+    "kanel-zod": "1.7.0",
+    "knip": "5.81.0",
+    "kysely": "0.28.9",
+    "svelte": "5.46.4",
+    "svelte-check": "4.3.5",
+    "test-fixture-factory": "2.1.0",
+    "type-fest": "5.4.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.53.0",
+    "vite": "7.3.1",
+    "vitest": "4.0.17"
+  },
+  "knip": {
+    "vite": false,
+    "vitest": false,
+    "svelte": {
+      "entry": [
+        "./src/routes/**/+{layout,page,server,error}{,.server}.{svelte,ts}",
+        "./src/hooks.client.ts",
+        "./src/hooks.server.ts",
+        "./src/**/*.test.ts",
+        "vite.config*.ts"
+      ],
+      "project": [
+        "./src/**/*.ts"
+      ]
+    },
+    "paths": {
+      "$env/*": [
+        "./node_modules/@sveltejs/kit/src/runtime/env/*"
+      ]
+    },
+    "ignore": [
+      ".kanelrc.cjs",
+      "gmrc.cjs",
+      "justfile",
+      "scripts/db/snapshot-schema.ts",
+      "src/lib/__generated__/**",
+      "src/lib/server/db/log-query.ts"
+    ],
+    "ignoreDependencies": [
+      "@biomejs/biome",
+      "graphile-migrate",
+      "kanel",
+      "kanel-kysely",
+      "kanel-zod",
+      "svelte-check"
+    ],
+    "ignoreBinaries": [
+      "just"
+    ],
+    "ignoreExportsUsedInFile": {
+      "type": true
+    }
   },
   "pnpm": {
     "patchedDependencies": {
       "kanel-zod": "patches/kanel-zod.patch",
       "replicache": "patches/replicache.patch"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

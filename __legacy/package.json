@@ -1,0 +1,14 @@
+{
+  "name": "root",
+  "version": "0.67.0",
+  "private": true,
+  "packageManager": "pnpm@10.5.2",
+  "scripts": {
+    "build": "turbo build --no-daemon",
+    "test": "turbo test --no-daemon",
+    "tidy": "turbo tidy --no-daemon"
+  },
+  "devDependencies": {
+    "turbo": "2.7.4"
+  }
+}

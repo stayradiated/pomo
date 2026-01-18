@@ -1,0 +1,23 @@
+app = 'aeon'
+primary_region = 'syd'
+
+[env]
+  ORIGIN = 'https://aeon.party'
+  DATABASE_URL = '__replace_me__'
+  RESEND_API_KEY = '__replace_me__'
+
+  # https://svelte.dev/docs/kit/adapter-node#Environment-variables-ADDRESS_HEADER-and-XFF_DEPTH
+  ADDRESS_HEADER = 'CF-Connecting-IP'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'suspend'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1

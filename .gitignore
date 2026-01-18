@@ -1,17 +1,27 @@
 node_modules
-dist
-tmp
-build
-package
 
-.DS_STORE
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
 .env
 .env.*
 !.env.example
-.turbo
-.svelte-kit
+!.env.test
+
+# Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-
-*.db
 *.pid
+
+# Logs
+*.log
